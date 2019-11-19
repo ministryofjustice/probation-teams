@@ -12,12 +12,6 @@ import java.time.Duration;
 @Validated
 @Getter
 public class ProbationTeamsProperties {
-
-    /**
-     * Elite2 API Base URL endpoint ("http://localhost:8080")
-     */
-    private final String elite2ApiBaseUrl;
-
     /**
      * OAUTH2 API Rest URL endpoint ("http://localhost:9090/auth/api")
      */
@@ -27,11 +21,9 @@ public class ProbationTeamsProperties {
 
     private final Duration healthTimeout;
 
-    public ProbationTeamsProperties(@Value("${elite2.api.base.url}") @URL final String elite2ApiBaseUrl,
-                                    @Value("${oauth.api.base.url}") @URL final String oauthApiBaseUrl,
+    public ProbationTeamsProperties(@Value("${oauth.api.base.url}") @URL final String oauthApiBaseUrl,
                                     @Value("${jwt.public.key}") final String jwtPublicKey,
                                     @Value("${api.health-timeout:1s}") final Duration healthTimeout) {
-        this.elite2ApiBaseUrl = elite2ApiBaseUrl;
         this.oauthApiBaseUrl = oauthApiBaseUrl;
         this.jwtPublicKey = jwtPublicKey;
         this.healthTimeout = healthTimeout;

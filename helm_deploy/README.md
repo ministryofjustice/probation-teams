@@ -1,7 +1,7 @@
 
 ### Example deploy command
 ```
-helm --namespace probation-teams-dev  --tiller-namespace probation-teams-dev upgrade probation-teams ./probation-teams/ --install --values=values-dev.yaml --values=example-secrets.yaml
+helm --namespace licences-dev  --tiller-namespace probation-teams-dev upgrade probation-teams ./probation-teams/ --install --values=values-dev.yaml --values=example-secrets.yaml
 ```
 
 ### Rolling back a release
