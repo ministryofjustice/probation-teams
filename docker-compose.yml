@@ -19,7 +19,7 @@ services:
       - DATABASE_NAME=probation-teams-db
       - SPRING_DATASOURCE_URL=jdbc:postgresql://probation-teams-db/probation-teams-db
       - DATABASE_USERNAME=probation_teams
-      - DATABASE_PASSWORD=PROBATION_TEAMS
+      - DATABASE_PASSWORD=probation_teams
       - SUPERUSER_USERNAME=admin
       - SUPERUSER_PASSWORD=admin_password
       - OAUTH_API_BASE_URL=http://nomis-oauth2-server:8080/auth

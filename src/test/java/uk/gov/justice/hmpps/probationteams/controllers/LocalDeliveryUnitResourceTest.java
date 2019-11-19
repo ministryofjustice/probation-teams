@@ -32,7 +32,7 @@ public class LocalDeliveryUnitResourceTest extends ResourceTest {
                 HttpMethod.GET,
                 createHttpEntityWithBearerAuthorisation("API_TEST_USER", List.of()),
                 new ParameterizedTypeReference<String>() {},
-                "ABC124");
+                "ABC125");
 
         assertThatJsonFileAndStatus(response,200, "lduDto.json");
     }

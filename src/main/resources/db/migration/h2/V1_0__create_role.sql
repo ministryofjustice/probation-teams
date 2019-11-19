@@ -1,1 +1,1 @@
-CREATE USER PROBATION_TEAMS PASSWORD 'dummy';
+CREATE USER probation_teams PASSWORD 'dummy';
