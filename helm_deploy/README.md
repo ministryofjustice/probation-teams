@@ -1,7 +1,11 @@
+### Example test deploy command
+```
+helm --namespace licences-dev  --tiller-namespace licences-dev upgrade probation-teams ./probation-teams/ --install --values=values-dev.yaml --values=secrets-example.yaml --dry-run --debug
+```
 
 ### Example deploy command
 ```
-helm --namespace licences-dev  --tiller-namespace probation-teams-dev upgrade probation-teams ./probation-teams/ --install --values=values-dev.yaml --values=example-secrets.yaml
+helm --namespace licences-dev  --tiller-namespace licences-dev upgrade probation-teams ./probation-teams/ --install --values=values-dev.yaml --values=secrets-example.yaml
 ```
 
 ### Rolling back a release
@@ -13,15 +17,15 @@ helm --tiller-namespace probation-teams-dev history probation-teams -o yaml
 
 Rollback
 ```
-helm --tiller-namespace probation-teams-dev rollback probation-teams [INSERT REVISION NUMBER HERE] --wait
+helm --tiller-namespace licences-dev rollback probation-teams [INSERT REVISION NUMBER HERE] --wait
 ```
 
 ### Helm init
 
 ```
-helm init --tiller-namespace probation-teams-dev --service-account tiller --history-max 200
-helm init --tiller-namespace probation-teams-preprod --service-account tiller --history-max 200
-helm init --tiller-namespace probation-teams-prod --service-account tiller --history-max 200
+helm init --tiller-namespace licences-dev --service-account tiller --history-max 200
+helm init --tiller-namespace licences-preprod --service-account tiller --history-max 200
+helm init --tiller-namespace licences-prod --service-account tiller --history-max 200
 ```
 
 ### Setup Lets Encrypt cert

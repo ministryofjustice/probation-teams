@@ -4,6 +4,9 @@ Environment variables for web and worker containers
 */}}
 {{- define "deployment.envs" }}
 env:
+  - name: SPRING_PROFILES_ACTIVE
+    value: "postgres"
+
   - name: SERVER_PORT
     value: "{{ .Values.image.port }}"
 
@@ -22,17 +25,26 @@ env:
         name: {{ template "app.name" . }}
         key: APPINSIGHTS_INSTRUMENTATIONKEY
 
-  - name: DATABASE_USERNAME
+  - name: SUPERUSER_USERNAME
     valueFrom:
       secretKeyRef:
         name: dps-rds-instance-output
         key: database_username
 
-  - name: DATABASE_PASSWORD
+  - name: SUPERUSER_PASSWORD
     valueFrom:
       secretKeyRef:
         name: dps-rds-instance-output
         key: database_password
+
+  - name: DATABASE_USERNAME
+    value: "probation_teams"
+
+  - name: DATABASE_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: dps-rds-instance-output
+        key: probation_teams_password
 
   - name: DATABASE_NAME
     valueFrom:

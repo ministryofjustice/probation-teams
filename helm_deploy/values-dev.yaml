@@ -15,7 +15,7 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: "nginx"
   hosts:
-    - host: dev.probation-teams.service.justice.gov.uk
+    - host: probation-teams-dev.service.justice.gov.uk
       cert_secret: probation-teams-cert
   path: /
 
