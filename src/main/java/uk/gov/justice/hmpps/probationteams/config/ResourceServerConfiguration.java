@@ -64,10 +64,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
                 .antMatchers(
                         "/webjars/**",
                         "/favicon.ico",
-                        "/csrf",
-                        "/health",
-                        "/info",
-                        "/ping",
+                        "/health/ping",
                         "/h2-console/**",
                         "/v2/api-docs",
                         "/swagger-ui.html",

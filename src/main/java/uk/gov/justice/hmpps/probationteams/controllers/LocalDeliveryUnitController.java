@@ -37,7 +37,7 @@ public class LocalDeliveryUnitController {
             @ApiResponse(code = 404, message = "Local Delivery Unit not found"),
             @ApiResponse(code = 200, message = "OK", response = LocalDeliveryUnit.class)})
     public ResponseEntity<LocalDeliveryUnitDto> getProbationTeam(
-            @ApiParam(value = "Local Delvery Unit code", required = true, example = "NO2") @PathVariable("localDeliveryUnitCode") final String localDeliveryUnitCode) {
+            @ApiParam(value = "Local Delivery Unit code", required = true, example = "NO2") @PathVariable("localDeliveryUnitCode") final String localDeliveryUnitCode) {
 
         return ResponseEntity.of(
                 localDeliveryUnitService

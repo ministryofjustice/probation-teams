@@ -16,9 +16,6 @@ env:
   - name: JWT_PUBLIC_KEY
     value: "{{ .Values.env.JWT_PUBLIC_KEY }}"
 
-  - name: OAUTH_API_BASE_URL
-    value: "{{ .Values.env.OAUTH_API_BASE_URL }}"
-
   - name: APPINSIGHTS_INSTRUMENTATIONKEY
     valueFrom:
       secretKeyRef:

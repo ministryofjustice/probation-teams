@@ -38,7 +38,7 @@ commands:
           name: Deploy to << parameters.env >>
           command: |
             APP_VERSION=$(cat ~/app/app_version.txt)
-            aws secretsmanager --region ${AWS_DEFAULT_REGION} get-secret-value --secret-id ${KUBE_ENV_NAMESPACE} | jq -r .SecretString | \
+            aws secretsmanager --region ${AWS_DEFAULT_REGION} get-secret-value --secret-id ${AWS_SECRET_NAME} | jq -r .SecretString | \
             helm upgrade probation-teams ~/git/helm_deploy/probation-teams/. \
               --install --wait --force --reset-values --timeout 360 \
               --tiller-namespace=${KUBE_ENV_NAMESPACE} \
@@ -159,9 +159,9 @@ workflows:
       - build_docker:
           requires:
             - build
-          filters:
-            branches:
-              only: master
+#          filters:
+#            branches:
+#              only: master
       - deploy_dev:
           requires:
             - build_docker

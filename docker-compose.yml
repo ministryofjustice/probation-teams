@@ -12,7 +12,7 @@ services:
     ports:
       - '8085:8080'
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:3000/health']
+      test: ['CMD', 'curl', '-f', 'http://localhost:8080/health/ping']
     environment:
       - SERVER_PORT=8080
       - DATABASE_ENDPOINT=probation-teams-db
@@ -22,7 +22,6 @@ services:
       - DATABASE_PASSWORD=probation_teams
       - SUPERUSER_USERNAME=admin
       - SUPERUSER_PASSWORD=admin_password
-      - OAUTH_API_BASE_URL=http://nomis-oauth2-server:8080/auth
       - SPRING_PROFILES_ACTIVE=postgres,stdout
 
   probation-teams-db:
