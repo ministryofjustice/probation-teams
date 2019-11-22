@@ -11,12 +11,9 @@ image:
 
 ingress:
   enabled: true
-  enable_whitelist: true
-  annotations:
-    kubernetes.io/ingress.class: "nginx"
-  hosts:
-    - host: probation-teams-dev.service.justice.gov.uk
-      cert_secret: probation-teams-cert
+  enable_whitelist: false
+  host: probation-teams-dev.service.justice.gov.uk
+  cert_secret: probation-teams-cert
   path: /
 
 env:
