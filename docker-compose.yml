@@ -1,8 +1,7 @@
 version: '3.1'
 services:
   probation-teams:
-#    image: mojdigitalstudio/probation-teams:latest
-    build: .
+    image: mojdigitalstudio/probation-teams:latest
     networks:
       - hmpps
     container_name: probation-teams
