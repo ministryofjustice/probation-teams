@@ -122,13 +122,13 @@ jobs:
                --label "build.url=$CIRCLE_BUILD_URL" \
                --label "build.gitref=$CIRCLE_SHA1"
 
-            if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
+            #if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
               # publish to docker hub as the tag
               docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
               docker tag mojdigitalstudio/probation-teams:$APP_VERSION mojdigitalstudio/probation-teams:latest
               docker push mojdigitalstudio/probation-teams:$APP_VERSION
               docker push mojdigitalstudio/probation-teams:latest
-            fi
+            #fi
 
   deploy_dev:
     executor: deployer
