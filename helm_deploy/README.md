@@ -11,7 +11,7 @@ helm --namespace licences-dev  --tiller-namespace licences-dev upgrade probation
 ### Rolling back a release
 Find the revision number for the deployment you want to roll back:
 ```
-helm --tiller-namespace probation-teams-dev history probation-teams -o yaml
+helm --tiller-namespace licences-dev history probation-teams -o yaml
 ```
 (note, each revision has a description which has the app version and circleci build URL)
 

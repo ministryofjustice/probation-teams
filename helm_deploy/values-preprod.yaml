@@ -11,8 +11,8 @@ image:
 
 ingress:
   enabled: true
-  enable_whitelist: false
-  host: probation-teams-preprod.service.justice.gov.uk
+  enable_whitelist: true
+  host: probation-teams-preprod.prison.service.justice.gov.uk
   cert_secret: probation-teams-cert
   path: /
 
