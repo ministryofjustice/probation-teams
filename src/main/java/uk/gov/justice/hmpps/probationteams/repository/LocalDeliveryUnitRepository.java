@@ -10,4 +10,5 @@ import java.util.UUID;
 @Repository
 public interface LocalDeliveryUnitRepository extends JpaRepository<LocalDeliveryUnit, UUID> {
     Optional<LocalDeliveryUnit> findByCode(String code);
+    void deleteByCode(String localDeliveryUnitCode);
 }

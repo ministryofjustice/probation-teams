@@ -26,5 +26,5 @@ public class LocalDeliveryUnitDto {
 
     @ApiModelProperty(required = true, value = "Functional Mailbox", position = 2, example = "a@b.com")
     @Email
-    private String functionalMailBox;
+    private String functionalMailbox;
 }
