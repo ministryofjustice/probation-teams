@@ -29,7 +29,7 @@ public class LocalDeliveryUnitRepositoryTest {
 
     @Test
     public void testPersistLocalDeliveryUnit() {
-        final var ldu = LocalDeliveryUnit.builder().code("ABC123X").build();
+        final var ldu = LocalDeliveryUnit.builder().code("ABC123X").functionalMailbox("pqr@stu.ltd.uk").build();
 
         repository.save(ldu);
         TestTransaction.flagForCommit();
@@ -54,7 +54,7 @@ public class LocalDeliveryUnitRepositoryTest {
 
     @Test
     public void testPeristLocalDeliveryUnitWithFmb() {
-        final var ldu = LocalDeliveryUnit.builder().code("ABC124X").functionalMailBox("a@b.com").build();
+        final var ldu = LocalDeliveryUnit.builder().code("ABC124X").functionalMailbox("a@b.com").build();
 
         repository.save(ldu);
         TestTransaction.flagForCommit();
@@ -64,9 +64,31 @@ public class LocalDeliveryUnitRepositoryTest {
 
         final var optionalOfFmb = repository
                 .findByCode("ABC124X")
-                .map(LocalDeliveryUnit::getFunctionalMailBox);
+                .map(LocalDeliveryUnit::getFunctionalMailbox);
 
-        assertThat(optionalOfFmb.get()).isEqualTo("a@b.com");
+        assertThat(optionalOfFmb).contains("a@b.com");
     }
 
+
+    @Test
+    public void testDeleteLocalDeliveryUnitByCode() {
+        final var lduCode = "ABC126X";
+
+        final var ldu = LocalDeliveryUnit.builder().code(lduCode).functionalMailbox("x@y.com").build();
+        repository.save(ldu);
+
+        TestTransaction.flagForCommit();
+        TestTransaction.end();
+        TestTransaction.start();
+
+        assertThat(repository.findByCode(lduCode)).isPresent();
+
+        repository.deleteByCode(lduCode);
+
+        TestTransaction.flagForCommit();
+        TestTransaction.end();
+        TestTransaction.start();
+
+        assertThat(repository.findByCode(lduCode)).isEmpty();
+    }
 }

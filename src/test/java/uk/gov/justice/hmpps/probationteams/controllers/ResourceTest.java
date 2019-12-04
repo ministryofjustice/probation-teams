@@ -69,7 +69,7 @@ public abstract class ResourceTest {
         return new HttpEntity<>(body, headers);
     }
 
-    <T> void assertThatStatus(final ResponseEntity<String> response, final int status) {
+    <T> void assertThatStatus(final ResponseEntity<T> response, final int status) {
         assertThat(response.getStatusCodeValue()).withFailMessage("Expecting status code value <%s> to be equal to <%s> but it was not.\nBody was\n%s", response.getStatusCodeValue(), status, response.getBody()).isEqualTo(status);
     }
 
@@ -78,7 +78,7 @@ public abstract class ResourceTest {
         assertThat(getBodyAsJsonContent(response)).isEqualToJson(jsonFile);
     }
 
-    private <T> JsonContent<T> getBodyAsJsonContent(final ResponseEntity<String> response) {
+    protected <T> JsonContent<T> getBodyAsJsonContent(final ResponseEntity<String> response) {
         return new JsonContent<>(getClass(), forType(String.class), Objects.requireNonNull(response.getBody()));
     }
 
