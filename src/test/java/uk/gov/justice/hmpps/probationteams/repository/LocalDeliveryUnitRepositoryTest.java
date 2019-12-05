@@ -51,44 +51,4 @@ public class LocalDeliveryUnitRepositoryTest {
         Long count = jdbcTemplate.queryForObject("select count(*) from LOCAL_DELIVERY_UNIT where LOCAL_DELIVERY_UNIT_ID = ?", Long.class, persistentLdu.getId());
         assertThat(count).isEqualTo(1);
     }
-
-    @Test
-    public void testPeristLocalDeliveryUnitWithFmb() {
-        final var ldu = LocalDeliveryUnit.builder().code("ABC124X").functionalMailbox("a@b.com").build();
-
-        repository.save(ldu);
-        TestTransaction.flagForCommit();
-        TestTransaction.end();
-
-        TestTransaction.start();
-
-        final var optionalOfFmb = repository
-                .findByCode("ABC124X")
-                .map(LocalDeliveryUnit::getFunctionalMailbox);
-
-        assertThat(optionalOfFmb).contains("a@b.com");
-    }
-
-
-    @Test
-    public void testDeleteLocalDeliveryUnitByCode() {
-        final var lduCode = "ABC126X";
-
-        final var ldu = LocalDeliveryUnit.builder().code(lduCode).functionalMailbox("x@y.com").build();
-        repository.save(ldu);
-
-        TestTransaction.flagForCommit();
-        TestTransaction.end();
-        TestTransaction.start();
-
-        assertThat(repository.findByCode(lduCode)).isPresent();
-
-        repository.deleteByCode(lduCode);
-
-        TestTransaction.flagForCommit();
-        TestTransaction.end();
-        TestTransaction.start();
-
-        assertThat(repository.findByCode(lduCode)).isEmpty();
-    }
 }

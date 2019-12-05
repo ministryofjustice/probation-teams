@@ -50,12 +50,30 @@ public class LocalDeliveryUnitController {
             @ApiResponse(code = 404, message = "Local Delivery Unit not found"),
             @ApiResponse(code = 200, message = "OK", response = LocalDeliveryUnit.class)})
     public ResponseEntity<LocalDeliveryUnitDto> getLocalDeliveryUnit(
-            @ApiParam(value = "Local Delivery Unit code", required = true, example = "NO2") @PathVariable("localDeliveryUnitCode") final String localDeliveryUnitCode) {
+            @ApiParam(value = "Local Delivery Unit code", required = true, example = "N02KSUK") @PathVariable("localDeliveryUnitCode") final String localDeliveryUnitCode) {
 
         return ResponseEntity.of(
                 localDeliveryUnitService
                         .getLocalDeliveryUnit(localDeliveryUnitCode)
                         .map(LocalDeliveryUnitController::fromLocalDeliveryUnit)
+        );
+    }
+
+    @GetMapping(
+            path = "/{localDeliveryUnitCode}/functional-mailbox",
+            produces = APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Retrieve a Local Delivery Unit's functional-mailbox",
+            nickname = "Retrieve a Local Delivery Unit's functional-mailbox")
+    @ApiResponses({
+            @ApiResponse(code = 404, message = "Functional mailbox not found"),
+            @ApiResponse(code = 200, message = "OK", response = String.class)})
+    public ResponseEntity<String> getFunctionalMailbox(
+            @ApiParam(value = "Local Delivery Unit code", required = true, example = "N02KSUK") @PathVariable("localDeliveryUnitCode") final String localDeliveryUnitCode) {
+
+        return ResponseEntity.of(
+                localDeliveryUnitService
+                        .getLocalDeliveryUnit(localDeliveryUnitCode)
+                        .map(LocalDeliveryUnit::getFunctionalMailbox)
         );
     }
 
@@ -68,7 +86,7 @@ public class LocalDeliveryUnitController {
             @ApiResponse(code = 201, message = "The functional mailbox has been set"),
             @ApiResponse(code = 404, message = "No Local Delivery Unit", response = ErrorResponse.class)})
     public ResponseEntity<Void> setFunctionalMailbox(
-            @ApiParam(value = "Local Delivery Unit code", required = true, example = "A1234AA") @PathVariable("localDeliveryUnitCode") final String localDeliveryUnitCode,
+            @ApiParam(value = "Local Delivery Unit code", required = true, example = "N02KSUK") @PathVariable("localDeliveryUnitCode") final String localDeliveryUnitCode,
             @RequestBody final String proposedFunctionalMailbox) {
 
         final var outcome = localDeliveryUnitService.setFunctionalMailbox(localDeliveryUnitCode, proposedFunctionalMailbox);
@@ -83,15 +101,22 @@ public class LocalDeliveryUnitController {
     }
 
     @DeleteMapping(path = "/{localDeliveryUnitCode}")
-    @ApiOperation(value = "Delete the Functional Mailbox for a Local Delivery Unit",
-            notes = "Delete the Functional Mailbox for a Local Delivery Unit")
+    @ApiOperation(value = "Delete a Local Delivery Unit (and its functional mailbox)",
+            notes = "Delete a Local Delivery Unit (and its functional mailbox)")
     @ApiResponses(value = {
-            @ApiResponse(code = 204, message = "The functional mailbox has been deleted"),
-            @ApiResponse(code = 404, message = "No Local Delivery Unit having the supplied name was found", response = ErrorResponse.class)})
+            @ApiResponse(code = 204, message = "The Local Delivery Unit has been deleted"),
+            @ApiResponse(code = 404, message = "No Local Delivery Unit having the supplied code was found", response = ErrorResponse.class)})
     public ResponseEntity<Void> deleteLocalDeliveryUnit(
             @ApiParam(value = "Local Delivery Unit code", required = true, example = "A1234AA") @PathVariable("localDeliveryUnitCode") final String localDeliveryUnitCode) {
-        localDeliveryUnitService.deleteLocalDeliveryUnit(localDeliveryUnitCode);
-        return ResponseEntity.noContent().build();
+        final var outcome = localDeliveryUnitService.deleteLocalDeliveryUnit(localDeliveryUnitCode);
+        switch (outcome) {
+            case DELETED:
+                return ResponseEntity.noContent().build();
+            case NOT_FOUND:
+                return ResponseEntity.notFound().build();
+            default:
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // should never happen
+        }
     }
 
     private static LocalDeliveryUnitDto fromLocalDeliveryUnit(LocalDeliveryUnit ldu) {

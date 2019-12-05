@@ -1,5 +1,6 @@
 package uk.gov.justice.hmpps.probationteams.services;
 
-public enum Outcome {
-    CREATED, UPDATED
+public enum DeleteOutcome {
+    DELETED,
+    NOT_FOUND
 }

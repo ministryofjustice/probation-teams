@@ -22,7 +22,9 @@ import java.util.Optional;
 public class LocalDeliveryUnitService {
     private final LocalDeliveryUnitRepository repository;
 
-    public Page<LocalDeliveryUnit> getLocalDeliveryUnits(Pageable pageable) { return repository.findAll(pageable); }
+    public Page<LocalDeliveryUnit> getLocalDeliveryUnits(Pageable pageable) {
+        return repository.findAll(pageable);
+    }
 
     public Optional<LocalDeliveryUnit> getLocalDeliveryUnit(String code) {
         return repository.findByCode(code);
@@ -35,18 +37,18 @@ public class LocalDeliveryUnitService {
 
     @Transactional
     @PreAuthorize("hasAnyRole('MAINTAIN_REF_DATA', 'SYSTEM_USER')")
-    public Outcome setFunctionalMailbox(
+    public SetOutcome setFunctionalMailbox(
             @NotBlank @Pattern(regexp = "^[A-Z0-9_]+$", message = "Invalid Local Delivery Unit code") String localDeliveryUnitCode,
             @Email String proposedFunctionalMailbox) {
 
         return getLocalDeliveryUnit(localDeliveryUnitCode).map(ldu ->
         {
             ldu.setFunctionalMailbox(proposedFunctionalMailbox);
-            return Outcome.UPDATED;
+            return SetOutcome.UPDATED;
         }).orElseGet(() ->
         {
             createFunctionalMailbox(localDeliveryUnitCode, proposedFunctionalMailbox);
-            return Outcome.CREATED;
+            return SetOutcome.CREATED;
         });
     }
 
@@ -56,7 +58,10 @@ public class LocalDeliveryUnitService {
 
     @Transactional
     @PreAuthorize("hasAnyRole('MAINTAIN_REF_DATA', 'SYSTEM_USER')")
-    public void deleteLocalDeliveryUnit(@NotBlank String localDeliveryUnitCode) {
-        repository.deleteByCode(localDeliveryUnitCode);
+    public DeleteOutcome deleteLocalDeliveryUnit(@NotBlank String localDeliveryUnitCode) {
+        return repository.findByCode(localDeliveryUnitCode).map(ldu -> {
+            repository.delete(ldu);
+            return DeleteOutcome.DELETED;
+        }).orElse(DeleteOutcome.NOT_FOUND);
     }
 }
