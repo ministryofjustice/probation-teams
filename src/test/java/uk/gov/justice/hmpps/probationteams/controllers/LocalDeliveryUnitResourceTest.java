@@ -35,16 +35,24 @@ public class LocalDeliveryUnitResourceTest extends ResourceTest {
     @Test
     public void testGetLocalDeliveryUnit() {
         final var response = getLdu("ABC125");
-        assertThatJsonFileAndStatus(response, OK.value(), "lduDto.json");
+        assertThatStatus(response, OK.value());
+        assertThat(getBodyAsJsonContent(response)).isEqualTo(lduAsJsonString("ABC125", "a@b.com"));
     }
 
-
     @Test
-    public void testGetLduNoLdu() {
-        final var response = getLdu("ABC999");
+    public void testFunctionalMailboxNotFound() {
+        final var response = getFunctionalMailbox("ABC123");
         assertThatStatus(response, NOT_FOUND.value());
         assertThat(response.getBody()).isNullOrEmpty();
     }
+
+    @Test
+    public void testFunctionalMailbox() {
+        final var response = getFunctionalMailbox("ABC125");
+        assertThatStatus(response, OK.value());
+        assertThat(getBodyAsJsonContent(response)).isEqualTo(functionalMailboxAsJsonString("a@b.com"));
+    }
+
 
     @Test
     public void testPutFunctionalMailbox_notAuthorised() {
@@ -118,7 +126,7 @@ public class LocalDeliveryUnitResourceTest extends ResourceTest {
         assertThatStatus(getLdu(lduCode), OK.value());
         assertThatStatus(deleteLdu(lduCode, REF_DATA_ROLE), NO_CONTENT.value());
         assertThatStatus(getLdu(lduCode), NOT_FOUND.value());
-        assertThatStatus(deleteLdu(lduCode, REF_DATA_ROLE), NO_CONTENT.value());
+        assertThatStatus(deleteLdu(lduCode, REF_DATA_ROLE), NOT_FOUND.value());
     }
 
     @Test
@@ -166,6 +174,15 @@ public class LocalDeliveryUnitResourceTest extends ResourceTest {
         );
     }
 
+    private ResponseEntity<String> getFunctionalMailbox(String lduCode) {
+        return testRestTemplate.exchange(
+                fmbTemplate,
+                HttpMethod.GET,
+                createHttpEntityWithBearerAuthorisation(A_USER, NO_ROLES),
+                String.class,
+                lduCode);
+    }
+
     private ResponseEntity<String> getLdu(String lduCode) {
         return testRestTemplate.exchange(
                 lduTemplate,
@@ -205,4 +222,9 @@ public class LocalDeliveryUnitResourceTest extends ResourceTest {
     private static String lduAsJsonString(String code, String functionalMailbox) {
         return String.format("{\"code\":\"%1$s\", \"functionalMailbox\": \"%2$s\"}", code, functionalMailbox);
     }
+
+    private static String functionalMailboxAsJsonString(String functionalMailbox) {
+        return String.format("\"%1$s\"", functionalMailbox);
+    }
+
 }
