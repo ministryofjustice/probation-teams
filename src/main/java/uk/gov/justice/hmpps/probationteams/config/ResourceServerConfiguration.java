@@ -43,6 +43,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
                         "/webjars/**",
                         "/favicon.ico",
                         "/health/**",
+                        "/info",
                         "/h2-console/**",
                         "/v2/api-docs",
                         "/swagger-ui.html",
