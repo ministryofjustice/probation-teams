@@ -1,0 +1,15 @@
+{
+  "probationAreaCode": "ABC",
+  "localDeliveryUnitCode": "ABC125",
+  "probationTeams": {
+    "TEAM_1": {
+      "functionalMailbox": "t1@b.com"
+    },
+    "TEAM_2": {
+      "functionalMailbox": "t2@b.com"
+    },
+    "TEAM_3": {
+      "functionalMailbox": "t3@b.com"
+    }
+  }
+}

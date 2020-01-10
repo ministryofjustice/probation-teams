@@ -8,6 +8,7 @@ import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.util.Map;
 
 
 @ApiModel(description = "Local Delivery Unit")
@@ -31,4 +32,6 @@ public class LocalDeliveryUnit2Dto {
     @ApiModelProperty(required = true, value = "Functional Mailbox", position = 2, example = "a@b.com")
     @Email
     private String functionalMailbox;
+
+    private Map<String, ProbationTeamDto> probationTeams;
 }

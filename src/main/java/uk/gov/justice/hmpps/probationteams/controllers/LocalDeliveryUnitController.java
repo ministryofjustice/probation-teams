@@ -33,7 +33,7 @@ public class LocalDeliveryUnitController {
             nickname = "Retrieve all Local Delivery Units")
     @ApiResponses({
             @ApiResponse(code = 404, message = "Local Delivery Unit not found"),
-            @ApiResponse(code = 200, message = "OK", response = LocalDeliveryUnit.class)})
+            @ApiResponse(code = 200, message = "OK", response = LocalDeliveryUnitDto.class)})
     public Page<LocalDeliveryUnitDto> getLocalDeliveryUnits(@PageableDefault(sort = {"code"}, direction = Sort.Direction.ASC) final Pageable pageable) {
 
         return localDeliveryUnitService
@@ -48,7 +48,7 @@ public class LocalDeliveryUnitController {
             nickname = "Retrieve a Local Delivery Unit")
     @ApiResponses({
             @ApiResponse(code = 404, message = "Local Delivery Unit not found"),
-            @ApiResponse(code = 200, message = "OK", response = LocalDeliveryUnit.class)})
+            @ApiResponse(code = 200, message = "OK", response = LocalDeliveryUnitDto.class)})
     public ResponseEntity<LocalDeliveryUnitDto> getLocalDeliveryUnit(
             @ApiParam(value = "Local Delivery Unit code", required = true, example = "N02KSUK") @PathVariable("localDeliveryUnitCode") final String localDeliveryUnitCode) {
 

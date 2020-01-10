@@ -28,11 +28,20 @@ public class ProbationAreaResourceTest extends ResourceTest {
     }
 
     @Test
-    public void testGetLocalDeliveryUnit() {
+    public void testGetLocalDeliveryUnitWithProbationTeams() {
         final var response = getLdu("ABC", "ABC125");
+        assertThatStatus(response, OK.value());
+        assertThat(getBodyAsJsonContent(response)).isEqualToJson("lduDto2WithTeams.json");
+    }
+
+    @Test
+    public void testGetLocalDeliveryUnit() {
+        final var response = getLdu("ABC", "ABC124");
         assertThatStatus(response, OK.value());
         assertThat(getBodyAsJsonContent(response)).isEqualToJson("lduDto2.json");
     }
+
+
 
     private ResponseEntity<String> getLdu(String probationAreaCode, String lduCode) {
         return testRestTemplate.exchange(
