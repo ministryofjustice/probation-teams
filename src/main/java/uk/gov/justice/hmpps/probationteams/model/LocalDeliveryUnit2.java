@@ -52,7 +52,7 @@ public class LocalDeliveryUnit2 {
             name = "PROBATION_TEAM",
             joinColumns = @JoinColumn(name = "LOCAL_DELIVERY_UNIT_ID"))
     @MapKeyColumn(name = "TEAM_CODE")
-    private Map<String, ProbationTeam> probationTeams = Map.of();
+    @Builder.Default private Map<String, ProbationTeam> probationTeams = Map.of();
 
     @CreatedDate
     @Column(nullable = false)
