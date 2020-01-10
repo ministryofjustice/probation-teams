@@ -1,5 +1,6 @@
 {
   "probationAreaCode": "ABC",
-  "localDeliveryUnitCode": "ABC125",
-  "functionalMailbox": "a@b.com"
+  "localDeliveryUnitCode": "ABC124",
+  "functionalMailbox": "c@d.org",
+  "probationTeams": {}
 }

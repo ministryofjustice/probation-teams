@@ -11,6 +11,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.justice.hmpps.probationteams.model.LocalDeliveryUnit2;
+import uk.gov.justice.hmpps.probationteams.model.ProbationTeam;
+
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,7 +41,7 @@ public class LocalDeliveryUnit2RepositoryTest {
         TestTransaction.start();
         final var optionalOfLDU = repository.findByProbationAreaCodeAndLocalDeliveryUnitCode("ABC", "ABC123X");
 
-        assertThat(optionalOfLDU.isPresent()).isTrue();
+        assertThat(optionalOfLDU).isPresent();
         final var persistentLdu = optionalOfLDU.get();
         assertThat(persistentLdu.getId()).isNotNull();
 
@@ -50,5 +53,35 @@ public class LocalDeliveryUnit2RepositoryTest {
         // Check the db...
         Long count = jdbcTemplate.queryForObject("select count(*) from LOCAL_DELIVERY_UNIT2 where LOCAL_DELIVERY_UNIT_ID = ?", Long.class, persistentLdu.getId());
         assertThat(count).isEqualTo(1);
+    }
+
+    @Test
+    public void testPersistLduWithProbationTeams() {
+        final var ldu = lduWithProbationTeams();
+
+        repository.save(ldu);
+        TestTransaction.flagForCommit();
+        TestTransaction.end();
+
+        TestTransaction.start();
+        final var optionalOfLdu = repository.findByProbationAreaCodeAndLocalDeliveryUnitCode("ABC", "ABC123Y");
+        assertThat(optionalOfLdu).isPresent();
+        final var persistentLdu = optionalOfLdu.get();
+        assertThat(persistentLdu.getId()).isNotNull();
+
+        assertThat(persistentLdu.getProbationTeams()).isEqualTo(lduWithProbationTeams().getProbationTeams());
+    }
+
+    private LocalDeliveryUnit2 lduWithProbationTeams() {
+        return LocalDeliveryUnit2
+                .builder()
+                .probationAreaCode("ABC")
+                .localDeliveryUnitCode("ABC123Y")
+                .probationTeams(
+                        Map.of(
+                                "T1", ProbationTeam.builder().functionalMailbox("t1@team.com").build(),
+                                "T2", ProbationTeam.builder().functionalMailbox("t2@team.com").build()
+                        ))
+                .build();
     }
 }
