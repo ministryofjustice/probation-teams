@@ -5,7 +5,7 @@ import java.time.LocalDate
 
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '2.2.3.RELEASE'
+    id 'org.springframework.boot' version '2.2.4.RELEASE'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'com.github.ben-manes.versions' version '0.27.0'
     id 'org.jetbrains.kotlin.jvm' version '1.3.61'
@@ -85,7 +85,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.10'
 
     runtime 'com.h2database:h2:1.4.200'
-    runtime 'org.flywaydb:flyway-core:6.1.4'
+    runtime 'org.flywaydb:flyway-core:6.2.0'
     runtime 'org.postgresql:postgresql:42.2.9'
 
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
