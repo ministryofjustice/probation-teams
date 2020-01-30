@@ -1,9 +1,7 @@
 package uk.gov.justice.hmpps.probationteams.controllers;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

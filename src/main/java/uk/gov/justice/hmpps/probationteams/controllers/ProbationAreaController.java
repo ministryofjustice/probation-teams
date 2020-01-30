@@ -3,11 +3,10 @@ package uk.gov.justice.hmpps.probationteams.controllers;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import uk.gov.justice.hmpps.probationteams.dto.ErrorResponse;
 import uk.gov.justice.hmpps.probationteams.dto.LocalDeliveryUnit2Dto;
 import uk.gov.justice.hmpps.probationteams.dto.ProbationTeamDto;
 import uk.gov.justice.hmpps.probationteams.model.LocalDeliveryUnit2;
@@ -48,6 +47,32 @@ public class ProbationAreaController {
                         .map(ProbationAreaController::fromLocalDeliveryUnit)
         );
     }
+
+    @PutMapping(
+            path = "/{probationAreaCode}/local-delivery-units/{localDeliveryUnitCode}/functional-mailbox",
+            consumes = APPLICATION_JSON_VALUE
+    )
+    @ApiOperation(value = "Set the Functional Mailbox for a Local Delivery Unit",
+            notes = "Set the Functional Mailbox for a Local Delivery Unit")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "The functional mailbox has been set"),
+            @ApiResponse(code = 404, message = "No Probation Area or Local Delivery Unit", response = ErrorResponse.class)})
+    public ResponseEntity<Void> setLduFunctionalMailbox(
+            @ApiParam(value = "Probation Area code", required = true, example = "N02") @PathVariable("probationAreaCode") final String probationAreaCode,
+            @ApiParam(value = "Local Delivery Unit code", required = true, example = "N02KSUK") @PathVariable("localDeliveryUnitCode") final String localDeliveryUnitCode,
+            @RequestBody final String proposedFunctionalMailbox
+    ) {
+        final var outcome = localDeliveryUnitService.setFunctionalMailgox(probationAreaCode, localDeliveryUnitCode, proposedFunctionalMailbox);
+        switch (outcome) {
+            case CREATED:
+                return ResponseEntity.status(HttpStatus.CREATED).build();
+            case UPDATED:
+                return ResponseEntity.noContent().build();
+            default:
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // should never happen
+        }
+    }
+
 
     private static LocalDeliveryUnit2Dto fromLocalDeliveryUnit(LocalDeliveryUnit2 ldu) {
         return LocalDeliveryUnit2Dto

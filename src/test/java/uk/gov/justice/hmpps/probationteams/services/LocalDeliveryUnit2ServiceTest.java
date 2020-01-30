@@ -1,10 +1,10 @@
 package uk.gov.justice.hmpps.probationteams.services;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.justice.hmpps.probationteams.model.LocalDeliveryUnit2;
 import uk.gov.justice.hmpps.probationteams.repository.LocalDeliveryUnit2Repository;
 
@@ -13,7 +13,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class LocalDeliveryUnit2ServiceTest {
     private static final String PROBATION_AREA_CODE = "ABC";
     private static final String LDU_CODE = "ABC123";
@@ -25,7 +25,7 @@ public class LocalDeliveryUnit2ServiceTest {
 
     private LocalDeliveryUnit2Service service;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         service = new LocalDeliveryUnit2Service(repository);
     }

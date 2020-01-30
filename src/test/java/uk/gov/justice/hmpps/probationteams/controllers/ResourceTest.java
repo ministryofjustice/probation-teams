@@ -1,8 +1,6 @@
 package uk.gov.justice.hmpps.probationteams.controllers;
 
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.json.JsonContent;
@@ -12,8 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
-import uk.gov.justice.hmpps.probationteams.integration.wiremock.OauthMockServer;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.justice.hmpps.probationteams.utils.JwtAuthenticationHelper;
 import uk.gov.justice.hmpps.probationteams.utils.JwtAuthenticationHelper.JwtParameters;
 
@@ -28,10 +25,11 @@ import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-@RunWith(SpringRunner.class)
-@ActiveProfiles(value = "test")
+
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT)
+@ActiveProfiles(value = "test")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public abstract class ResourceTest {
 
     @Autowired
@@ -39,14 +37,6 @@ public abstract class ResourceTest {
 
     @Autowired
     protected JwtAuthenticationHelper jwtAuthenticationHelper;
-
-    @ClassRule
-    public static final OauthMockServer oauthMockServer = new OauthMockServer();
-
-    @Before
-    public void resetStubs() {
-        oauthMockServer.resetAll();
-    }
 
     HttpEntity<?> createHttpEntityWithBearerAuthorisation(final String user, final List<String> roles) {
         final var jwt = createJwt(user, roles);
