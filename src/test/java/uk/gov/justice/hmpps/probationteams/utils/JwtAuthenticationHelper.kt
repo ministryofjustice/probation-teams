@@ -1,66 +1,41 @@
-package uk.gov.justice.hmpps.probationteams.utils;
+package uk.gov.justice.hmpps.probationteams.utils
 
-
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import lombok.Builder;
-import lombok.Data;
-import org.apache.commons.codec.binary.Base64;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
-import org.springframework.stereotype.Component;
-
-import java.security.KeyPair;
-import java.time.Duration;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.SignatureAlgorithm
+import org.apache.commons.codec.binary.Base64
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.core.io.ByteArrayResource
+import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory
+import org.springframework.stereotype.Component
+import java.security.KeyPair
+import java.time.Duration
+import java.util.*
 
 @Component
-public class JwtAuthenticationHelper {
-    private final KeyPair keyPair;
+class JwtAuthenticationHelper(@Value("\${jwt.signing.key.pair}") privateKeyPair: String,
+                              @Value("\${jwt.keystore.password}") keystorePassword: String,
+                              @Value("\${jwt.keystore.alias:elite2api}") keystoreAlias: String) {
+    private val keyPair: KeyPair
 
-    public JwtAuthenticationHelper(@Value("${jwt.signing.key.pair}") final String privateKeyPair,
-                                   @Value("${jwt.keystore.password}") final String keystorePassword,
-                                   @Value("${jwt.keystore.alias:elite2api}") final String keystoreAlias) {
-
-        final var keyStoreKeyFactory = new KeyStoreKeyFactory(new ByteArrayResource(Base64.decodeBase64(privateKeyPair)),
-                keystorePassword.toCharArray());
-        keyPair = keyStoreKeyFactory.getKeyPair(keystoreAlias);
+    init {
+        val keyStoreKeyFactory = KeyStoreKeyFactory(ByteArrayResource(Base64.decodeBase64(privateKeyPair)),
+                keystorePassword.toCharArray())
+        keyPair = keyStoreKeyFactory.getKeyPair(keystoreAlias)
     }
 
-    public String createJwt(final JwtParameters parameters) {
-
-        final var claims = new HashMap<String, Object>();
-
-        claims.put("user_name", parameters.getUsername());
-        claims.put("user_id", parameters.getUserId());
-        claims.put("client_id", "elite2apiclient");
-
-        if (parameters.getRoles() != null && !parameters.getRoles().isEmpty())
-            claims.put("authorities", parameters.getRoles());
-
-        if (parameters.getScope() != null && !parameters.getScope().isEmpty())
-            claims.put("scope", parameters.getScope());
-
-        return Jwts.builder()
+    fun createJwt(parameters: JwtParameters): String = with(parameters) {
+        val claims = HashMap<String, Any?>()
+        if (username != null) claims["user_name"] = username
+        if (userId != null) claims["user_id"] = userId
+        claims["client_id"] = "elite2apiclient"
+        if (roles.isNotEmpty()) claims["authorities"] = roles
+        if (scope.isNotEmpty()) claims["scope"] = scope
+        Jwts.builder()
                 .setId(UUID.randomUUID().toString())
-                .setSubject(parameters.getUsername())
+                .setSubject(username)
                 .addClaims(claims)
-                .setExpiration(new Date(System.currentTimeMillis() + parameters.getExpiryTime().toMillis()))
-                .signWith(SignatureAlgorithm.RS256, keyPair.getPrivate())
-                .compact();
-    }
-
-    @Builder
-    @Data
-    public static class JwtParameters {
-        private String username;
-        private String userId;
-        private List<String> scope;
-        private List<String> roles;
-        private Duration expiryTime;
+                .setExpiration(Date(System.currentTimeMillis() + expiryTime.toMillis()))
+                .signWith(SignatureAlgorithm.RS256, keyPair.private)
+                .compact()
     }
 }

@@ -1,13 +1,8 @@
-package uk.gov.justice.hmpps.probationteams.controllers;
+package uk.gov.justice.hmpps.probationteams.utils
+
+import java.util.concurrent.atomic.AtomicInteger
 
 
-import java.util.concurrent.atomic.AtomicInteger;
+private val counter = AtomicInteger()
 
-class LduCodeGenerator {
-    private static final String LDU_CODE_PREFIX = "ABC_X_";
-    private static final AtomicInteger counter = new AtomicInteger();
-
-    String lduCode() {
-        return LDU_CODE_PREFIX + counter.incrementAndGet();
-    }
-}
+fun uniqueLduCode(): String = "ABC_X_${counter.incrementAndGet()}"

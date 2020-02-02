@@ -11,7 +11,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.*;
 
-public class LocalDeliveryUnitResourceTest extends ResourceTest {
+/*public class LocalDeliveryUnitResourceTest extends ResourceTest {
 
     private static final String ldusTemplate = "/local-delivery-units";
     private static final String lduTemplate = "/local-delivery-units/{lduCode}";
@@ -227,4 +227,4 @@ public class LocalDeliveryUnitResourceTest extends ResourceTest {
         return String.format("\"%1$s\"", functionalMailbox);
     }
 
-}
+}*/

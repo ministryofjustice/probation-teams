@@ -1,6 +1,5 @@
-package uk.gov.justice.hmpps.probationteams.services;
+package uk.gov.justice.hmpps.probationteams.services
 
-public enum DeleteOutcome {
-    DELETED,
-    NOT_FOUND
+enum class DeleteOutcome {
+    DELETED, NOT_FOUND
 }

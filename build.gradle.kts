@@ -9,10 +9,12 @@ plugins {
 
     id("io.spring.dependency-management") version "1.0.9.RELEASE"
     id("org.springframework.boot") version "2.2.4.RELEASE"
-    kotlin("plugin.spring") version "1.3.61"
-    kotlin("plugin.jpa") version "1.3.61"
-    kotlin("plugin.allopen") version "1.3.61"
 
+    // Makes classes annotated with @Component, @Async, @Transactional, @Cacheable and @SpringBootTest open
+    kotlin("plugin.spring") version "1.3.61"
+
+    // Adds a no-arg (Java) constructor to classes annotated with @Entity, @Embeddable or @MappedSuperclass
+    kotlin("plugin.jpa") version "1.3.61"
 
     id("com.github.ben-manes.versions") version "0.27.0"
     id("org.owasp.dependencycheck") version "5.3.0"
@@ -111,15 +113,22 @@ val copyAgent by tasks.registering(Copy::class) {
     into("$buildDir/libs")
 }
 
-allOpen {
-    annotation("javax.persistence.Entity")
-    annotation("javax.persistence.Embeddable")
-    annotation("javax.persistence.MappedSuperclass")
-}
+//allOpen {
+//    annotation("javax.persistence.Entity")
+//    annotation("javax.persistence.Embeddable")
+//    annotation("javax.persistence.MappedSuperclass")
+//}
 
 tasks {
 
     compileKotlin {
+        kotlinOptions{
+            jvmTarget = "11"
+            freeCompilerArgs = listOf("-Xjsr305=strict")
+        }
+    }
+
+    compileTestKotlin {
         kotlinOptions{
             jvmTarget = "11"
             freeCompilerArgs = listOf("-Xjsr305=strict")

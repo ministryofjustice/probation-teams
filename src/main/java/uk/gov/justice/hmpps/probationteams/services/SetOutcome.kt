@@ -1,5 +1,7 @@
-package uk.gov.justice.hmpps.probationteams.services;
+package uk.gov.justice.hmpps.probationteams.services
 
-public enum SetOutcome {
-    CREATED, UPDATED
+enum class SetOutcome {
+    CREATED,
+    UPDATED,
+    NO_CHANGE
 }
