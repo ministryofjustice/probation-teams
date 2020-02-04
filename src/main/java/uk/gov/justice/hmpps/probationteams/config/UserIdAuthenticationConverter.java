@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.provider.token.DefaultUserAuthenticationConverter;
 
+import javax.validation.constraints.NotBlank;
 import java.util.Collection;
 import java.util.Map;
 

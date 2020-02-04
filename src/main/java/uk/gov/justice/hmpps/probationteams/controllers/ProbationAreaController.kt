@@ -32,6 +32,7 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnit2Se
         ApiResponse(code = 200, message = "OK", response = LocalDeliveryUnit2Dto::class)
     ])
     fun getLocalDeliveryUnit(
+
             @ApiParam(value = "Probation Area code", required = true, example = "N02")
             @PathVariable("probationAreaCode")
             probationAreaCode: String,
@@ -39,11 +40,14 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnit2Se
             @ApiParam(value = "Local Delivery Unit code", required = true, example = "N02KSUK")
             @PathVariable("localDeliveryUnitCode")
             localDeliveryUnitCode: String
+
     ): ResponseEntity<LocalDeliveryUnit2Dto> = ResponseEntity.of(
             localDeliveryUnitService
                     .getLocalDeliveryUnit(probationAreaCode, localDeliveryUnitCode)
                     .map(::fromLocalDeliveryUnit)
     )
+
+
 
     @PutMapping(
             path = ["/{probationAreaCode}/local-delivery-units/{localDeliveryUnitCode}/functional-mailbox"],
@@ -53,7 +57,9 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnit2Se
     @ApiResponses(value = [
         ApiResponse(code = 201, message = "The functional mailbox has been set")
     ])
+
     fun setFunctionalMailbox(
+
             @ApiParam(value = "Probation Area code", required = true, example = "N02")
             @PathVariable("probationAreaCode")
             probationAreaCode: String,
@@ -75,18 +81,24 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnit2Se
         SetOutcome.NO_CHANGE -> ResponseEntity.noContent().build()
     }
 
+
+
     @DeleteMapping(path = ["/{probationAreaCode}/local-delivery-units/{localDeliveryUnitCode}/functional-mailbox"])
     @ApiOperation(value = "Delete a Local Delivery Unit's functional mailbox", notes = "Delete a Local Delivery Unit's functional mailbox")
     @ApiResponses(value = [
         ApiResponse(code = 204, message = "The Local Delivery Unit's functional mailbox has been deleted"),
         ApiResponse(code = 404, message = "Either the LDU didn't exist or it didn't have a functional mailbox", response = ErrorResponse::class)])
+
     fun deleteFunctionalMailbox(
+
             @ApiParam(value = "Probation Area code", required = true, example = "N02")
             @PathVariable("probationAreaCode")
             probationAreaCode: String,
 
             @ApiParam(value = "Local Delivery Unit code", required = true, example = "N02KSUK")
-            @PathVariable("localDeliveryUnitCode") localDeliveryUnitCode: String
+            @PathVariable("localDeliveryUnitCode")
+            localDeliveryUnitCode: String
+
     ): ResponseEntity<Void> =
 
             when (
@@ -97,6 +109,8 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnit2Se
                 DeleteOutcome.NOT_FOUND -> ResponseEntity.notFound().build()
             }
 
+
+
     @PutMapping(
             path = ["/{probationAreaCode}/local-delivery-units/{localDeliveryUnitCode}/teams/{teamCode}/functional-mailbox"],
             consumes = [APPLICATION_JSON_VALUE]
@@ -105,7 +119,9 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnit2Se
     @ApiResponses(value = [
         ApiResponse(code = 201, message = "The functional mailbox has been set")
     ])
+
     fun setFunctionalMailbox(
+
             @ApiParam(value = "Probation Area code", required = true, example = "N02")
             @PathVariable("probationAreaCode")
             probationAreaCode: String,
@@ -132,12 +148,16 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnit2Se
         SetOutcome.NO_CHANGE -> ResponseEntity.noContent().build()
     }
 
+
+
     @DeleteMapping(path = ["/{probationAreaCode}/local-delivery-units/{localDeliveryUnitCode}/teams/{teamCode}/functional-mailbox"])
     @ApiOperation(value = "Delete a Probation Teams's functional mailbox", notes = "Delete a Probation Teams's functional mailbox")
     @ApiResponses(value = [
         ApiResponse(code = 204, message = "The Probation Team's functional mailbox has been deleted"),
         ApiResponse(code = 404, message = "The Probation Team didn't have a functional mailbox", response = ErrorResponse::class)])
+
     fun deleteFunctionalMailbox(
+
             @ApiParam(value = "Probation Area code", required = true, example = "N02")
             @PathVariable("probationAreaCode")
             probationAreaCode: String,

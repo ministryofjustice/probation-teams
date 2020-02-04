@@ -20,7 +20,7 @@ import java.util.*
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension::class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Transactional
 @WithAnonymousUser
 
