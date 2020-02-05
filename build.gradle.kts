@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.net.InetAddress
 import java.time.Instant
 import java.time.LocalDate
@@ -78,26 +79,25 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
-//        exclude(module = "mockito-core")
+        exclude(module = "mockito-core")
     }
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("com.tngtech.java:junit-dataprovider:1.13.1")
     testImplementation("net.javacrumbs.json-unit:json-unit-assertj:2.12.0")
     testImplementation("io.github.http-builder-ng:http-builder-ng-apache:1.0.4")
-//    testImplementation("com.github.tomakehurst:wiremock-standalone:2.25.1")
-//    testImplementation("com.nhaarman:mockito-kotlin-kt1.1:1.6.0")
     testImplementation("com.ninja-squad:springmockk:2.0.0")
 }
 
 val agentDeps by configurations.register("agentDeps") {
-    isTransitive = false
-
     dependencies {
-        implementation("com.microsoft.azure:applicationinsights-agent:2.5.1")
+        "agentDeps"("com.microsoft.azure:applicationinsights-agent:2.5.1") {
+            isTransitive = false
+        }
     }
 }
 
 configurations {
+
     implementation {
         exclude(mapOf("module" to "tomcat-jdbc"))
     }
@@ -108,28 +108,10 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
 }
 
-val copyAgent by tasks.registering(Copy::class) {
-    from(agentDeps)
-    into("$buildDir/libs")
-}
-
-//allOpen {
-//    annotation("javax.persistence.Entity")
-//    annotation("javax.persistence.Embeddable")
-//    annotation("javax.persistence.MappedSuperclass")
-//}
-
 tasks {
 
-    compileKotlin {
-        kotlinOptions{
-            jvmTarget = "11"
-            freeCompilerArgs = listOf("-Xjsr305=strict")
-        }
-    }
-
-    compileTestKotlin {
-        kotlinOptions{
+    withType(KotlinCompile::class) {
+        kotlinOptions {
             jvmTarget = "11"
             freeCompilerArgs = listOf("-Xjsr305=strict")
         }
@@ -137,6 +119,11 @@ tasks {
 
     test {
         useJUnitPlatform()
+    }
+
+    val copyAgent by registering(Copy::class) {
+        from(agentDeps)
+        into("$buildDir/libs")
     }
 
     assemble {
@@ -169,4 +156,3 @@ springBoot {
         }
     }
 }
-
