@@ -3,10 +3,8 @@ package uk.gov.justice.hmpps.probationteams.controllers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.extension.ExtendWith
-import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.*
-import org.junit.jupiter.params.provider.Arguments.arguments
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.json.BasicJsonTester
@@ -16,7 +14,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit.jupiter.SpringExtension
-import uk.gov.justice.hmpps.probationteams.utils.JwtAuthenticationHelper
 import uk.gov.justice.hmpps.probationteams.utils.uniqueLduCode
 
 @ExtendWith(SpringExtension::class)
@@ -25,10 +22,10 @@ import uk.gov.justice.hmpps.probationteams.utils.uniqueLduCode
 @DisplayName("Integration Tests for ProbationAreaController")
 
 
-class ProbationAreaResourceIntegrationTest @Autowired constructor(
-        val testRestTemplate: TestRestTemplate,
-        jwtAuthenticationHelper: JwtAuthenticationHelper
-) : ResourceTest(jwtAuthenticationHelper) {
+class ProbationAreaResourceIntegrationTest(
+        @Autowired val testRestTemplate: TestRestTemplate,
+        @Autowired val entityBuilder: EntityWithJwtAuthorisationBuilder
+) {
 
     val jsonTester = BasicJsonTester(this.javaClass)
 
@@ -38,22 +35,28 @@ class ProbationAreaResourceIntegrationTest @Autowired constructor(
         @Test
         fun `An LDU that doesn't exist`() {
             val response = getLdu("ABC", "ABC123")
-            assertThat(response.statusCode).isEqualTo(HttpStatus.NOT_FOUND)
-            assertThat(response.body).isNullOrEmpty()
+            with(response) {
+                assertThat(statusCode).isEqualTo(HttpStatus.NOT_FOUND)
+                assertThat(body).isNullOrEmpty()
+            }
         }
 
         @Test
         fun `An LDU with nested Probation Teams`() {
             val response = getLdu("ABC", "ABC125")
-            assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
-            assertThat(getBodyAsJsonContent<Any>(response)).isEqualToJson("lduDto2WithTeams.json")
+            with(response) {
+                assertThat(statusCode).isEqualTo(HttpStatus.OK)
+                assertThat(jsonTester.from(body)).isEqualToJson("lduDto2WithTeams.json")
+            }
         }
 
         @Test
         fun `An LDU that exists`() {
             val response = getLdu("ABC", "ABC124")
-            assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
-            assertThat(getBodyAsJsonContent<Any>(response)).isEqualToJson("lduDto2.json")
+            with(response) {
+                assertThat(statusCode).isEqualTo(HttpStatus.OK)
+                assertThat(jsonTester.from(body)).isEqualToJson("lduDto2.json")
+            }
         }
     }
 
@@ -95,7 +98,7 @@ class ProbationAreaResourceIntegrationTest @Autowired constructor(
         }
 
         @Test
-        fun `Operation is rejected when requestor does not have an authorised role`() {
+        fun `Operation is rejected when client does not have an authorised role`() {
             val response = putLduFmb(PROBATION_AREA_CODE, uniqueLduCode(), FMB1, NO_ROLES)
             assertThat(response.statusCode).isEqualTo(HttpStatus.FORBIDDEN)
         }
@@ -221,88 +224,91 @@ class ProbationAreaResourceIntegrationTest @Autowired constructor(
     @DisplayName("Validation tests")
     inner class ValidationTests {
 
-        fun doTest(validationTestData: ValidationTestData, restFunction: (String) -> ResponseEntity<String>): Unit {
-            val response = restFunction(validationTestData.code)
-            assertThat(response.statusCode).isEqualTo(validationTestData.expectedStatus)
-            val content = jsonTester.from(response.body)
-            if (validationTestData.expectedMessage != null)
-                assertThat(content).extractingJsonPathStringValue("$.developerMessage").contains(validationTestData.expectedMessage)
+        @ParameterizedTest(name = "{index} {0}")
+        @MethodSource("testData")
+        fun validationTest(invocationWithTestData: InvocationWithTestData) = with(invocationWithTestData) {
+            val response = describedInvocation.restApiInvocation(testData.code)
+            assertThat(response.statusCode).isEqualTo(testData.expectedStatusCode)
+            if (testData.expectedMessage != null) {
+                val content = jsonTester.from(response.body)
+                assertThat(content).extractingJsonPathStringValue("$.developerMessage").contains(testData.expectedMessage)
+            }
         }
 
-        @Nested
-        @DisplayName("PUT ${LDU_FMB_TEMPLATE}")
-        inner class PutLduFmb {
+        /**
+         * Build the combinations of RestApiInvocation and ValidationTestData to feed to the validationTest function above.
+         * See 'times' operator defined below
+         */
+        fun testData(): List<InvocationWithTestData> = (
+                probationAreaCodeConsumers * invalidProbationAreaCodes +
+                        lduCodeConsumers1 * invalidLocalDeliveryUnitCodes1 +
+                        lduCodeConsumers2 * invalidLocalDeliveryUnitCodes2 +
+                        teamCodeConsumers * invalidTeamCodes +
+                        emailAddressConsumers * invalidEmailAddresses
+                ).map { InvocationWithTestData(it.first, it.second) }
 
-            @ParameterizedTest
-            @ArgumentsSource(InvalidProbationAreaCodes::class)
-            fun `Invalid probation area code`(validationTestData: ValidationTestData) = doTest(validationTestData) { putLduFmb(it, uniqueLduCode(), FMB1, SYSTEM_USER_ROLE) }
+        val probationAreaCodeConsumers = listOf(
+                DescribedRestApiInvocation("PUT    LDU  FMB, try Probation Area Code") { putLduFmb(it, uniqueLduCode(), FMB1, SYSTEM_USER_ROLE) },
+                DescribedRestApiInvocation("DELETE LDU  FMB, try Probation Area Code") { deleteLduFmb(it, uniqueLduCode(), SYSTEM_USER_ROLE) },
+                DescribedRestApiInvocation("PUT    Team FMB, try Probation Area Code") { putTeamFmb(it, uniqueLduCode(), TEAM_1_CODE, FMB1, SYSTEM_USER_ROLE) },
+                DescribedRestApiInvocation("DELETE Team FMB, try Probation Area Code") { deleteTeamFmb(it, uniqueLduCode(), TEAM_1_CODE, SYSTEM_USER_ROLE) }
+        )
 
-            @ParameterizedTest
-            @ArgumentsSource(InvalidLocalDeliveryUnitCodes::class)
-            fun `Invalid LDU code`(validationTestData: ValidationTestData) = doTest(adaptTestData(validationTestData)) { putLduFmb(PROBATION_AREA_CODE, it, FMB1, SYSTEM_USER_ROLE) }
+        val lduCodeConsumers1 = listOf(
+                DescribedRestApiInvocation("PUT    LDU  FMB, try LDU code") { putLduFmb(PROBATION_AREA_CODE, it, FMB1, SYSTEM_USER_ROLE) },
+                DescribedRestApiInvocation("DELETE LDU  FMB, try LDU code") { deleteLduFmb(PROBATION_AREA_CODE, it, SYSTEM_USER_ROLE) }
+        )
 
-            @ParameterizedTest
-            @ArgumentsSource(InvalidEmailAddresses::class)
-            fun `Invalid Functional Mailbox address`(validationTestData: ValidationTestData) = doTest(validationTestData) { putLduFmb(PROBATION_AREA_CODE, uniqueLduCode(), it, SYSTEM_USER_ROLE) }
-        }
+        val lduCodeConsumers2 = listOf(
+                DescribedRestApiInvocation("PUT    Team FMB, try LDU code") { putTeamFmb(PROBATION_AREA_CODE, it, TEAM_1_CODE, FMB1, SYSTEM_USER_ROLE) },
+                DescribedRestApiInvocation("PUT    Team FMB, try LDU code") { deleteTeamFmb(PROBATION_AREA_CODE, it, TEAM_1_CODE, SYSTEM_USER_ROLE) }
+        )
 
-        @Nested
-        @DisplayName("DELETE ${LDU_FMB_TEMPLATE}")
-        inner class DeleteLduFmb {
+        val teamCodeConsumers = listOf(
+                DescribedRestApiInvocation("PUT    Team FMB, try Team code") { putTeamFmb(PROBATION_AREA_CODE, uniqueLduCode(), it, FMB1, SYSTEM_USER_ROLE) },
+                DescribedRestApiInvocation("PUT    Team FMB, try Team code") { deleteTeamFmb(PROBATION_AREA_CODE, uniqueLduCode(), it, SYSTEM_USER_ROLE) }
+        )
 
-            @ParameterizedTest
-            @ArgumentsSource(InvalidProbationAreaCodes::class)
-            fun `Invalid probation area code`(validationTestData: ValidationTestData) = doTest(validationTestData) { deleteLduFmb(it, uniqueLduCode(), SYSTEM_USER_ROLE) }
+        val emailAddressConsumers = listOf(
+                DescribedRestApiInvocation("PUT    LDU  FMB, try email address") { putLduFmb(PROBATION_AREA_CODE, uniqueLduCode(), it, SYSTEM_USER_ROLE) },
+                DescribedRestApiInvocation("PUT    Team FMB, try email address") { putTeamFmb(PROBATION_AREA_CODE, uniqueLduCode(), TEAM_1_CODE, it, SYSTEM_USER_ROLE) }
+        )
 
-            @ParameterizedTest
-            @ArgumentsSource(InvalidLocalDeliveryUnitCodes::class)
-            fun `Invalid LDU code`(validationTestData: ValidationTestData) = doTest(adaptTestData(validationTestData)) { deleteLduFmb(PROBATION_AREA_CODE, it, SYSTEM_USER_ROLE) }
-        }
+        val invalidProbationAreaCodes = listOf(
+                ValidationTestData("a", HttpStatus.BAD_REQUEST, "probationAreaCode: Invalid Probation Area code"),
+                ValidationTestData("-", HttpStatus.BAD_REQUEST, "probationAreaCode: Invalid Probation Area code"),
+                ValidationTestData(" ", HttpStatus.BAD_REQUEST, "probationAreaCode: must not be blank"),
+                ValidationTestData("", HttpStatus.NOT_FOUND, null)
+        )
 
-        @Nested
-        @DisplayName("PUT ${TEAM_FMB_TEMPLATE}")
-        inner class PutTeamFmb {
+        val invalidLocalDeliveryUnitCodes2 = listOf(
+                ValidationTestData("a", HttpStatus.BAD_REQUEST, "localDeliveryUnitCode: Invalid Local Delivery Unit code"),
+                ValidationTestData("-", HttpStatus.BAD_REQUEST, "localDeliveryUnitCode: Invalid Local Delivery Unit code"),
+                ValidationTestData(" ", HttpStatus.BAD_REQUEST, "localDeliveryUnitCode: must not be blank"),
+                ValidationTestData("", HttpStatus.NOT_FOUND, null)
+        )
 
-            @ParameterizedTest
-            @ArgumentsSource(InvalidProbationAreaCodes::class)
-            fun `Invalid probation area code`(validationTestData: ValidationTestData) = doTest(validationTestData) { putTeamFmb(it, uniqueLduCode(), TEAM_1_CODE, FMB1, SYSTEM_USER_ROLE) }
+        val invalidLocalDeliveryUnitCodes1 = invalidLocalDeliveryUnitCodes2.map(::adaptTestData)
 
-            @ParameterizedTest
-            @ArgumentsSource(InvalidLocalDeliveryUnitCodes::class)
-            fun `Invalid LDU code`(validationTestData: ValidationTestData) = doTest(validationTestData) { putTeamFmb(PROBATION_AREA_CODE, it, TEAM_1_CODE, FMB1, SYSTEM_USER_ROLE) }
+        val invalidTeamCodes = listOf(
+                ValidationTestData("a", HttpStatus.BAD_REQUEST, "teamCode: Invalid Team code"),
+                ValidationTestData("-", HttpStatus.BAD_REQUEST, "teamCode: Invalid Team code"),
+                ValidationTestData(" ", HttpStatus.BAD_REQUEST, "teamCode: must not be blank"),
+                ValidationTestData("", HttpStatus.NOT_FOUND, null)
+        )
 
-            @ParameterizedTest
-            @ArgumentsSource(InvalidTeamCodes::class)
-            fun `Invalid Team code`(validationTestData: ValidationTestData) = doTest(validationTestData) { putTeamFmb(PROBATION_AREA_CODE, uniqueLduCode(), it, FMB1, SYSTEM_USER_ROLE) }
-
-            @ParameterizedTest
-            @ArgumentsSource(InvalidEmailAddresses::class)
-            fun `Invalid Functional Mailbox address`(validationTestData: ValidationTestData) = doTest(validationTestData) { putTeamFmb(PROBATION_AREA_CODE, uniqueLduCode(), TEAM_1_CODE, it, SYSTEM_USER_ROLE) }
-        }
-
-        @Nested
-        @DisplayName("DELETE ${TEAM_FMB_TEMPLATE}")
-        inner class DeleteTeamFmb {
-
-            @ParameterizedTest
-            @ArgumentsSource(InvalidProbationAreaCodes::class)
-            fun `Invalid probation area code`(validationTestData: ValidationTestData) = doTest(validationTestData) { deleteTeamFmb(it, uniqueLduCode(), TEAM_1_CODE, SYSTEM_USER_ROLE) }
-
-            @ParameterizedTest
-            @ArgumentsSource(InvalidLocalDeliveryUnitCodes::class)
-            fun `Invalid LDU code`(validationTestData: ValidationTestData) = doTest(validationTestData) { deleteTeamFmb(PROBATION_AREA_CODE, it, TEAM_1_CODE, SYSTEM_USER_ROLE) }
-
-            @ParameterizedTest
-            @ArgumentsSource(InvalidTeamCodes::class)
-            fun `Invalid Team code`(validationTestData: ValidationTestData) = doTest(validationTestData) { deleteTeamFmb(PROBATION_AREA_CODE, uniqueLduCode(), it, SYSTEM_USER_ROLE) }
-        }
+        val invalidEmailAddresses = listOf(
+                ValidationTestData("abc.def.com", HttpStatus.BAD_REQUEST, "must be a well-formed email address"),
+                ValidationTestData(" ", HttpStatus.BAD_REQUEST, "must not be blank"),
+                ValidationTestData("", HttpStatus.BAD_REQUEST, "must not be blank")
+        )
     }
 
     fun getLdu(probationAreaCode: String, lduCode: String): ResponseEntity<String> =
             testRestTemplate.exchange(
                     LDU_TEMPLATE,
                     HttpMethod.GET,
-                    createHttpEntityWithBearerAuthorisation(A_USER, NO_ROLES),
+                    entityBuilder.entityWithJwtAuthorisation(A_USER, NO_ROLES),
                     String::class.java,
                     probationAreaCode, lduCode)
 
@@ -310,7 +316,7 @@ class ProbationAreaResourceIntegrationTest @Autowired constructor(
             testRestTemplate.exchange(
                     LDU_FMB_TEMPLATE,
                     HttpMethod.PUT,
-                    createHttpEntityWithBearerAuthorisation(A_USER, roles, "\"${functionalMailbox}\""),
+                    entityBuilder.entityWithJwtAuthorisation(A_USER, roles, "\"${functionalMailbox}\""),
                     String::class.java,
                     probationAreaCode, lduCode)
 
@@ -318,7 +324,7 @@ class ProbationAreaResourceIntegrationTest @Autowired constructor(
             testRestTemplate.exchange(
                     TEAM_FMB_TEMPLATE,
                     HttpMethod.PUT,
-                    createHttpEntityWithBearerAuthorisation(A_USER, roles, "\"${functionalMailbox}\""),
+                    entityBuilder.entityWithJwtAuthorisation(A_USER, roles, "\"${functionalMailbox}\""),
                     String::class.java,
                     probationAreaCode, lduCode, teamCode)
 
@@ -326,7 +332,7 @@ class ProbationAreaResourceIntegrationTest @Autowired constructor(
             testRestTemplate.exchange(
                     LDU_FMB_TEMPLATE,
                     HttpMethod.DELETE,
-                    createHttpEntityWithBearerAuthorisation(A_USER, roles),
+                    entityBuilder.entityWithJwtAuthorisation(A_USER, roles),
                     String::class.java,
                     probationAreaCode, lduCode)
 
@@ -334,71 +340,51 @@ class ProbationAreaResourceIntegrationTest @Autowired constructor(
             testRestTemplate.exchange(
                     TEAM_FMB_TEMPLATE,
                     HttpMethod.DELETE,
-                    createHttpEntityWithBearerAuthorisation(A_USER, roles),
+                    entityBuilder.entityWithJwtAuthorisation(A_USER, roles),
                     String::class.java,
                     probationAreaCode, lduCode, teamCode)
 
     companion object {
         private const val LDU_TEMPLATE = "/probation-areas/{probationAreaCode}/local-delivery-units/{lduCode}"
         private const val LDU_FMB_TEMPLATE = "/probation-areas/{probationAreaCode}/local-delivery-units/{lduCode}/functional-mailbox"
-        private const val TEAM_FMB_TEMPLATE = "/probation-areas/{probationAreaCode}/local-delivery-units/{lduCode}/teams/{teamCode}/functional-mailbox"
 
+        private const val TEAM_FMB_TEMPLATE = "/probation-areas/{probationAreaCode}/local-delivery-units/{lduCode}/teams/{teamCode}/functional-mailbox"
         private const val PROBATION_AREA_CODE = "ABC"
         private const val TEAM_1_CODE = "T1"
         private const val TEAM_2_CODE = "T2"
         private const val FMB1 = "abc@def.com"
+
         private const val FMB2 = "pqr@stu.org"
 
         private const val A_USER = "API_TEST_USER"
-
         private val NO_ROLES = listOf<String>()
         private val MAINTAIN_REF_DATA_ROLE = listOf("ROLE_MAINTAIN_REF_DATA")
+
         private val SYSTEM_USER_ROLE = listOf("ROLE_SYSTEM_USER")
     }
 }
 
-data class ValidationTestData(val code: String, val expectedStatus: HttpStatus, val expectedMessage: String?)
+/**
+ * Represents an invocation of one of the probation-teams REST API end-points>  All parameters but one have already been supplied.
+ * The remaining parameter is passed to this function.
+ */
+typealias RestApiInvocation = (String) -> ResponseEntity<String>
 
-fun adaptTestData(validationTestData: ValidationTestData): ValidationTestData = when (validationTestData.expectedStatus) {
-    HttpStatus.NOT_FOUND -> validationTestData.copy(expectedStatus = HttpStatus.METHOD_NOT_ALLOWED)
-    else -> validationTestData
+data class ValidationTestData(val code: String, val expectedStatusCode: HttpStatus, val expectedMessage: String?)
+
+data class DescribedRestApiInvocation(val description: String, val restApiInvocation: RestApiInvocation)
+
+data class InvocationWithTestData(val describedInvocation: DescribedRestApiInvocation, val testData: ValidationTestData) {
+    override fun toString(): String = "${describedInvocation.description} '${testData.code}', expect HTTP status ${testData.expectedStatusCode.name}"
 }
 
-class InvalidProbationAreaCodes : ArgumentsProvider {
-    override fun provideArguments(context: ExtensionContext?) =
-            listOf(
-                    arguments(ValidationTestData("a", HttpStatus.BAD_REQUEST, "probationAreaCode: Invalid Probation Area code")),
-                    arguments(ValidationTestData("-", HttpStatus.BAD_REQUEST, "probationAreaCode: Invalid Probation Area code")),
-                    arguments(ValidationTestData(" ", HttpStatus.BAD_REQUEST, "probationAreaCode: must not be blank")),
-                    arguments(ValidationTestData("", HttpStatus.NOT_FOUND, null))
-            ).stream()
+fun adaptTestData(testData: ValidationTestData): ValidationTestData = when (testData.expectedStatusCode) {
+    HttpStatus.NOT_FOUND -> testData.copy(expectedStatusCode = HttpStatus.METHOD_NOT_ALLOWED)
+    else -> testData
 }
 
-class InvalidLocalDeliveryUnitCodes : ArgumentsProvider {
-    override fun provideArguments(context: ExtensionContext?) =
-            listOf(
-                    arguments(ValidationTestData("a", HttpStatus.BAD_REQUEST, "localDeliveryUnitCode: Invalid Local Delivery Unit code")),
-                    arguments(ValidationTestData("-", HttpStatus.BAD_REQUEST, "localDeliveryUnitCode: Invalid Local Delivery Unit code")),
-                    arguments(ValidationTestData(" ", HttpStatus.BAD_REQUEST, "localDeliveryUnitCode: must not be blank")),
-                    arguments(ValidationTestData("", HttpStatus.NOT_FOUND, null))
-            ).stream()
-}
+/**
+ * Binary 'times' operator that takes two Lists and returns their Cartesian product as a List<Pair>
+ */
+operator fun <T, U> List<T>.times(us: List<U>): List<Pair<T, U>> = this.flatMap { t -> us.map { u -> Pair(t, u) } }
 
-class InvalidTeamCodes : ArgumentsProvider {
-    override fun provideArguments(context: ExtensionContext?) =
-            listOf(
-                    arguments(ValidationTestData("a", HttpStatus.BAD_REQUEST, "teamCode: Invalid Team code")),
-                    arguments(ValidationTestData("-", HttpStatus.BAD_REQUEST, "teamCode: Invalid Team code")),
-                    arguments(ValidationTestData(" ", HttpStatus.BAD_REQUEST, "teamCode: must not be blank")),
-                    arguments(ValidationTestData("", HttpStatus.NOT_FOUND, null))
-            ).stream()
-}
-
-class InvalidEmailAddresses : ArgumentsProvider {
-    override fun provideArguments(context: ExtensionContext?) =
-            listOf(
-                    arguments(ValidationTestData("abc.def.com", HttpStatus.BAD_REQUEST, "must be a well-formed email address")),
-                    arguments(ValidationTestData(" ", HttpStatus.BAD_REQUEST, "must not be blank")),
-                    arguments(ValidationTestData("", HttpStatus.BAD_REQUEST, "must not be blank"))
-            ).stream()
-}
