@@ -1,69 +1,55 @@
-package uk.gov.justice.hmpps.probationteams.config;
+package uk.gov.justice.hmpps.probationteams.config
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.RegExUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
-import uk.gov.justice.hmpps.probationteams.config.UserIdAuthenticationConverter.UserIdUser;
+import org.slf4j.LoggerFactory
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.stereotype.Component
+import java.util.*
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-@Slf4j
 @Component
-public class SecurityUserContext {
-    private static boolean hasMatchingRole(final List<String> roles, final Authentication authentication) {
-        return authentication != null &&
-                authentication.getAuthorities().stream()
-                        .anyMatch(a -> roles.contains(RegExUtils.replaceFirst(a.getAuthority(), "ROLE_", "")));
-    }
+class SecurityUserContext {
 
-    private Authentication getAuthentication() {
-        return SecurityContextHolder.getContext().getAuthentication();
-    }
+    val currentUsername: Optional<String>
+        get() = optionalCurrentUser.map { it.username }
 
-    public Optional<String> getCurrentUsername() {
-        return getOptionalCurrentUser().map(User::getUsername);
-    }
-
-    public UserIdUser getCurrentUser() {
-        return getOptionalCurrentUser().orElseThrow(() -> new IllegalStateException("Current user not set but is required"));
-    }
-
-    private Optional<UserIdUser> getOptionalCurrentUser() {
-        final var authentication = getAuthentication();
-        if (authentication == null || authentication.getPrincipal() == null) return Optional.empty();
-
-        final var userPrincipal = authentication.getPrincipal();
-
-        if (userPrincipal instanceof UserIdUser) return Optional.of((UserIdUser) userPrincipal);
-
-        final String username;
-        if (userPrincipal instanceof String) {
-            username = (String) userPrincipal;
-        } else if (userPrincipal instanceof UserDetails) {
-            username = ((UserDetails) userPrincipal).getUsername();
-        } else if (userPrincipal instanceof Map) {
-            final var userPrincipalMap = (Map) userPrincipal;
-            username = (String) userPrincipalMap.get("username");
-        } else {
-            username = userPrincipal.toString();
+    private val optionalCurrentUser: Optional<UserIdUser>
+        get() = authentication().flatMap { authentication ->
+            userPrincipal(authentication).map { userPrincipal ->
+                when (userPrincipal) {
+                    is UserIdUser -> userPrincipal
+                    else -> userIdUser(usernameFromPrincipal(userPrincipal), authentication)
+                }
+            }
         }
 
-        if (StringUtils.isEmpty(username) || username.equals("anonymousUser")) return Optional.empty();
+    companion object {
+        private val log = LoggerFactory.getLogger(SecurityUserContext::class.java)
 
-        log.debug("Authentication doesn't contain user id, using username instead");
-        return Optional.of(new UserIdUser(username, authentication.getCredentials().toString(), authentication.getAuthorities(), username));
-    }
+        private fun authentication(): Optional<Authentication> = Optional.ofNullable(SecurityContextHolder.getContext().authentication)
 
-    public boolean isOverrideRole(final String... overrideRoles) {
-        final var roles = Arrays.asList(overrideRoles.length > 0 ? overrideRoles : new String[]{"SYSTEM_USER"});
-        return hasMatchingRole(roles, getAuthentication());
+        private fun userPrincipal(authentication: Authentication) = Optional.ofNullable(authentication.principal)
+
+        private fun usernameFromPrincipal(userPrincipal: Any): String? = when (userPrincipal) {
+            is String -> userPrincipal
+            is UserDetails -> userPrincipal.username
+            is Map<*, *> -> userPrincipal["username"] as String?
+            else -> userPrincipal.toString()
+        }
+
+        private fun userIdUser(username: String?, authentication: Authentication): UserIdUser? = when (username) {
+            null -> null
+            "" -> null
+            "anonymousUser" -> null
+            else -> {
+                log.debug("Authentication doesn't contain user id, using username instead")
+
+                UserIdUser(
+                        username,
+                        authentication.credentials?.toString(),
+                        authentication.authorities,
+                        username)
+            }
+        }
     }
 }

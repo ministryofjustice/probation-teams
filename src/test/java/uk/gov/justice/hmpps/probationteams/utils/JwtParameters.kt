@@ -2,7 +2,6 @@ package uk.gov.justice.hmpps.probationteams.utils
 
 import java.time.Duration
 
-
 data class JwtParameters(
         val username: String?,
         val userId: String? = null,
