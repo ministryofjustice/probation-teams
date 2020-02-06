@@ -1,6 +1,5 @@
 package uk.gov.justice.hmpps.probationteams.utils;
 
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
@@ -10,7 +9,6 @@ import uk.gov.justice.hmpps.probationteams.config.SecurityUserContext;
 import javax.servlet.*;
 import java.io.IOException;
 
-@Slf4j
 @Component
 @Order(1)
 public class UserMdcFilter implements Filter {
