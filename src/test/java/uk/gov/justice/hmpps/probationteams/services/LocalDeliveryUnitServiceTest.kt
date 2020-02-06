@@ -8,18 +8,18 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import uk.gov.justice.hmpps.probationteams.model.LocalDeliveryUnit2
+import uk.gov.justice.hmpps.probationteams.model.LocalDeliveryUnit
 import uk.gov.justice.hmpps.probationteams.model.ProbationTeam
-import uk.gov.justice.hmpps.probationteams.repository.LocalDeliveryUnit2Repository
+import uk.gov.justice.hmpps.probationteams.repository.LocalDeliveryUnitRepository
 import java.util.*
 
 @ExtendWith(MockKExtension::class)
 @DisplayName("LDU Service tests")
-class LocalDeliveryUnit2ServiceTest {
+class LocalDeliveryUnitServiceTest {
 
-    val repository: LocalDeliveryUnit2Repository = mockk(relaxUnitFun = true)
+    val repository: LocalDeliveryUnitRepository = mockk(relaxUnitFun = true)
 
-    val service = LocalDeliveryUnit2Service(repository)
+    val service = LocalDeliveryUnitService(repository)
 
     @BeforeEach
     fun resetAllMocks() {
@@ -50,7 +50,7 @@ class LocalDeliveryUnit2ServiceTest {
         @Test
         fun `No LDU found - save new LDU with FMB`() {
             every { repository.findByProbationAreaCodeAndLocalDeliveryUnitCode(any(), any()) } returns Optional.empty()
-            every { repository.save<LocalDeliveryUnit2>(any()) } returns lduWithFmb()
+            every { repository.save<LocalDeliveryUnit>(any()) } returns lduWithFmb()
 
             assertThat(service.setFunctionalMailbox(PROBATION_AREA_CODE, LDU_CODE, FMB)).isEqualTo(SetOutcome.CREATED)
 
@@ -141,7 +141,7 @@ class LocalDeliveryUnit2ServiceTest {
         @Test
         fun `No LDU`() {
             every { repository.findByProbationAreaCodeAndLocalDeliveryUnitCode(any(), any()) } returns Optional.empty()
-            every { repository.save<LocalDeliveryUnit2>(any()) } returns lduWithFmb() // Don't care what it returns
+            every { repository.save<LocalDeliveryUnit>(any()) } returns lduWithFmb() // Don't care what it returns
 
             assertThat(service.setFunctionalMailbox(PROBATION_AREA_CODE, LDU_CODE, TEAM_CODE_1, FMB)).isEqualTo(SetOutcome.CREATED)
 
@@ -257,13 +257,13 @@ class LocalDeliveryUnit2ServiceTest {
         private const val FMB = "a@b.com"
         private const val FMB2 = "x@y.gov.uk"
 
-        fun lduWithFmb() = LocalDeliveryUnit2(
+        fun lduWithFmb() = LocalDeliveryUnit(
                 probationAreaCode = PROBATION_AREA_CODE,
                 localDeliveryUnitCode = LDU_CODE,
                 functionalMailbox = FMB
         )
 
-        fun lduWithNoFmb() = LocalDeliveryUnit2(
+        fun lduWithNoFmb() = LocalDeliveryUnit(
                 probationAreaCode = PROBATION_AREA_CODE,
                 localDeliveryUnitCode = LDU_CODE)
 

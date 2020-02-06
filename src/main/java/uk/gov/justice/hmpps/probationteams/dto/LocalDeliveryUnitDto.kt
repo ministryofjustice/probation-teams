@@ -8,7 +8,7 @@ import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
 
 @ApiModel(description = "Local Delivery Unit")
-data class LocalDeliveryUnit2Dto @JsonCreator constructor(
+data class LocalDeliveryUnitDto @JsonCreator constructor(
         @ApiModelProperty(required = true, value = "Probation Area code", position = 1, example = "NO2")
         @JsonProperty("probationAreaCode")
         val probationAreaCode: @NotBlank String,

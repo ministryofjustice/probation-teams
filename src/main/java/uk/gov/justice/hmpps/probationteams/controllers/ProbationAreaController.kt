@@ -7,11 +7,11 @@ import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import uk.gov.justice.hmpps.probationteams.dto.ErrorResponse
-import uk.gov.justice.hmpps.probationteams.dto.LocalDeliveryUnit2Dto
+import uk.gov.justice.hmpps.probationteams.dto.LocalDeliveryUnitDto
 import uk.gov.justice.hmpps.probationteams.dto.ProbationTeamDto
-import uk.gov.justice.hmpps.probationteams.model.LocalDeliveryUnit2
+import uk.gov.justice.hmpps.probationteams.model.LocalDeliveryUnit
 import uk.gov.justice.hmpps.probationteams.services.DeleteOutcome
-import uk.gov.justice.hmpps.probationteams.services.LocalDeliveryUnit2Service
+import uk.gov.justice.hmpps.probationteams.services.LocalDeliveryUnitService
 import uk.gov.justice.hmpps.probationteams.services.SetOutcome
 
 @Api(tags = ["probation-areas"])
@@ -20,7 +20,7 @@ import uk.gov.justice.hmpps.probationteams.services.SetOutcome
         value = ["probation-areas"],
         produces = [APPLICATION_JSON_VALUE])
 @Slf4j
-class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnit2Service) {
+class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitService) {
 
     @GetMapping(
             path = ["/{probationAreaCode}/local-delivery-units/{localDeliveryUnitCode}"],
@@ -29,7 +29,7 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnit2Se
     @ApiOperation(value = "Retrieve a Local Delivery Unit", nickname = "Retrieve a Local Delivery Unit")
     @ApiResponses(value = [
         ApiResponse(code = 404, message = "Local Delivery Unit not found"),
-        ApiResponse(code = 200, message = "OK", response = LocalDeliveryUnit2Dto::class)
+        ApiResponse(code = 200, message = "OK", response = LocalDeliveryUnitDto::class)
     ])
     fun getLocalDeliveryUnit(
 
@@ -41,7 +41,7 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnit2Se
             @PathVariable("localDeliveryUnitCode")
             localDeliveryUnitCode: String
 
-    ): ResponseEntity<LocalDeliveryUnit2Dto> = ResponseEntity.of(
+    ): ResponseEntity<LocalDeliveryUnitDto> = ResponseEntity.of(
             localDeliveryUnitService
                     .getLocalDeliveryUnit(probationAreaCode, localDeliveryUnitCode)
                     .map(::fromLocalDeliveryUnit)
@@ -180,8 +180,8 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnit2Se
     }
 
     companion object {
-        private fun fromLocalDeliveryUnit(ldu: LocalDeliveryUnit2) = with(ldu) {
-            LocalDeliveryUnit2Dto(
+        private fun fromLocalDeliveryUnit(ldu: LocalDeliveryUnit) = with(ldu) {
+            LocalDeliveryUnitDto(
                     probationAreaCode = probationAreaCode,
                     localDeliveryUnitCode = localDeliveryUnitCode,
                     functionalMailbox = functionalMailbox,

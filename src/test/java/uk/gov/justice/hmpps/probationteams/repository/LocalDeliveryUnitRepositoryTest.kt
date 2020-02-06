@@ -1,8 +1,6 @@
 package uk.gov.justice.hmpps.probationteams.repository
 
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.fail
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,7 +11,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.context.transaction.TestTransaction
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.hmpps.probationteams.model.LocalDeliveryUnit2
+import uk.gov.justice.hmpps.probationteams.model.LocalDeliveryUnit
 import uk.gov.justice.hmpps.probationteams.model.ProbationTeam
 import uk.gov.justice.hmpps.probationteams.utils.uniqueLduCode
 import java.util.*
@@ -24,15 +22,15 @@ import java.util.*
 @Transactional
 @WithAnonymousUser
 
-class LocalDeliveryUnit2RepositoryTest(
-        @Autowired val repository: LocalDeliveryUnit2Repository,
+class LocalDeliveryUnitRepositoryTest(
+        @Autowired val repository: LocalDeliveryUnitRepository,
         @Autowired val jdbcTemplate: JdbcTemplate
 ) {
 
     @Test
     fun `Persist Local Delivery Unit`() {
         val lduCode = uniqueLduCode()
-        val ldu = LocalDeliveryUnit2(
+        val ldu = LocalDeliveryUnit(
                 probationAreaCode = "ABC",
                 localDeliveryUnitCode = lduCode,
                 functionalMailbox = "pqr@stu.ltd.uk")
@@ -45,24 +43,24 @@ class LocalDeliveryUnit2RepositoryTest(
         val optionalOfLDU = repository.findByProbationAreaCodeAndLocalDeliveryUnitCode("ABC", lduCode)
 
         assertThat(optionalOfLDU).isPresent
-        val persistentLdu = optionalOfLDU.get()
-        assertThat(persistentLdu.id).isNotNull()
 
+        optionalOfLDU.ifPresent { persistentLdu ->
+            assertThat(persistentLdu.id).isNotNull()
 
-        // Business key equality
-        assertThat(persistentLdu).isEqualTo(ldu)
+            // Business key equality
+            assertThat(persistentLdu).isEqualTo(ldu)
 
-        assertThat(ldu.createUserId).isEqualTo("anonymous")
+            assertThat(ldu.createUserId).isEqualTo("anonymous")
 
-        // Check the db...
-        val count = lduCount(persistentLdu.id)
-        assertThat(count).isEqualTo(1)
+            // Check the db...
+            assertThat(lduCount(persistentLdu.id)).isEqualTo(1)
+        }
     }
 
     @Test
     fun `Persist Local Delivery Unit with Probation Teams`() {
         val lduCode = uniqueLduCode()
-        val ldu: LocalDeliveryUnit2 = lduWithProbationTeams(lduCode)
+        val ldu: LocalDeliveryUnit = lduWithProbationTeams(lduCode)
 
         repository.save(ldu)
         TestTransaction.flagForCommit()
@@ -71,16 +69,11 @@ class LocalDeliveryUnit2RepositoryTest(
         TestTransaction.start()
         val optionalOfLdu = repository.findByProbationAreaCodeAndLocalDeliveryUnitCode("ABC", lduCode)
         assertThat(optionalOfLdu).isPresent
-        val persistentLdu = optionalOfLdu.get()
-        assertThat(persistentLdu.id).isNotNull()
 
-        assertThat(persistentLdu.probationTeams).isEqualTo(lduWithProbationTeams(lduCode).probationTeams)
-
-        val id = persistentLdu.id
-        if (id != null) {
-            assertThat(probationTeamCount(id)).isEqualTo(2)
-        } else {
-            fail("No ID for persisted LDU")
+        optionalOfLdu.ifPresent { persistentLdu ->
+            assertThat(persistentLdu.id).isNotNull()
+            assertThat(persistentLdu.probationTeams).isEqualTo(lduWithProbationTeams(lduCode).probationTeams)
+            assertThat(probationTeamCount(persistentLdu.id)).isEqualTo(2)
         }
     }
 
@@ -88,7 +81,7 @@ class LocalDeliveryUnit2RepositoryTest(
     @Test
     fun `Update Probation Team`() {
         val lduCode = uniqueLduCode()
-        val ldu: LocalDeliveryUnit2 = lduWithProbationTeams(lduCode)
+        val ldu: LocalDeliveryUnit = lduWithProbationTeams(lduCode)
         repository.save(ldu)
         TestTransaction.flagForCommit()
         TestTransaction.end()
@@ -98,10 +91,9 @@ class LocalDeliveryUnit2RepositoryTest(
         val persistentLduOpt = repository
                 .findByProbationAreaCodeAndLocalDeliveryUnitCode("ABC", lduCode)
 
-        if (persistentLduOpt.isEmpty) {
-            fail("LDU not found")
-        } else {
-            val persistentLdu = persistentLduOpt.get()
+        assertThat(persistentLduOpt).isPresent
+
+        persistentLduOpt.ifPresent { persistentLdu ->
             persistentLdu.probationTeams.remove("T1")
             persistentLdu.probationTeams["T2"] = ProbationTeam("zzz@zzz.com")
         }
@@ -114,25 +106,19 @@ class LocalDeliveryUnit2RepositoryTest(
         val updatedPersistentLduOpt = repository
                 .findByProbationAreaCodeAndLocalDeliveryUnitCode("ABC", lduCode)
 
-        if (updatedPersistentLduOpt.isEmpty) {
-            fail("Updated LDU not found in db")
-        } else {
-            val updatedLdu = updatedPersistentLduOpt.get()
-            assertThat(updatedLdu.probationTeams).isEqualTo(mutableMapOf("T2" to ProbationTeam("zzz@zzz.com")))
+        assertThat(updatedPersistentLduOpt).isPresent
 
-            val lduId = updatedLdu.id
-            if (lduId != null) {
-                assertThat(probationTeamCount(lduId)).isEqualTo(1)
-            } else {
-                fail("No ID for persisted LDU")
-            }
+        updatedPersistentLduOpt.ifPresent { persistentLdu ->
+            assertThat(persistentLdu.id).isNotNull()
+            assertThat(persistentLdu.probationTeams).isEqualTo(mutableMapOf("T2" to ProbationTeam("zzz@zzz.com")))
+            assertThat(probationTeamCount(persistentLdu.id)).isEqualTo(1)
         }
     }
 
     @Test
     fun `Deleting an LDU should delete its probation teams`() {
         val lduCode = uniqueLduCode()
-        val ldu: LocalDeliveryUnit2 = lduWithProbationTeams(lduCode)
+        val ldu: LocalDeliveryUnit = lduWithProbationTeams(lduCode)
 
         val persistentLdu = repository.save(ldu)
         TestTransaction.flagForCommit()
@@ -141,24 +127,23 @@ class LocalDeliveryUnit2RepositoryTest(
         // Check the db...
         val lduId = persistentLdu.id
 
-        if (lduId != null) {
-            TestTransaction.start()
-            assertThat(lduCount(lduId)).isEqualTo(1)
-            assertThat(probationTeamCount(lduId)).isEqualTo(2)
-            repository.deleteById(lduId)
-            TestTransaction.flagForCommit()
-            TestTransaction.end()
+        assertThat(lduId).isNotNull()
 
-            TestTransaction.start()
+        TestTransaction.start()
+        assertThat(lduCount(lduId)).isEqualTo(1)
+        assertThat(probationTeamCount(lduId)).isEqualTo(2)
+        repository.deleteById(lduId!!)
 
-            assertThat(lduCount(lduId)).isEqualTo(0)
-            assertThat(probationTeamCount(lduId)).isEqualTo(0)
-        } else {
-            Assertions.fail("The saved LDU did not have an Id")
-        }
+        TestTransaction.flagForCommit()
+        TestTransaction.end()
+
+        TestTransaction.start()
+
+        assertThat(lduCount(lduId)).isEqualTo(0)
+        assertThat(probationTeamCount(lduId)).isEqualTo(0)
     }
 
-    private fun probationTeamCount(lduId: UUID) =
+    private fun probationTeamCount(lduId: UUID?) =
             jdbcTemplate.queryForObject("""
                 select count(*) 
                   from PROBATION_TEAM 
@@ -173,7 +158,7 @@ class LocalDeliveryUnit2RepositoryTest(
                  """.trimIndent(), Long::class.java, lduId)
 
     companion object {
-        fun lduWithProbationTeams(lduCode: String): LocalDeliveryUnit2 = LocalDeliveryUnit2(
+        fun lduWithProbationTeams(lduCode: String): LocalDeliveryUnit = LocalDeliveryUnit(
                 probationAreaCode = "ABC",
                 localDeliveryUnitCode = lduCode,
                 probationTeams = mutableMapOf(

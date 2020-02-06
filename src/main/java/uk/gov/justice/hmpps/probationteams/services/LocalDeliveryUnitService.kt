@@ -5,9 +5,9 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
-import uk.gov.justice.hmpps.probationteams.model.LocalDeliveryUnit2
+import uk.gov.justice.hmpps.probationteams.model.LocalDeliveryUnit
 import uk.gov.justice.hmpps.probationteams.model.ProbationTeam
-import uk.gov.justice.hmpps.probationteams.repository.LocalDeliveryUnit2Repository
+import uk.gov.justice.hmpps.probationteams.repository.LocalDeliveryUnitRepository
 import java.util.*
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
@@ -16,9 +16,9 @@ import javax.validation.constraints.Pattern
 @Service
 @Validated
 @Transactional
-class LocalDeliveryUnit2Service(@Autowired val repository: LocalDeliveryUnit2Repository) {
+class LocalDeliveryUnitService(@Autowired val repository: LocalDeliveryUnitRepository) {
 
-    fun getLocalDeliveryUnit(probationAreaCode: String, localDeliveryUnitCode: String): Optional<LocalDeliveryUnit2> =
+    fun getLocalDeliveryUnit(probationAreaCode: String, localDeliveryUnitCode: String): Optional<LocalDeliveryUnit> =
             repository.findByProbationAreaCodeAndLocalDeliveryUnitCode(probationAreaCode, localDeliveryUnitCode)
 
     @PreAuthorize("hasAnyRole('MAINTAIN_REF_DATA', 'SYSTEM_USER')")
@@ -77,7 +77,7 @@ class LocalDeliveryUnit2Service(@Autowired val repository: LocalDeliveryUnit2Rep
                     .map { ldu -> doDeleteFmb(ldu, teamCode) }
                     .orElse(DeleteOutcome.NOT_FOUND)
 
-    private fun updateLduFunctionalMailbox(ldu: LocalDeliveryUnit2, proposedFunctionalMailbox: @Email String): SetOutcome =
+    private fun updateLduFunctionalMailbox(ldu: LocalDeliveryUnit, proposedFunctionalMailbox: @Email String): SetOutcome =
             when (ldu.functionalMailbox) {
                 null -> {
                     ldu.functionalMailbox = proposedFunctionalMailbox
@@ -93,11 +93,11 @@ class LocalDeliveryUnit2Service(@Autowired val repository: LocalDeliveryUnit2Rep
     private fun createLduFunctionalMailbox(probationAreaCode: String,
                                            localDeliveryUnitCode: String,
                                            proposedFunctionalMailbox: String): SetOutcome {
-        repository.save(LocalDeliveryUnit2(probationAreaCode, localDeliveryUnitCode, proposedFunctionalMailbox))
+        repository.save(LocalDeliveryUnit(probationAreaCode, localDeliveryUnitCode, proposedFunctionalMailbox))
         return SetOutcome.CREATED
     }
 
-    private fun setTeamFunctionalMailbox(ldu: LocalDeliveryUnit2, teamCode: String, proposedFunctionalMailbox: String): SetOutcome {
+    private fun setTeamFunctionalMailbox(ldu: LocalDeliveryUnit, teamCode: String, proposedFunctionalMailbox: String): SetOutcome {
         val probationTeam = ldu.probationTeams[teamCode]
         return when (probationTeam) {
             null -> {
@@ -115,7 +115,7 @@ class LocalDeliveryUnit2Service(@Autowired val repository: LocalDeliveryUnit2Rep
                                                    localDeliveryUnitCode: String,
                                                    teamCode: String,
                                                    proposedFunctionalMailbox: String): SetOutcome {
-        val localDeliveryUnit = LocalDeliveryUnit2(
+        val localDeliveryUnit = LocalDeliveryUnit(
                 probationAreaCode = probationAreaCode,
                 localDeliveryUnitCode = localDeliveryUnitCode,
                 probationTeams = mutableMapOf(teamCode to ProbationTeam(proposedFunctionalMailbox))
@@ -125,7 +125,7 @@ class LocalDeliveryUnit2Service(@Autowired val repository: LocalDeliveryUnit2Rep
     }
 
 
-    private fun doDeleteFmb(ldu: LocalDeliveryUnit2): DeleteOutcome =
+    private fun doDeleteFmb(ldu: LocalDeliveryUnit): DeleteOutcome =
 
             when (ldu.functionalMailbox) {
                 null -> DeleteOutcome.NOT_FOUND
@@ -139,7 +139,7 @@ class LocalDeliveryUnit2Service(@Autowired val repository: LocalDeliveryUnit2Rep
                 }
             }
 
-    private fun doDeleteFmb(ldu: LocalDeliveryUnit2, teamCode: String): DeleteOutcome =
+    private fun doDeleteFmb(ldu: LocalDeliveryUnit, teamCode: String): DeleteOutcome =
 
             when (ldu.probationTeams[teamCode]) {
                 null -> DeleteOutcome.NOT_FOUND

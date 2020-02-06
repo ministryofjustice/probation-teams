@@ -13,7 +13,7 @@ import javax.persistence.*
 @Entity
 @EntityListeners(AuditingEntityListener::class)
 @Table(name = "LOCAL_DELIVERY_UNIT2")
-data class LocalDeliveryUnit2(
+data class LocalDeliveryUnit(
 
         @Column(nullable = false)
         var probationAreaCode: String,
