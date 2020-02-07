@@ -40,21 +40,16 @@ class LocalDeliveryUnitRepositoryTest(
         TestTransaction.end()
 
         TestTransaction.start()
-        val optionalOfLDU = repository.findByProbationAreaCodeAndLocalDeliveryUnitCode("ABC", lduCode)
 
-        assertThat(optionalOfLDU).isPresent
+        assertThat(repository.findByProbationAreaCodeAndLocalDeliveryUnitCode("ABC", lduCode))
+                .hasValueSatisfying { persistentLdu ->
+                    assertThat(persistentLdu.id).isNotNull()
 
-        optionalOfLDU.ifPresent { persistentLdu ->
-            assertThat(persistentLdu.id).isNotNull()
-
-            // Business key equality
-            assertThat(persistentLdu).isEqualTo(ldu)
-
-            assertThat(ldu.createUserId).isEqualTo("anonymous")
-
-            // Check the db...
-            assertThat(lduCount(persistentLdu.id)).isEqualTo(1)
-        }
+                    // Business key equality
+                    assertThat(persistentLdu).isEqualTo(ldu)
+                    assertThat(ldu.createUserId).isEqualTo("anonymous")
+                    assertThat(lduCount(persistentLdu.id)).isEqualTo(1)
+                }
     }
 
     @Test
@@ -67,14 +62,12 @@ class LocalDeliveryUnitRepositoryTest(
         TestTransaction.end()
 
         TestTransaction.start()
-        val optionalOfLdu = repository.findByProbationAreaCodeAndLocalDeliveryUnitCode("ABC", lduCode)
-        assertThat(optionalOfLdu).isPresent
-
-        optionalOfLdu.ifPresent { persistentLdu ->
-            assertThat(persistentLdu.id).isNotNull()
-            assertThat(persistentLdu.probationTeams).isEqualTo(lduWithProbationTeams(lduCode).probationTeams)
-            assertThat(probationTeamCount(persistentLdu.id)).isEqualTo(2)
-        }
+        assertThat(repository.findByProbationAreaCodeAndLocalDeliveryUnitCode("ABC", lduCode))
+                .hasValueSatisfying { persistentLdu ->
+                    assertThat(persistentLdu.id).isNotNull()
+                    assertThat(persistentLdu.probationTeams).isEqualTo(lduWithProbationTeams(lduCode).probationTeams)
+                    assertThat(probationTeamCount(persistentLdu.id)).isEqualTo(2)
+                }
     }
 
 
@@ -88,31 +81,23 @@ class LocalDeliveryUnitRepositoryTest(
 
         TestTransaction.start()
 
-        val persistentLduOpt = repository
-                .findByProbationAreaCodeAndLocalDeliveryUnitCode("ABC", lduCode)
-
-        assertThat(persistentLduOpt).isPresent
-
-        persistentLduOpt.ifPresent { persistentLdu ->
-            persistentLdu.probationTeams.remove("T1")
-            persistentLdu.probationTeams["T2"] = ProbationTeam("zzz@zzz.com")
-        }
+        assertThat(repository.findByProbationAreaCodeAndLocalDeliveryUnitCode("ABC", lduCode))
+                .hasValueSatisfying { persistentLdu ->
+                    persistentLdu.probationTeams.remove("T1")
+                    persistentLdu.probationTeams["T2"] = ProbationTeam("zzz@zzz.com")
+                }
 
         TestTransaction.flagForCommit()
         TestTransaction.end()
 
         TestTransaction.start()
 
-        val updatedPersistentLduOpt = repository
-                .findByProbationAreaCodeAndLocalDeliveryUnitCode("ABC", lduCode)
-
-        assertThat(updatedPersistentLduOpt).isPresent
-
-        updatedPersistentLduOpt.ifPresent { persistentLdu ->
-            assertThat(persistentLdu.id).isNotNull()
-            assertThat(persistentLdu.probationTeams).isEqualTo(mutableMapOf("T2" to ProbationTeam("zzz@zzz.com")))
-            assertThat(probationTeamCount(persistentLdu.id)).isEqualTo(1)
-        }
+        assertThat(repository.findByProbationAreaCodeAndLocalDeliveryUnitCode("ABC", lduCode))
+                .hasValueSatisfying { persistentLdu ->
+                    assertThat(persistentLdu.id).isNotNull()
+                    assertThat(persistentLdu.probationTeams).isEqualTo(mutableMapOf("T2" to ProbationTeam("zzz@zzz.com")))
+                    assertThat(probationTeamCount(persistentLdu.id)).isEqualTo(1)
+                }
     }
 
     @Test
