@@ -5,13 +5,9 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
-import uk.gov.justice.hmpps.probationteams.model.LocalDeliveryUnit
-import uk.gov.justice.hmpps.probationteams.model.ProbationTeam
+import uk.gov.justice.hmpps.probationteams.model.*
 import uk.gov.justice.hmpps.probationteams.repository.LocalDeliveryUnitRepository
 import java.util.*
-import javax.validation.constraints.Email
-import javax.validation.constraints.NotBlank
-import javax.validation.constraints.Pattern
 
 @Service
 @Validated
@@ -23,9 +19,9 @@ class LocalDeliveryUnitService(@Autowired val repository: LocalDeliveryUnitRepos
 
     @PreAuthorize("hasAnyRole('MAINTAIN_REF_DATA', 'SYSTEM_USER')")
     fun setFunctionalMailbox(
-            @NotBlank @Pattern(regexp = "^[A-Z0-9_]+$", message = "Invalid Probation Area code") probationAreaCode: String,
-            @NotBlank @Pattern(regexp = "^[A-Z0-9_]+$", message = "Invalid Local Delivery Unit code") localDeliveryUnitCode: String,
-            @NotBlank @Email proposedFunctionalMailbox: String): SetOutcome =
+            @ProbationAreaCode probationAreaCode: String,
+            @LduCode localDeliveryUnitCode: String,
+            @Email proposedFunctionalMailbox: String): SetOutcome =
 
             getLocalDeliveryUnit(probationAreaCode, localDeliveryUnitCode)
                     .map { ldu -> updateLduFunctionalMailbox(ldu, proposedFunctionalMailbox) }
@@ -40,10 +36,10 @@ class LocalDeliveryUnitService(@Autowired val repository: LocalDeliveryUnitRepos
 
     @PreAuthorize("hasAnyRole('MAINTAIN_REF_DATA', 'SYSTEM_USER')")
     fun setFunctionalMailbox(
-            @NotBlank @Pattern(regexp = "^[A-Z0-9_]+$", message = "Invalid Probation Area code") probationAreaCode: String,
-            @NotBlank @Pattern(regexp = "^[A-Z0-9_]+$", message = "Invalid Local Delivery Unit code") localDeliveryUnitCode: String,
-            @NotBlank @Pattern(regexp = "^[A-Z0-9_]+$", message = "Invalid Team code") teamCode: String,
-            @NotBlank @Email proposedFunctionalMailbox: String): SetOutcome =
+            @ProbationAreaCode probationAreaCode: String,
+            @LduCode localDeliveryUnitCode: String,
+            @TeamCode teamCode: String,
+            @Email proposedFunctionalMailbox: String): SetOutcome =
 
             getLocalDeliveryUnit(probationAreaCode, localDeliveryUnitCode)
                     .map { ldu -> setTeamFunctionalMailbox(ldu, teamCode, proposedFunctionalMailbox) }
@@ -58,8 +54,8 @@ class LocalDeliveryUnitService(@Autowired val repository: LocalDeliveryUnitRepos
 
     @PreAuthorize("hasAnyRole('MAINTAIN_REF_DATA', 'SYSTEM_USER')")
     fun deleteFunctionalMailbox(
-            @NotBlank @Pattern(regexp = "^[A-Z0-9_]+$", message = "Invalid Probation Area code") probationAreaCode: String,
-            @NotBlank @Pattern(regexp = "^[A-Z0-9_]+$", message = "Invalid Local Delivery Unit code") localDeliveryUnitCode: String
+            @ProbationAreaCode probationAreaCode: String,
+            @LduCode localDeliveryUnitCode: String
     ): DeleteOutcome =
 
             getLocalDeliveryUnit(probationAreaCode, localDeliveryUnitCode)
@@ -68,16 +64,16 @@ class LocalDeliveryUnitService(@Autowired val repository: LocalDeliveryUnitRepos
 
     @PreAuthorize("hasAnyRole('MAINTAIN_REF_DATA', 'SYSTEM_USER')")
     fun deleteFunctionalMailbox(
-            @NotBlank @Pattern(regexp = "^[A-Z0-9_]+$", message = "Invalid Probation Area code") probationAreaCode: String,
-            @NotBlank @Pattern(regexp = "^[A-Z0-9_]+$", message = "Invalid Local Delivery Unit code") localDeliveryUnitCode: String,
-            @NotBlank @Pattern(regexp = "^[A-Z0-9_]+$", message = "Invalid Team code") teamCode: String
+            @ProbationAreaCode probationAreaCode: String,
+            @LduCode localDeliveryUnitCode: String,
+            @TeamCode teamCode: String
     ): DeleteOutcome =
 
             getLocalDeliveryUnit(probationAreaCode, localDeliveryUnitCode)
                     .map { ldu -> doDeleteFmb(ldu, teamCode) }
                     .orElse(DeleteOutcome.NOT_FOUND)
 
-    private fun updateLduFunctionalMailbox(ldu: LocalDeliveryUnit, proposedFunctionalMailbox: @Email String): SetOutcome =
+    private fun updateLduFunctionalMailbox(ldu: LocalDeliveryUnit, proposedFunctionalMailbox: String): SetOutcome =
             when (ldu.functionalMailbox) {
                 null -> {
                     ldu.functionalMailbox = proposedFunctionalMailbox

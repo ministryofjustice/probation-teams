@@ -231,7 +231,7 @@ class ProbationAreaResourceIntegrationTest(
             assertThat(response.statusCode).isEqualTo(testData.expectedStatusCode)
             if (testData.expectedMessage != null) {
                 val content = jsonTester.from(response.body)
-                assertThat(content).extractingJsonPathStringValue("$.developerMessage").contains(testData.expectedMessage)
+                assertThat(content).extractingJsonPathStringValue("$.developerMessage").endsWith(testData.expectedMessage)
             }
         }
 
@@ -275,32 +275,32 @@ class ProbationAreaResourceIntegrationTest(
         )
 
         val invalidProbationAreaCodes = listOf(
-                ValidationTestData("a", HttpStatus.BAD_REQUEST, "probationAreaCode: Invalid Probation Area code"),
-                ValidationTestData("-", HttpStatus.BAD_REQUEST, "probationAreaCode: Invalid Probation Area code"),
-                ValidationTestData(" ", HttpStatus.BAD_REQUEST, "probationAreaCode: must not be blank"),
+                ValidationTestData("a", HttpStatus.BAD_REQUEST, INVALID_PROBATION_AREA_MESSAGE),
+                ValidationTestData("-", HttpStatus.BAD_REQUEST, INVALID_PROBATION_AREA_MESSAGE),
+                ValidationTestData(" ", HttpStatus.BAD_REQUEST, INVALID_PROBATION_AREA_MESSAGE),
                 ValidationTestData("", HttpStatus.NOT_FOUND, null)
         )
 
         val invalidLocalDeliveryUnitCodes2 = listOf(
-                ValidationTestData("a", HttpStatus.BAD_REQUEST, "localDeliveryUnitCode: Invalid Local Delivery Unit code"),
-                ValidationTestData("-", HttpStatus.BAD_REQUEST, "localDeliveryUnitCode: Invalid Local Delivery Unit code"),
-                ValidationTestData(" ", HttpStatus.BAD_REQUEST, "localDeliveryUnitCode: must not be blank"),
+                ValidationTestData("a", HttpStatus.BAD_REQUEST, INVALID_LDU_MESSAGE),
+                ValidationTestData("-", HttpStatus.BAD_REQUEST, INVALID_LDU_MESSAGE),
+                ValidationTestData(" ", HttpStatus.BAD_REQUEST, INVALID_LDU_MESSAGE),
                 ValidationTestData("", HttpStatus.NOT_FOUND, null)
         )
 
         val invalidLocalDeliveryUnitCodes1 = invalidLocalDeliveryUnitCodes2.map(::adaptTestData)
 
         val invalidTeamCodes = listOf(
-                ValidationTestData("a", HttpStatus.BAD_REQUEST, "teamCode: Invalid Team code"),
-                ValidationTestData("-", HttpStatus.BAD_REQUEST, "teamCode: Invalid Team code"),
-                ValidationTestData(" ", HttpStatus.BAD_REQUEST, "teamCode: must not be blank"),
+                ValidationTestData("a", HttpStatus.BAD_REQUEST, INVALID_TEAM_CODE_MESSAGE),
+                ValidationTestData("-", HttpStatus.BAD_REQUEST, INVALID_TEAM_CODE_MESSAGE),
+                ValidationTestData(" ", HttpStatus.BAD_REQUEST, INVALID_TEAM_CODE_MESSAGE),
                 ValidationTestData("", HttpStatus.NOT_FOUND, null)
         )
 
         val invalidEmailAddresses = listOf(
-                ValidationTestData("abc.def.com", HttpStatus.BAD_REQUEST, "must be a well-formed email address"),
-                ValidationTestData(" ", HttpStatus.BAD_REQUEST, "must not be blank"),
-                ValidationTestData("", HttpStatus.BAD_REQUEST, "must not be blank")
+                ValidationTestData("abc.def.com", HttpStatus.BAD_REQUEST, INVALID_EMAIL_MESSAGE),
+                ValidationTestData(" ", HttpStatus.BAD_REQUEST, INVALID_EMAIL_MESSAGE),
+                ValidationTestData("", HttpStatus.BAD_REQUEST, INVALID_EMAIL_MESSAGE)
         )
     }
 
@@ -361,6 +361,11 @@ class ProbationAreaResourceIntegrationTest(
         private val MAINTAIN_REF_DATA_ROLE = listOf("ROLE_MAINTAIN_REF_DATA")
 
         private val SYSTEM_USER_ROLE = listOf("ROLE_SYSTEM_USER")
+
+        private const val INVALID_PROBATION_AREA_MESSAGE = "Must be a valid Probation Area Code"
+        private const val INVALID_LDU_MESSAGE = "Must be a valid Local Delivery Unit Code"
+        private const val INVALID_TEAM_CODE_MESSAGE = "Must be a valid Probation Team Code"
+        private const val INVALID_EMAIL_MESSAGE = "Must be a valid email address"
     }
 }
 
