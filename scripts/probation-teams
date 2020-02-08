@@ -67,7 +67,8 @@ read_command_line() {
         -team )     shift
                     TEAM_CODE=$1
                     ;;
-        -update )   COMMAND=update
+        -update )   shift
+                    COMMAND=update
                     EMAIL=$1
                     ;;
         -delete )   COMMAND=delete
@@ -138,16 +139,15 @@ confirm() {
 }
 
 get_ldu() {
-  # echo "GET ${BASE_URL}"
-  confirm
+  echo "GET ${BASE_URL}"
   curl -s -H "${AUTH_HEADER}" -X HEAD ${BASE_URL} -w 'HTTP status: %{http_code}\n'
   curl -s -H "${AUTH_HEADER}" -X GET ${BASE_URL} | jq
 }
 
 update_mailbox() {
   if [ $EMAIL ]; then
-    # echo "PUT ${EMAIL}"
-    # echo "  to ${BASE_URL}/functional-mailbox"
+    echo "PUT ${EMAIL}"
+    echo "  to ${BASE_URL}/functional-mailbox"
     confirm
     curl -s -H "${AUTH_HEADER}" -X PUT ${BASE_URL}/functional-mailbox -H 'Content-Type: application/json' -d \"${EMAIL}\" -w 'HTTP status: %{http_code}\n'
   else
@@ -157,7 +157,7 @@ update_mailbox() {
 }
 
 delete_mailbox() {
-  # echo "DELETE ${BASE_URL}/functional-mailbox"
+  echo "DELETE ${BASE_URL}/functional-mailbox"
   confirm
   curl -s -H "${AUTH_HEADER}" -X DELETE ${BASE_URL}/functional-mailbox -w 'HTTP status: %{http_code}\n'
 
