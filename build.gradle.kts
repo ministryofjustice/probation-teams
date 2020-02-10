@@ -40,13 +40,10 @@ repositories {
 dependencies {
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-    annotationProcessor("org.projectlombok:lombok:1.18.10")
 
     runtimeOnly("com.h2database:h2:1.4.200")
     runtimeOnly("org.flywaydb:flyway-core:6.2.0")
     runtimeOnly("org.postgresql:postgresql:42.2.9")
-
-    compileOnly("org.projectlombok:lombok:1.18.10")
 
     implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("reflect"))
@@ -73,9 +70,6 @@ dependencies {
     implementation("com.pauldijou:jwt-core_2.11:4.2.0")
 
     testAnnotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-    testAnnotationProcessor("org.projectlombok:lombok:1.18.10")
-
-    testCompileOnly("org.projectlombok:lombok:1.18.10")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")

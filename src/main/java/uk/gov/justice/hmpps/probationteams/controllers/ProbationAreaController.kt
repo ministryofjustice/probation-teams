@@ -1,7 +1,6 @@
 package uk.gov.justice.hmpps.probationteams.controllers
 
 import io.swagger.annotations.*
-import  lombok.extern.slf4j.Slf4j
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.http.ResponseEntity
@@ -19,7 +18,6 @@ import uk.gov.justice.hmpps.probationteams.services.SetOutcome
 @RequestMapping(
         value = ["probation-areas"],
         produces = [APPLICATION_JSON_VALUE])
-@Slf4j
 class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitService) {
 
     @GetMapping(
@@ -46,8 +44,6 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitSer
                     .getLocalDeliveryUnit(probationAreaCode, localDeliveryUnitCode)
                     .map(::fromLocalDeliveryUnit)
     )
-
-
 
     @PutMapping(
             path = ["/{probationAreaCode}/local-delivery-units/{localDeliveryUnitCode}/functional-mailbox"],
@@ -82,7 +78,6 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitSer
     }
 
 
-
     @DeleteMapping(path = ["/{probationAreaCode}/local-delivery-units/{localDeliveryUnitCode}/functional-mailbox"])
     @ApiOperation(value = "Delete a Local Delivery Unit's functional mailbox", notes = "Delete a Local Delivery Unit's functional mailbox")
     @ApiResponses(value = [
@@ -108,7 +103,6 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitSer
                 DeleteOutcome.DELETED -> ResponseEntity.noContent().build()
                 DeleteOutcome.NOT_FOUND -> ResponseEntity.notFound().build()
             }
-
 
 
     @PutMapping(
@@ -149,7 +143,6 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitSer
     }
 
 
-
     @DeleteMapping(path = ["/{probationAreaCode}/local-delivery-units/{localDeliveryUnitCode}/teams/{teamCode}/functional-mailbox"])
     @ApiOperation(value = "Delete a Probation Teams's functional mailbox", notes = "Delete a Probation Teams's functional mailbox")
     @ApiResponses(value = [
@@ -180,6 +173,7 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitSer
     }
 
     companion object {
+
         private fun fromLocalDeliveryUnit(ldu: LocalDeliveryUnit) = with(ldu) {
             LocalDeliveryUnitDto(
                     probationAreaCode = probationAreaCode,
