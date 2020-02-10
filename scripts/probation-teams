@@ -50,10 +50,10 @@ usage() {
 }
 
 read_command_line() {
-  if [ "$1" == "" ]; then
+  if [[ ! $1 ]]; then
     usage
   fi
-  while [ "$1" != "" ]; do
+  while [[ $1 ]]; do
       case $1 in
         -ns )       shift
                     NS_KEY=$1
@@ -75,7 +75,10 @@ read_command_line() {
                     ;;
         -help )     usage
                     ;;
-        * )         shift
+        * )         echo
+                    echo "Unknown argument '$1'"
+                    echo
+                    exit
                     ;;
       esac
       shift
@@ -84,9 +87,9 @@ read_command_line() {
 
 check_namespace() {
   case "$NS_KEY" in
-    dev|preprod|prod)
+    dev | preprod | prod )
       NAMESPACE=licences-${NS_KEY};
-    ;;
+      ;;
     *)
       echo "-ns must be 'dev', 'preprod' or 'prod'";
       exit;
@@ -95,17 +98,17 @@ check_namespace() {
 }
 
 set_base_url() {
-  if ! [ $PROBATION_AREA_CODE ]; then
+  if [[ ! $PROBATION_AREA_CODE ]]; then
     echo "Probation area code not set."
     exit
   fi
 
-  if ! [ $LOCAL_DELIVERY_UNIT_CODE ]; then
+  if [[ ! $LOCAL_DELIVERY_UNIT_CODE ]]; then
     echo "Local delivery unit code not set."
     exit
   fi
 
-  if [ $TEAM_CODE ]; then
+  if [[ $TEAM_CODE ]]; then
     BASE_URL=${PROBATION_TEAMS_URL[$NS_KEY]}/probation-areas/${PROBATION_AREA_CODE}/local-delivery-units/${LOCAL_DELIVERY_UNIT_CODE}/teams/${TEAM_CODE}
   else
     BASE_URL=${PROBATION_TEAMS_URL[$NS_KEY]}/probation-areas/${PROBATION_AREA_CODE}/local-delivery-units/${LOCAL_DELIVERY_UNIT_CODE}
@@ -123,33 +126,37 @@ set_auth_header() {
 }
 
 confirm() {
-  if [ "${NS_KEY}" == "prod" ]; then
+  if [[ ${NS_KEY} == "prod" ]]; then
     local confirm=""
     echo "This is the PRODUCTION namespace"
-    while [ "${confirm}" != "Y" ] && [ "${confirm}" != "n" ]; do
+    while [[ ${confirm} != "Y" ]] && [[ ${confirm} != "n" ]]; do
       read -p 'Continue? Y/n: ' -n 1 confirm
       echo
     done
-    if [ "${confirm}" != "Y" ]; then
+    if [[ ${confirm} != "Y" ]]; then
       exit
     fi
   fi
 }
 
 get_ldu() {
+  if [[ $TEAM_CODE ]]; then
+    echo "Don't use '-team' with GET"
+    exit
+  fi
   echo "GET ${BASE_URL}"
   curl -s -H "${AUTH_HEADER}" -X HEAD ${BASE_URL} -w 'HTTP status: %{http_code}\n'
   curl -s -H "${AUTH_HEADER}" -X GET ${BASE_URL} | jq
 }
 
 update_mailbox() {
-  if [ $EMAIL ]; then
+  if [[ $EMAIL ]]; then
     echo "PUT ${EMAIL}"
     echo "  to ${BASE_URL}/functional-mailbox"
     confirm
     curl -s -H "${AUTH_HEADER}" -X PUT ${BASE_URL}/functional-mailbox -H 'Content-Type: application/json' -d \"${EMAIL}\" -w 'HTTP status: %{http_code}\n'
   else
-    echo "No email address"
+    echo "Missing email address for -update"
     exit
   fi
 }
@@ -175,7 +182,7 @@ do_command() {
   esac
 }
 
-read_command_line $*
+read_command_line "$@"
 check_namespace
 set_base_url
 set_auth_header

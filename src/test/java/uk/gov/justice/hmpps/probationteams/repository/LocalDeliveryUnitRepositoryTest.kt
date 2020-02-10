@@ -95,7 +95,7 @@ class LocalDeliveryUnitRepositoryTest(
         assertThat(repository.findByProbationAreaCodeAndLocalDeliveryUnitCode("ABC", lduCode))
                 .hasValueSatisfying { persistentLdu ->
                     assertThat(persistentLdu.id).isNotNull()
-                    assertThat(persistentLdu.probationTeams).isEqualTo(mutableMapOf("T2" to ProbationTeam("zzz@zzz.com")))
+                    assertThat(persistentLdu.probationTeams).isEqualTo(mapOf("T2" to ProbationTeam("zzz@zzz.com")))
                     assertThat(probationTeamCount(persistentLdu.id)).isEqualTo(1)
                 }
     }
