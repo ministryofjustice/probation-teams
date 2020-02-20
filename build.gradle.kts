@@ -42,8 +42,8 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     runtimeOnly("com.h2database:h2:1.4.200")
-    runtimeOnly("org.flywaydb:flyway-core:6.2.0")
-    runtimeOnly("org.postgresql:postgresql:42.2.9")
+    runtimeOnly("org.flywaydb:flyway-core:6.2.3")
+    runtimeOnly("org.postgresql:postgresql:42.2.10")
 
     implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("reflect"))
@@ -77,7 +77,7 @@ dependencies {
     }
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("com.tngtech.java:junit-dataprovider:1.13.1")
-    testImplementation("net.javacrumbs.json-unit:json-unit-assertj:2.12.0")
+    testImplementation("net.javacrumbs.json-unit:json-unit-assertj:2.13.0")
     testImplementation("io.github.http-builder-ng:http-builder-ng-apache:1.0.4")
     testImplementation("com.ninja-squad:springmockk:2.0.0")
 }
