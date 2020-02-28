@@ -3,7 +3,8 @@ import java.net.InetAddress
 import java.time.Instant
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter.ISO_DATE
-
+import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
+import org.owasp.dependencycheck.reporting.ReportGenerator.Format
 
 plugins {
     kotlin("jvm") version "1.3.61"
@@ -21,6 +22,11 @@ plugins {
     id("org.owasp.dependencycheck") version "5.3.0"
 }
 
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
 group = "uk.gov.justice.digital.hmpps"
 
 val today: Instant = Instant.now()
@@ -32,9 +38,30 @@ version = if (System.getenv().containsKey("CI")) {
     todaysDate
 }
 
-repositories {
-    mavenLocal()
-    mavenCentral()
+springBoot {
+    buildInfo {
+        properties {
+            artifact = rootProject.name
+            version = version
+            group = group
+            name = rootProject.name
+            time = today
+
+            additional = mapOf(
+                    "by" to System.getProperty("user.name"),
+                    "operatingSystem" to "${System.getProperty("os.name")} (${System.getProperty("os.version")})",
+                    "continuousIntegration" to System.getenv().containsKey("CI"),
+                    "machine" to InetAddress.getLocalHost().hostName
+            )
+        }
+    }
+}
+
+configurations {
+
+    implementation {
+        exclude(mapOf("module" to "tomcat-jdbc"))
+    }
 }
 
 dependencies {
@@ -90,16 +117,30 @@ val agentDeps by configurations.register("agentDeps") {
     }
 }
 
-configurations {
-
-    implementation {
-        exclude(mapOf("module" to "tomcat-jdbc"))
-    }
-}
 
 java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
+}
+
+dependencyCheck {
+    failBuildOnCVSS = 5f
+    suppressionFiles = listOf()
+    format = Format.ALL
+    analyzers.assemblyEnabled = false
+}
+
+fun isNonStable(version: String): Boolean {
+    val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.toUpperCase().contains(it) }
+    val regex = "^[0-9,.v-]+(-r)?$".toRegex()
+    val isStable = stableKeyword || regex.matches(version)
+    return isStable.not()
+}
+
+tasks.withType<DependencyUpdatesTask> {
+    rejectVersionIf {
+        isNonStable(candidate.version) && !isNonStable(currentVersion)
+    }
 }
 
 tasks {
@@ -128,25 +169,6 @@ tasks {
         manifest {
             attributes["Implementation-Title"] = rootProject.name
             attributes["Implementation-Version"] = archiveVersion
-        }
-    }
-}
-
-springBoot {
-    buildInfo {
-        properties {
-            artifact = rootProject.name
-            version = version
-            group = group
-            name = rootProject.name
-            time = today
-
-            additional = mapOf(
-                    "by" to System.getProperty("user.name"),
-                    "operatingSystem" to "${System.getProperty("os.name")} (${System.getProperty("os.version")})",
-                    "continuousIntegration" to System.getenv().containsKey("CI"),
-                    "machine" to InetAddress.getLocalHost().hostName
-            )
         }
     }
 }
