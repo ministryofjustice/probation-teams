@@ -3,13 +3,14 @@ import java.net.InetAddress
 import java.time.Instant
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter.ISO_DATE
-
+import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
+import org.owasp.dependencycheck.reporting.ReportGenerator.Format
 
 plugins {
     kotlin("jvm") version "1.3.61"
 
     id("io.spring.dependency-management") version "1.0.9.RELEASE"
-    id("org.springframework.boot") version "2.2.4.RELEASE"
+    id("org.springframework.boot") version "2.2.5.RELEASE"
 
     // Makes classes annotated with @Component, @Async, @Transactional, @Cacheable and @SpringBootTest open
     kotlin("plugin.spring") version "1.3.61"
@@ -17,8 +18,13 @@ plugins {
     // Adds a no-arg (Java) constructor to classes annotated with @Entity, @Embeddable or @MappedSuperclass
     kotlin("plugin.jpa") version "1.3.61"
 
-    id("com.github.ben-manes.versions") version "0.27.0"
+    id("com.github.ben-manes.versions") version "0.28.0"
     id("org.owasp.dependencycheck") version "5.3.0"
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
 }
 
 group = "uk.gov.justice.digital.hmpps"
@@ -32,9 +38,30 @@ version = if (System.getenv().containsKey("CI")) {
     todaysDate
 }
 
-repositories {
-    mavenLocal()
-    mavenCentral()
+springBoot {
+    buildInfo {
+        properties {
+            artifact = rootProject.name
+            version = version
+            group = group
+            name = rootProject.name
+            time = today
+
+            additional = mapOf(
+                    "by" to System.getProperty("user.name"),
+                    "operatingSystem" to "${System.getProperty("os.name")} (${System.getProperty("os.version")})",
+                    "continuousIntegration" to System.getenv().containsKey("CI"),
+                    "machine" to InetAddress.getLocalHost().hostName
+            )
+        }
+    }
+}
+
+configurations {
+
+    implementation {
+        exclude(mapOf("module" to "tomcat-jdbc"))
+    }
 }
 
 dependencies {
@@ -42,7 +69,7 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     runtimeOnly("com.h2database:h2:1.4.200")
-    runtimeOnly("org.flywaydb:flyway-core:6.2.3")
+    runtimeOnly("org.flywaydb:flyway-core:6.2.4")
     runtimeOnly("org.postgresql:postgresql:42.2.10")
 
     implementation(kotlin("stdlib-jdk8"))
@@ -77,7 +104,7 @@ dependencies {
     }
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("com.tngtech.java:junit-dataprovider:1.13.1")
-    testImplementation("net.javacrumbs.json-unit:json-unit-assertj:2.13.0")
+    testImplementation("net.javacrumbs.json-unit:json-unit-assertj:2.13.1")
     testImplementation("io.github.http-builder-ng:http-builder-ng-apache:1.0.4")
     testImplementation("com.ninja-squad:springmockk:2.0.0")
 }
@@ -90,16 +117,30 @@ val agentDeps by configurations.register("agentDeps") {
     }
 }
 
-configurations {
-
-    implementation {
-        exclude(mapOf("module" to "tomcat-jdbc"))
-    }
-}
 
 java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
+}
+
+dependencyCheck {
+    failBuildOnCVSS = 5f
+    suppressionFiles = listOf()
+    format = Format.ALL
+    analyzers.assemblyEnabled = false
+}
+
+fun isNonStable(version: String): Boolean {
+    val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.toUpperCase().contains(it) }
+    val regex = "^[0-9,.v-]+(-r)?$".toRegex()
+    val isStable = stableKeyword || regex.matches(version)
+    return isStable.not()
+}
+
+tasks.withType<DependencyUpdatesTask> {
+    rejectVersionIf {
+        isNonStable(candidate.version) && !isNonStable(currentVersion)
+    }
 }
 
 tasks {
@@ -128,25 +169,6 @@ tasks {
         manifest {
             attributes["Implementation-Title"] = rootProject.name
             attributes["Implementation-Version"] = archiveVersion
-        }
-    }
-}
-
-springBoot {
-    buildInfo {
-        properties {
-            artifact = rootProject.name
-            version = version
-            group = group
-            name = rootProject.name
-            time = today
-
-            additional = mapOf(
-                    "by" to System.getProperty("user.name"),
-                    "operatingSystem" to "${System.getProperty("os.name")} (${System.getProperty("os.version")})",
-                    "continuousIntegration" to System.getenv().containsKey("CI"),
-                    "machine" to InetAddress.getLocalHost().hostName
-            )
         }
     }
 }
