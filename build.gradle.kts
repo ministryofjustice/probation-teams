@@ -10,7 +10,7 @@ plugins {
     kotlin("jvm") version "1.3.61"
 
     id("io.spring.dependency-management") version "1.0.9.RELEASE"
-    id("org.springframework.boot") version "2.2.4.RELEASE"
+    id("org.springframework.boot") version "2.2.5.RELEASE"
 
     // Makes classes annotated with @Component, @Async, @Transactional, @Cacheable and @SpringBootTest open
     kotlin("plugin.spring") version "1.3.61"
@@ -18,7 +18,7 @@ plugins {
     // Adds a no-arg (Java) constructor to classes annotated with @Entity, @Embeddable or @MappedSuperclass
     kotlin("plugin.jpa") version "1.3.61"
 
-    id("com.github.ben-manes.versions") version "0.27.0"
+    id("com.github.ben-manes.versions") version "0.28.0"
     id("org.owasp.dependencycheck") version "5.3.0"
 }
 
@@ -69,7 +69,7 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     runtimeOnly("com.h2database:h2:1.4.200")
-    runtimeOnly("org.flywaydb:flyway-core:6.2.3")
+    runtimeOnly("org.flywaydb:flyway-core:6.2.4")
     runtimeOnly("org.postgresql:postgresql:42.2.10")
 
     implementation(kotlin("stdlib-jdk8"))
@@ -104,7 +104,7 @@ dependencies {
     }
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("com.tngtech.java:junit-dataprovider:1.13.1")
-    testImplementation("net.javacrumbs.json-unit:json-unit-assertj:2.13.0")
+    testImplementation("net.javacrumbs.json-unit:json-unit-assertj:2.13.1")
     testImplementation("io.github.http-builder-ng:http-builder-ng-apache:1.0.4")
     testImplementation("com.ninja-squad:springmockk:2.0.0")
 }
