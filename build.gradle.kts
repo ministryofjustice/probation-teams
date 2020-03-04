@@ -7,16 +7,16 @@ import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import org.owasp.dependencycheck.reporting.ReportGenerator.Format
 
 plugins {
-    kotlin("jvm") version "1.3.61"
+    kotlin("jvm") version "1.3.70"
 
     id("io.spring.dependency-management") version "1.0.9.RELEASE"
     id("org.springframework.boot") version "2.2.5.RELEASE"
 
     // Makes classes annotated with @Component, @Async, @Transactional, @Cacheable and @SpringBootTest open
-    kotlin("plugin.spring") version "1.3.61"
+    kotlin("plugin.spring") version "1.3.70"
 
     // Adds a no-arg (Java) constructor to classes annotated with @Entity, @Embeddable or @MappedSuperclass
-    kotlin("plugin.jpa") version "1.3.61"
+    kotlin("plugin.jpa") version "1.3.70"
 
     id("com.github.ben-manes.versions") version "0.28.0"
     id("org.owasp.dependencycheck") version "5.3.0"
@@ -86,15 +86,16 @@ dependencies {
     implementation("net.logstash.logback:logstash-logback-encoder:6.3")
     implementation("com.microsoft.azure:applicationinsights-spring-boot-starter:2.5.1")
     implementation("com.microsoft.azure:applicationinsights-logging-logback:2.5.1")
-    implementation("com.github.timpeeters:spring-boot-graceful-shutdown:2.2.0")
+    implementation("com.github.timpeeters:spring-boot-graceful-shutdown:2.2.1")
     implementation("io.springfox:springfox-swagger2:2.9.2")
     implementation("io.springfox:springfox-swagger-ui:2.9.2")
     implementation("io.jsonwebtoken:jjwt:0.9.1")
     implementation("net.sf.ehcache:ehcache:2.10.6")
     implementation("org.apache.commons:commons-lang3:3.9")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.2")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("com.pauldijou:jwt-core_2.11:4.2.0")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.3")
+    implementation( "com.fasterxml.jackson.module:jackson-module-kotlin:2.10.3")
+    implementation("com.pauldijou:jwt-core_2.11:4.3.0")
+    implementation("com.google.guava:guava:28.2-jre")
 
     testAnnotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
@@ -104,7 +105,7 @@ dependencies {
     }
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("com.tngtech.java:junit-dataprovider:1.13.1")
-    testImplementation("net.javacrumbs.json-unit:json-unit-assertj:2.13.1")
+    testImplementation("net.javacrumbs.json-unit:json-unit-assertj:2.14.0")
     testImplementation("io.github.http-builder-ng:http-builder-ng-apache:1.0.4")
     testImplementation("com.ninja-squad:springmockk:2.0.0")
 }
@@ -125,7 +126,7 @@ java {
 
 dependencyCheck {
     failBuildOnCVSS = 5f
-    suppressionFiles = listOf()
+    suppressionFiles = listOf("dependency-check-suppress-spring.xml")
     format = Format.ALL
     analyzers.assemblyEnabled = false
 }
