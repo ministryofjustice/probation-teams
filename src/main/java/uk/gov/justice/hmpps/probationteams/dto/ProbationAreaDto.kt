@@ -14,5 +14,5 @@ data class ProbationAreaDto @JsonCreator constructor(
 
         @ApiModelProperty(required = true, value = "Local Delivery Units by Local Delivery Unit code", position = 2)
         @JsonProperty("localDeliveryUnits")
-        val localDeliveryUnits: Map<String, LocalDeliveryUnitDto>? = mapOf()
+        val localDeliveryUnits: Map<String, LocalDeliveryUnitDto> = mapOf()
 )

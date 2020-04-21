@@ -27,7 +27,6 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitSer
 
     @ApiOperation(value = "Retrieve a Probation Area", nickname = "Retrieve a Probation Area")
     @ApiResponses(value = [
-        ApiResponse(code = 404, message = "Probation Area not found"),
         ApiResponse(code = 200, message = "OK", response = ProbationAreaDto::class)
     ])
     fun getProbationArea(
