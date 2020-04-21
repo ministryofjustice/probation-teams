@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import uk.gov.justice.hmpps.probationteams.dto.ErrorResponse
 import uk.gov.justice.hmpps.probationteams.dto.LocalDeliveryUnitDto
+import uk.gov.justice.hmpps.probationteams.dto.ProbationAreaDto
 import uk.gov.justice.hmpps.probationteams.dto.ProbationTeamDto
 import uk.gov.justice.hmpps.probationteams.model.LocalDeliveryUnit
 import uk.gov.justice.hmpps.probationteams.services.DeleteOutcome
@@ -19,6 +20,29 @@ import uk.gov.justice.hmpps.probationteams.services.SetOutcome
         value = ["probation-areas"],
         produces = [APPLICATION_JSON_VALUE])
 class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitService) {
+
+    @GetMapping(
+            path = ["/{probationAreaCode}"],
+            produces = [APPLICATION_JSON_VALUE])
+
+    @ApiOperation(value = "Retrieve a Probation Area", nickname = "Retrieve a Probation Area")
+    @ApiResponses(value = [
+        ApiResponse(code = 404, message = "Probation Area not found"),
+        ApiResponse(code = 200, message = "OK", response = ProbationAreaDto::class)
+    ])
+    fun getProbationArea(
+
+            @ApiParam(value = "Probation Area code", required = true, example = "N02")
+            @PathVariable("probationAreaCode")
+            probationAreaCode: String
+
+    ): ProbationAreaDto =
+            ProbationAreaDto(
+                    probationAreaCode,
+                    localDeliveryUnitService
+                            .getProbationArea(probationAreaCode)
+                            .map(::fromLocalDeliveryUnit)
+                            .associateBy(LocalDeliveryUnitDto::localDeliveryUnitCode))
 
     @GetMapping(
             path = ["/{probationAreaCode}/local-delivery-units/{localDeliveryUnitCode}"],
@@ -184,3 +208,4 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitSer
         }
     }
 }
+

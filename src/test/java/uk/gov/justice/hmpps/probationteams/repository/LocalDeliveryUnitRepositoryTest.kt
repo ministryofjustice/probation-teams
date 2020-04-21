@@ -128,6 +128,21 @@ class LocalDeliveryUnitRepositoryTest(
         assertThat(probationTeamCount(lduId)).isEqualTo(0)
     }
 
+    @Test
+    fun findByProbationAreaCode() {
+        val probationAreaCode = "XYZ"
+        repository.save(lduWithProbationTeams(uniqueLduCode(), probationAreaCode))
+        repository.save(lduWithProbationTeams(uniqueLduCode(), probationAreaCode))
+        repository.save(lduWithProbationTeams(uniqueLduCode(), probationAreaCode))
+
+        TestTransaction.flagForCommit()
+        TestTransaction.end()
+        TestTransaction.start()
+
+        val ldus = repository.findByProbationAreaCode(probationAreaCode)
+        assertThat(ldus).hasSize(3)
+    }
+
     private fun probationTeamCount(lduId: UUID?) =
             jdbcTemplate.queryForObject("""
                 select count(*) 
@@ -143,8 +158,8 @@ class LocalDeliveryUnitRepositoryTest(
                  """.trimIndent(), Long::class.java, lduId)
 
     companion object {
-        fun lduWithProbationTeams(lduCode: String): LocalDeliveryUnit = LocalDeliveryUnit(
-                probationAreaCode = "ABC",
+        fun lduWithProbationTeams(lduCode: String, probationAreaCode: String = "ABC"): LocalDeliveryUnit = LocalDeliveryUnit(
+                probationAreaCode,
                 localDeliveryUnitCode = lduCode,
                 probationTeams = mutableMapOf(
                         "T1" to ProbationTeam("t1@team.com"),

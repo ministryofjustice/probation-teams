@@ -14,6 +14,9 @@ import java.util.*
 @Transactional
 class LocalDeliveryUnitService(@Autowired val repository: LocalDeliveryUnitRepository) {
 
+    fun getProbationArea(probationAreaCode: String): List<LocalDeliveryUnit> =
+            repository.findByProbationAreaCode(probationAreaCode)
+
     fun getLocalDeliveryUnit(probationAreaCode: String, localDeliveryUnitCode: String): Optional<LocalDeliveryUnit> =
             repository.findByProbationAreaCodeAndLocalDeliveryUnitCode(probationAreaCode, localDeliveryUnitCode)
 
