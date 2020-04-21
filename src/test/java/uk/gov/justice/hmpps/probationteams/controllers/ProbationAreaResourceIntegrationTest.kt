@@ -30,6 +30,28 @@ class ProbationAreaResourceIntegrationTest(
     val jsonTester = BasicJsonTester(this.javaClass)
 
     @Nested
+    @DisplayName("GET ${PROBATION_AREA_TEMPLATE}")
+    inner class GetProbationAreaTests {
+        @Test
+        fun `A Probation area that doesn't contain any FMBs`() {
+            val response = getProbationArea("ZZZ")
+            with(response) {
+                assertThat(statusCode).isEqualTo(HttpStatus.OK)
+                assertThat(jsonTester.from(body)).isEqualToJson("{ probationAreaCode: \"ZZZ\"}")
+            }
+        }
+
+        @Test
+        fun `A probation area that contains FMBs`() {
+            val response = getProbationArea("ABC")
+            with(response) {
+                assertThat(statusCode).isEqualTo(HttpStatus.OK)
+                assertThat(jsonTester.from(body)).isEqualToJson("probationArea.json")
+            }
+        }
+    }
+
+    @Nested
     @DisplayName("GET ${LDU_TEMPLATE}")
     inner class GetLduTests {
         @Test
@@ -304,6 +326,16 @@ class ProbationAreaResourceIntegrationTest(
         )
     }
 
+    fun getProbationArea(probationAreaCode: String): ResponseEntity<String> =
+            testRestTemplate.exchange(
+                    PROBATION_AREA_TEMPLATE,
+                    HttpMethod.GET,
+                    entityBuilder.entityWithJwtAuthorisation(A_USER, NO_ROLES),
+                    String::class.java,
+                    probationAreaCode)
+
+
+
     fun getLdu(probationAreaCode: String, lduCode: String): ResponseEntity<String> =
             testRestTemplate.exchange(
                     LDU_TEMPLATE,
@@ -345,6 +377,7 @@ class ProbationAreaResourceIntegrationTest(
                     probationAreaCode, lduCode, teamCode)
 
     companion object {
+        private const val PROBATION_AREA_TEMPLATE = "/probation-areas/{probationAreaCode}"
         private const val LDU_TEMPLATE = "/probation-areas/{probationAreaCode}/local-delivery-units/{lduCode}"
         private const val LDU_FMB_TEMPLATE = "/probation-areas/{probationAreaCode}/local-delivery-units/{lduCode}/functional-mailbox"
 

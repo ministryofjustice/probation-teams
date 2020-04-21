@@ -7,5 +7,6 @@ import java.util.*
 
 @Repository
 interface LocalDeliveryUnitRepository : JpaRepository<LocalDeliveryUnit, UUID> {
+    fun findByProbationAreaCode(probationAreaCode: String): List<LocalDeliveryUnit>
     fun findByProbationAreaCodeAndLocalDeliveryUnitCode(probationAreaCode: String, localDeliveryUnitCode: String): Optional<LocalDeliveryUnit>
 }

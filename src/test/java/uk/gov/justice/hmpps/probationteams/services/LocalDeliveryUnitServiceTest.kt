@@ -27,6 +27,24 @@ class LocalDeliveryUnitServiceTest {
     }
 
     @Nested
+    @DisplayName("getProbationArea()")
+    inner class GetProbationArea {
+
+        @Test
+        fun `Probation area exists`() {
+            every { repository.findByProbationAreaCode(PROBATION_AREA_CODE) } returns listOf(lduWithFmb())
+            assertThat(service.getProbationArea(PROBATION_AREA_CODE)).isNotEmpty
+        }
+
+        @Test
+        fun `Probation area does not exist`() {
+            every { repository.findByProbationAreaCode(PROBATION_AREA_CODE) } returns listOf()
+            assertThat(service.getProbationArea(PROBATION_AREA_CODE)).isEmpty()
+        }
+    }
+
+
+    @Nested
     @DisplayName("getLocalDeliveryUnit()")
     inner class GetLdu {
 
