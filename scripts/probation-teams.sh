@@ -7,11 +7,11 @@ declare -A PROBATION_TEAMS_URL
 AUTH_URL['dev']=https://gateway.t3.nomis-api.hmpps.dsd.io/auth
 PROBATION_TEAMS_URL['dev']=https://probation-teams-dev.prison.service.justice.gov.uk
 
-#PREPROD
+# PREPROD
 AUTH_URL['preprod']=https://gateway.preprod.nomis-api.service.hmpps.dsd.io/auth
 PROBATION_TEAMS_URL['preprod']=https://probation-teams-preprod.prison.service.justice.gov.uk
 
-#PROD
+# PROD
 AUTH_URL['prod']=https://gateway.prod.nomis-api.service.hmpps.dsd.io/auth
 PROBATION_TEAMS_URL['prod']=https://probation-teams.prison.service.justice.gov.uk
 
@@ -24,12 +24,15 @@ usage() {
   echo "   -ns <namespace>            One of 'dev', 'preprod' or 'prod'. Selects the kubernetes namespace. "
   echo "                              If 'prod' is selected the user is asked to confirm the operation"
   echo "   -pa <probation area code>  Required"
-  echo "   -ldu <LDU code>            Required"
+  echo "   -ldu <LDU code>            Optional"
   echo "   -team <team code>          Required when a team functional mailbox is to be updated or deleted"
   echo "   -update <email address>    PUT the email address to the selected LDU or team functional mailbox"
   echo "   -delete                    DELETE the selected LDU or team functional mailbox"
   echo
   echo "  Examples:"
+  echo
+  echo "  GET the resource(s) for probation area 'N02':"
+  echo "  probation-teams -ns dev -pa N02"
   echo
   echo "  GET the LDU resource for probation area 'N02' and LDU 'YSNYOR':"
   echo "  probation-teams -ns dev -pa N02 -ldu YSNYOR"
@@ -54,46 +57,54 @@ read_command_line() {
     usage
   fi
   while [[ $1 ]]; do
-      case $1 in
-        -ns )       shift
-                    NS_KEY=$1
-                    ;;
-        -pa )       shift
-                    PROBATION_AREA_CODE=$1
-                    ;;
-        -ldu )      shift
-                    LOCAL_DELIVERY_UNIT_CODE=$1
-                    ;;
-        -team )     shift
-                    TEAM_CODE=$1
-                    ;;
-        -update )   shift
-                    COMMAND=update
-                    EMAIL=$1
-                    ;;
-        -delete )   COMMAND=delete
-                    ;;
-        -help )     usage
-                    ;;
-        * )         echo
-                    echo "Unknown argument '$1'"
-                    echo
-                    exit
-                    ;;
-      esac
+    case $1 in
+    -ns)
       shift
+      NS_KEY=$1
+      ;;
+    -pa)
+      shift
+      PROBATION_AREA_CODE=$1
+      ;;
+    -ldu)
+      shift
+      LOCAL_DELIVERY_UNIT_CODE=$1
+      ;;
+    -team)
+      shift
+      TEAM_CODE=$1
+      ;;
+    -update)
+      shift
+      COMMAND=update
+      EMAIL=$1
+      ;;
+    -delete)
+      COMMAND=delete
+      ;;
+    -help)
+      usage
+      ;;
+    *)
+      echo
+      echo "Unknown argument '$1'"
+      echo
+      exit
+      ;;
+    esac
+    shift
   done
 }
 
 check_namespace() {
   case "$NS_KEY" in
-    dev | preprod | prod )
-      NAMESPACE=licences-${NS_KEY};
-      ;;
-    *)
-      echo "-ns must be 'dev', 'preprod' or 'prod'";
-      exit;
-      ;;
+  dev | preprod | prod)
+    NAMESPACE=licences-${NS_KEY}
+    ;;
+  *)
+    echo "-ns must be 'dev', 'preprod' or 'prod'"
+    exit
+    ;;
   esac
 }
 
@@ -104,11 +115,8 @@ set_base_url() {
   fi
 
   if [[ ! $LOCAL_DELIVERY_UNIT_CODE ]]; then
-    echo "Local delivery unit code not set."
-    exit
-  fi
-
-  if [[ $TEAM_CODE ]]; then
+    BASE_URL=${PROBATION_TEAMS_URL[$NS_KEY]}/probation-areas/${PROBATION_AREA_CODE}
+  elif [[ $TEAM_CODE ]]; then
     BASE_URL=${PROBATION_TEAMS_URL[$NS_KEY]}/probation-areas/${PROBATION_AREA_CODE}/local-delivery-units/${LOCAL_DELIVERY_UNIT_CODE}/teams/${TEAM_CODE}
   else
     BASE_URL=${PROBATION_TEAMS_URL[$NS_KEY]}/probation-areas/${PROBATION_AREA_CODE}/local-delivery-units/${LOCAL_DELIVERY_UNIT_CODE}
@@ -139,7 +147,7 @@ confirm() {
   fi
 }
 
-get_ldu() {
+get_ldu_or_probation_area() {
   if [[ $TEAM_CODE ]]; then
     echo "Don't use '-team' with GET"
     exit
@@ -170,14 +178,14 @@ delete_mailbox() {
 
 do_command() {
   case $COMMAND in
-    update )
-      update_mailbox
+  update)
+    update_mailbox
     ;;
-    delete )
-      delete_mailbox
+  delete)
+    delete_mailbox
     ;;
-    * )
-      get_ldu
+  *)
+    get_ldu_or_probation_area
     ;;
   esac
 }
