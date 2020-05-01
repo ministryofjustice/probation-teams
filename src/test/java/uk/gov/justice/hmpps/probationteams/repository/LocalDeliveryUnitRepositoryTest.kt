@@ -143,6 +143,19 @@ class LocalDeliveryUnitRepositoryTest(
         assertThat(ldus).hasSize(3)
     }
 
+    @Test
+    fun getProbationAreaCodes() {
+        val probationAreaCodes = repository.getProbationAreaCodes()
+        val actualProbationAreaCodes = probationAreaCodes()
+        assertThat(probationAreaCodes).isEqualTo(actualProbationAreaCodes)
+    }
+
+    private fun probationAreaCodes() =
+            jdbcTemplate.queryForList("""
+                select distinct PROBATION_AREA_CODE 
+                from LOCAL_DELIVERY_UNIT2
+                order by PROBATION_AREA_CODE""".trimIndent(), String::class.java)
+
     private fun probationTeamCount(lduId: UUID?) =
             jdbcTemplate.queryForObject("""
                 select count(*) 

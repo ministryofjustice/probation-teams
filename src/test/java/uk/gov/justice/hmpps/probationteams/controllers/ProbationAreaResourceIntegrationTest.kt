@@ -1,10 +1,12 @@
 package uk.gov.justice.hmpps.probationteams.controllers
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.*
+import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.json.BasicJsonTester
@@ -30,7 +32,7 @@ class ProbationAreaResourceIntegrationTest(
     val jsonTester = BasicJsonTester(this.javaClass)
 
     @Nested
-    @DisplayName("GET ${PROBATION_AREA_TEMPLATE}")
+    @DisplayName("GET $PROBATION_AREA_TEMPLATE")
     inner class GetProbationAreaTests {
         @Test
         fun `A Probation area that doesn't contain any FMBs`() {
@@ -52,7 +54,7 @@ class ProbationAreaResourceIntegrationTest(
     }
 
     @Nested
-    @DisplayName("GET ${LDU_TEMPLATE}")
+    @DisplayName("GET $LDU_TEMPLATE")
     inner class GetLduTests {
         @Test
         fun `An LDU that doesn't exist`() {
@@ -83,7 +85,7 @@ class ProbationAreaResourceIntegrationTest(
     }
 
     @Nested
-    @DisplayName("PUT ${LDU_FMB_TEMPLATE}")
+    @DisplayName("PUT $LDU_FMB_TEMPLATE")
     inner class PutFmbOnLdu {
 
         fun authorisedRolesProvider() = listOf(SYSTEM_USER_ROLE, MAINTAIN_REF_DATA_ROLE)
@@ -127,7 +129,7 @@ class ProbationAreaResourceIntegrationTest(
     }
 
     @Nested
-    @DisplayName("DELETE ${LDU_FMB_TEMPLATE}")
+    @DisplayName("DELETE $LDU_FMB_TEMPLATE")
     inner class DeleteFmbOnLdu {
 
         fun authorisedRolesProvider() = listOf(SYSTEM_USER_ROLE, MAINTAIN_REF_DATA_ROLE)
@@ -151,7 +153,7 @@ class ProbationAreaResourceIntegrationTest(
     }
 
     @Nested
-    @DisplayName("PUT ${TEAM_FMB_TEMPLATE}")
+    @DisplayName("PUT $TEAM_FMB_TEMPLATE")
     inner class PutTeamFmb {
         fun authorisedRolesProvider() = listOf(SYSTEM_USER_ROLE, MAINTAIN_REF_DATA_ROLE)
 
@@ -187,7 +189,7 @@ class ProbationAreaResourceIntegrationTest(
     }
 
     @Nested
-    @DisplayName("DELETE ${TEAM_FMB_TEMPLATE}")
+    @DisplayName("DELETE $TEAM_FMB_TEMPLATE")
     inner class DeleteTeamFmb {
 
         fun authorisedRolesProvider() = listOf(SYSTEM_USER_ROLE, MAINTAIN_REF_DATA_ROLE)
@@ -333,7 +335,6 @@ class ProbationAreaResourceIntegrationTest(
                     entityBuilder.entityWithJwtAuthorisation(A_USER, NO_ROLES),
                     String::class.java,
                     probationAreaCode)
-
 
 
     fun getLdu(probationAreaCode: String, lduCode: String): ResponseEntity<String> =
