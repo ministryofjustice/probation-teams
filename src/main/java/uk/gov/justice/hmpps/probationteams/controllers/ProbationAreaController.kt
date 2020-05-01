@@ -21,10 +21,7 @@ import uk.gov.justice.hmpps.probationteams.services.SetOutcome
         produces = [APPLICATION_JSON_VALUE])
 class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitService) {
 
-    @GetMapping(
-            path = ["/{probationAreaCode}"],
-            produces = [APPLICATION_JSON_VALUE])
-
+    @GetMapping(path = ["/{probationAreaCode}"])
     @ApiOperation(value = "Retrieve a Probation Area", nickname = "Retrieve a Probation Area")
     @ApiResponses(value = [
         ApiResponse(code = 200, message = "OK", response = ProbationAreaDto::class)
@@ -43,9 +40,7 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitSer
                             .map(::fromLocalDeliveryUnit)
                             .associateBy(LocalDeliveryUnitDto::localDeliveryUnitCode))
 
-    @GetMapping(
-            path = ["/{probationAreaCode}/local-delivery-units/{localDeliveryUnitCode}"],
-            produces = [APPLICATION_JSON_VALUE])
+    @GetMapping(path = ["/{probationAreaCode}/local-delivery-units/{localDeliveryUnitCode}"] )
 
     @ApiOperation(value = "Retrieve a Local Delivery Unit", nickname = "Retrieve a Local Delivery Unit")
     @ApiResponses(value = [
