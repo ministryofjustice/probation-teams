@@ -19,7 +19,8 @@ import java.util.*
 
 @Configuration
 @EnableSwagger2
-class SwaggerConfiguration(@Autowired(required = false) val buildProperties: BuildProperties? = null) {
+class SwaggerConfiguration(buildProperties: BuildProperties) {
+    private val version: String = buildProperties.version
 
     @Bean
     fun api(): Docket {
@@ -60,9 +61,6 @@ class SwaggerConfiguration(@Autowired(required = false) val buildProperties: Bui
             .forPaths(PathSelectors.regex("/.*"))
             .build()
 
-
-    private val version: String
-        get() = if (buildProperties == null) "version not available" else buildProperties!!.version
 
     private fun contactInfo() = Contact(
             "HMPPS Digital Studio",

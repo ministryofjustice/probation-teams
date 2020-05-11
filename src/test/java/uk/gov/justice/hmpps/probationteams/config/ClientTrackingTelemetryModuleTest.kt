@@ -3,8 +3,10 @@ package uk.gov.justice.hmpps.probationteams.config
 import com.microsoft.applicationinsights.web.internal.RequestTelemetryContext
 import com.microsoft.applicationinsights.web.internal.ThreadContext
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Ignore
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,8 +18,8 @@ import org.springframework.mock.web.MockHttpServletResponse
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import uk.gov.justice.digital.hmpps.probationteams.config.ClientTrackingTelemetryModule
 import uk.gov.justice.hmpps.probationteams.utils.JwtAuthenticationHelper
-import uk.gov.justice.hmpps.probationteams.utils.JwtParameters
 import java.time.Duration
 
 @ExtendWith(SpringExtension::class)
@@ -65,6 +67,7 @@ class ClientTrackingTelemetryModuleTest(
         assertThat(insightTelemetry["clientId"]).isEqualTo("elite2apiclient")
     }
 
+    @Disabled("Expiry date no longer validated - similar to whereabouts")
     @Test
     fun shouldNotAddClientIdAndUserNameToInsightTelemetryAsTokenExpired() {
         val token = createJwt("Fred", listOf(), -1L)
@@ -78,11 +81,10 @@ class ClientTrackingTelemetryModuleTest(
 
     private fun createJwt(user: String?, roles: List<String>, duration: Long): String =
             jwtAuthenticationHelper.createJwt(
-                    JwtParameters(
-                            username = user,
+                            subject = user,
                             roles = roles,
                             scope = listOf("read", "write"),
                             expiryTime = Duration.ofDays(duration)
-                    ))
+                    )
 
 }

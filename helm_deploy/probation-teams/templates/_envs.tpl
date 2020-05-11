@@ -22,6 +22,9 @@ env:
         name: {{ template "app.name" . }}
         key: APPINSIGHTS_INSTRUMENTATIONKEY
 
+  - name: OAUTH_ENDPOINT_URL
+    value: "{{ .Values.env.OAUTH_ENDPOINT_URL }}"
+
   - name: SUPERUSER_USERNAME
     valueFrom:
       secretKeyRef:

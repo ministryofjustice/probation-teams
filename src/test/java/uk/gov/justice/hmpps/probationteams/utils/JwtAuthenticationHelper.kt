@@ -1,38 +1,44 @@
 package uk.gov.justice.hmpps.probationteams.utils
 
+
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
-import org.apache.commons.codec.binary.Base64
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.core.io.ByteArrayResource
-import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory
+import org.springframework.context.annotation.Bean
+import org.springframework.security.oauth2.jwt.JwtDecoder
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder
 import org.springframework.stereotype.Component
 import java.security.KeyPair
+import java.security.KeyPairGenerator
+import java.security.interfaces.RSAPublicKey
 import java.time.Duration
 import java.util.*
 
+
 @Component
-class JwtAuthenticationHelper(@Value("\${jwt.signing.key.pair}") privateKeyPair: String,
-                              @Value("\${jwt.keystore.password}") keystorePassword: String,
-                              @Value("\${jwt.keystore.alias:elite2api}") keystoreAlias: String) {
+class JwtAuthenticationHelper {
     private val keyPair: KeyPair
 
     init {
-        val keyStoreKeyFactory = KeyStoreKeyFactory(ByteArrayResource(Base64.decodeBase64(privateKeyPair)),
-                keystorePassword.toCharArray())
-        keyPair = keyStoreKeyFactory.getKeyPair(keystoreAlias)
+        val gen = KeyPairGenerator.getInstance("RSA")
+        gen.initialize(2048)
+        keyPair = gen.generateKeyPair()
     }
 
-    fun createJwt(parameters: JwtParameters): String = with(parameters) {
-        val claims = HashMap<String, Any?>()
-        if (username != null) claims["user_name"] = username
-        if (userId != null) claims["user_id"] = userId
-        claims["client_id"] = "elite2apiclient"
-        if (roles.isNotEmpty()) claims["authorities"] = roles
-        if (scope.isNotEmpty()) claims["scope"] = scope
-        Jwts.builder()
-                .setId(UUID.randomUUID().toString())
-                .setSubject(username)
+    @Bean
+    fun jwtDecoder(): JwtDecoder = NimbusJwtDecoder.withPublicKey(keyPair.public as RSAPublicKey).build()
+
+    fun createJwt(subject: String?,
+                  scope: List<String>? = listOf(),
+                  roles: List<String>? = listOf(),
+                  expiryTime: Duration = Duration.ofHours(1),
+                  jwtId: String = UUID.randomUUID().toString()): String {
+        val claims = mutableMapOf<String, Any>("client_id" to "elite2apiclient")
+        subject?.let {claims["user_name"] = subject }
+        roles?.let { claims["authorities"] = roles }
+        scope?.let { claims["scope"] = scope }
+        return Jwts.builder()
+                .setId(jwtId)
+                .setSubject(subject)
                 .addClaims(claims)
                 .setExpiration(Date(System.currentTimeMillis() + expiryTime.toMillis()))
                 .signWith(SignatureAlgorithm.RS256, keyPair.private)
