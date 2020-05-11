@@ -13,14 +13,14 @@ env:
   - name: JAVA_OPTS
     value: "{{ .Values.env.JAVA_OPTS }}"
 
-  - name: JWT_PUBLIC_KEY
-    value: "{{ .Values.env.JWT_PUBLIC_KEY }}"
-
   - name: APPINSIGHTS_INSTRUMENTATIONKEY
     valueFrom:
       secretKeyRef:
         name: {{ template "app.name" . }}
         key: APPINSIGHTS_INSTRUMENTATIONKEY
+
+  - name: OAUTH_ENDPOINT_URL
+    value: "{{ .Values.env.OAUTH_ENDPOINT_URL }}"
 
   - name: SUPERUSER_USERNAME
     valueFrom:

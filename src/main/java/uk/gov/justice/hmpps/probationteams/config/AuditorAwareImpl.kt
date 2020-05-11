@@ -4,11 +4,13 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.data.domain.AuditorAware
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing
 import org.springframework.stereotype.Service
-import java.util.*
+import uk.gov.justice.hmpps.probationteams.security.AuthenticationFacade
+import java.util.Optional
+
 
 @Configuration
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
 @Service(value = "auditorAware")
-class AuditorAwareImpl(private val authenticationFacade: SecurityUserContext) : AuditorAware<String> {
-    override fun getCurrentAuditor(): Optional<String> = authenticationFacade.currentUsername
+class AuditorAwareImpl(private val authenticationFacade: AuthenticationFacade) : AuditorAware<String> {
+    override fun getCurrentAuditor(): Optional<String> = Optional.ofNullable(authenticationFacade.currentUsername)
 }

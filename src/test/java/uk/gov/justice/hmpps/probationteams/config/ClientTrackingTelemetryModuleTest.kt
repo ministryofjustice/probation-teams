@@ -17,7 +17,6 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import uk.gov.justice.hmpps.probationteams.utils.JwtAuthenticationHelper
-import uk.gov.justice.hmpps.probationteams.utils.JwtParameters
 import java.time.Duration
 
 @ExtendWith(SpringExtension::class)
@@ -65,24 +64,12 @@ class ClientTrackingTelemetryModuleTest(
         assertThat(insightTelemetry["clientId"]).isEqualTo("elite2apiclient")
     }
 
-    @Test
-    fun shouldNotAddClientIdAndUserNameToInsightTelemetryAsTokenExpired() {
-        val token = createJwt("Fred", listOf(), -1L)
-        val req = MockHttpServletRequest()
-        req.addHeader(HttpHeaders.AUTHORIZATION, "Bearer $token")
-        val res = MockHttpServletResponse()
-        clientTrackingTelemetryModule.onBeginRequest(req, res)
-        val insightTelemetry = ThreadContext.getRequestTelemetryContext().httpRequestTelemetry.properties
-        assertThat(insightTelemetry).isEmpty()
-    }
-
     private fun createJwt(user: String?, roles: List<String>, duration: Long): String =
             jwtAuthenticationHelper.createJwt(
-                    JwtParameters(
-                            username = user,
+                            subject = user,
                             roles = roles,
                             scope = listOf("read", "write"),
                             expiryTime = Duration.ofDays(duration)
-                    ))
+                    )
 
 }
