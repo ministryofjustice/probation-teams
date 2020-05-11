@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.probationteams.config
+package uk.gov.justice.hmpps.probationteams.config
 
 import com.microsoft.applicationinsights.TelemetryConfiguration
 import com.microsoft.applicationinsights.extensibility.TelemetryModule

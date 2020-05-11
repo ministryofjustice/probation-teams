@@ -8,7 +8,7 @@ configurations {
     implementation { exclude(mapOf("module" to "tomcat-jdbc")) }
 }
 
-ext ["spring-security.version"] = "5.3.1.RELEASE"
+ext ["spring-security.version"] = "5.3.2.RELEASE"
 
 dependencies {
 
@@ -18,19 +18,12 @@ dependencies {
     runtimeOnly("org.flywaydb:flyway-core:6.4.1")
     runtimeOnly("org.postgresql:postgresql:42.2.12")
 
-    implementation(kotlin("stdlib-jdk8"))
-    implementation(kotlin("reflect"))
-
-    implementation("org.hibernate:hibernate-java8")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
 
-    implementation("org.springframework.security:spring-security-oauth2-jose")
-
-    implementation("net.logstash.logback:logstash-logback-encoder:6.3")
     implementation("com.github.timpeeters:spring-boot-graceful-shutdown:2.2.2")
     implementation("io.springfox:springfox-swagger2:2.9.2")
     implementation("io.springfox:springfox-swagger-ui:2.9.2")
