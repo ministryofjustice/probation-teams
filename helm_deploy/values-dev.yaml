@@ -4,7 +4,7 @@
 replicaCount: 2
 
 image:
-  repository: docker.io/mojdigitalstudio/probation-teams
+  repository: quay.io/hmpps/probation-teams
   tag: latest
   pullPolicy: Always
   port: 8080
