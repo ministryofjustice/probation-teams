@@ -40,14 +40,13 @@ spec:
               topologyKey: kubernetes.io/hostname
       containers:
         - name: probation-teams
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}" 
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           ports:
             - containerPort: {{ .Values.image.port }}
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /health/ping
+              path: /health/liveness
               port: {{ .Values.image.port }}
             periodSeconds: 30
             initialDelaySeconds: 90
@@ -55,7 +54,7 @@ spec:
             failureThreshold: 10
           readinessProbe:
             httpGet:
-              path: /health/ping
+              path: /health/readiness
               port: {{ .Values.image.port }}
             periodSeconds: 20
             initialDelaySeconds: 60

@@ -48,8 +48,10 @@ server:
     context-path: /
   forward-headers-strategy: native
   tomcat:
-    remote-ip-header: x-forwarded-for
-    protocol_header: x-forwarded-proto
+    remoteip:
+      remote-ip-header: x-forwarded-for
+      protocol-header: x-forwarded-proto
+  shutdown: graceful
 
 management:
   endpoints:
@@ -57,6 +59,9 @@ management:
       base-path: /
       exposure:
         include: 'info,health'
+  health:
+    probes:
+      enabled: true
   endpoint:
     health:
       cache:
@@ -66,12 +71,3 @@ management:
     info:
       cache:
         time-to-live: 2000ms
-
-graceful:
-  shutdown:
-    enabled: true
-
-azure:
-  application-insights:
-    web:
-      enable-W3C: true
