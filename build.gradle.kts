@@ -15,7 +15,7 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     runtimeOnly("com.h2database:h2:1.4.200")
-    runtimeOnly("org.flywaydb:flyway-core:6.4.1")
+    runtimeOnly("org.flywaydb:flyway-core:6.4.3")
     runtimeOnly("org.postgresql:postgresql:42.2.12")
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -24,14 +24,13 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
 
-    implementation("com.github.timpeeters:spring-boot-graceful-shutdown:2.2.2")
     implementation("io.springfox:springfox-swagger2:2.9.2")
     implementation("io.springfox:springfox-swagger-ui:2.9.2")
     implementation("net.sf.ehcache:ehcache:2.10.6")
     implementation("org.apache.commons:commons-lang3:3.10")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.0")
     implementation( "com.fasterxml.jackson.module:jackson-module-kotlin:2.11.0")
-    implementation("com.nimbusds:nimbus-jose-jwt:8.16")
+    implementation("com.nimbusds:nimbus-jose-jwt:8.18")
     implementation("com.google.guava:guava:29.0-jre")
 
     testAnnotationProcessor("org.springframework.boot:spring-boot-configuration-processor")

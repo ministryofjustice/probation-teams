@@ -40,8 +40,7 @@ spec:
               topologyKey: kubernetes.io/hostname
       containers:
         - name: probation-teams
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}" 
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           ports:
             - containerPort: {{ .Values.image.port }}
               protocol: TCP
