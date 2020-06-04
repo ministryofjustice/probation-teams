@@ -51,6 +51,6 @@ In 'dev' you can exercise all the endpoints like so:
 ```
 Pipe the 'GET' output into jq for something more readable.
 
-You must have suitable kubernetes access to the releval cluster namespace for this to work. (licences-dev in this instance)
+You must have suitable kubernetes access to the cluster namespace for this to work. (licences-dev in this instance)
 
 The script `scripts/smoke-dev.sh` encapsulates these steps, but you must confirm the output manually.
