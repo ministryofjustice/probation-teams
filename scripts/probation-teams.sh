@@ -152,9 +152,10 @@ get_ldu_or_probation_area() {
     echo "Don't use '-team' with GET"
     exit
   fi
-  echo "GET ${BASE_URL}"
-  curl -s -H "${AUTH_HEADER}" -X HEAD ${BASE_URL} -w 'HTTP status: %{http_code}\n'
-  curl -s -H "${AUTH_HEADER}" -X GET ${BASE_URL} | jq
+#  echo "GET ${BASE_URL}"
+#  curl -s -H "${AUTH_HEADER}" -X HEAD ${BASE_URL} -w 'HTTP status: %{http_code}\n'
+#  curl -s -H "${AUTH_HEADER}" -X GET ${BASE_URL} | jq
+  curl -s -H "${AUTH_HEADER}" -X GET ${BASE_URL}
 }
 
 update_mailbox() {
