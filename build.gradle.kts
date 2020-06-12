@@ -8,15 +8,15 @@ configurations {
     implementation { exclude(mapOf("module" to "tomcat-jdbc")) }
 }
 
-ext ["spring-security.version"] = "5.3.2.RELEASE"
+ext ["spring-security.version"] = "5.3.3.RELEASE"
 
 dependencies {
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     runtimeOnly("com.h2database:h2:1.4.200")
-    runtimeOnly("org.flywaydb:flyway-core:6.4.3")
-    runtimeOnly("org.postgresql:postgresql:42.2.12")
+    runtimeOnly("org.flywaydb:flyway-core:6.4.4")
+    runtimeOnly("org.postgresql:postgresql:42.2.14")
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-cache")
@@ -30,7 +30,7 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:3.10")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.0")
     implementation( "com.fasterxml.jackson.module:jackson-module-kotlin:2.11.0")
-    implementation("com.nimbusds:nimbus-jose-jwt:8.18")
+    implementation("com.nimbusds:nimbus-jose-jwt:8.19")
     implementation("com.google.guava:guava:29.0-jre")
 
     testAnnotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
