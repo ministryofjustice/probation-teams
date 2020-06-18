@@ -1,5 +1,5 @@
 plugins {
-    id("uk.gov.justice.hmpps.gradle-spring-boot") version "0.4.1"
+    id("uk.gov.justice.hmpps.gradle-spring-boot") version "0.4.2"
     kotlin("plugin.spring") version "1.3.72"
     kotlin("plugin.jpa") version "1.3.72"
 }
@@ -7,8 +7,6 @@ plugins {
 configurations {
     implementation { exclude(mapOf("module" to "tomcat-jdbc")) }
 }
-
-ext ["spring-security.version"] = "5.3.3.RELEASE"
 
 dependencies {
 
@@ -41,7 +39,6 @@ dependencies {
     }
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("com.tngtech.java:junit-dataprovider:1.13.1")
-    testImplementation("net.javacrumbs.json-unit:json-unit-assertj:2.17.0")
     testImplementation("io.github.http-builder-ng:http-builder-ng-apache:1.0.4")
     testImplementation("com.ninja-squad:springmockk:2.0.1")
     testImplementation("io.jsonwebtoken:jjwt:0.9.1")
