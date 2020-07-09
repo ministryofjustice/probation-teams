@@ -10,7 +10,7 @@ image:
 
 ingress:
   enabled: true
-  enable_whitelist: true
+  enable_allow_list: true
   host: probation-teams.prison.service.justice.gov.uk
   cert_secret: probation-teams-cert
   path: /
@@ -19,7 +19,7 @@ env:
   JAVA_OPTS: "-Xmx512m"
   SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: "https://gateway.prod.nomis-api.service.hmpps.dsd.io/auth/.well-known/jwks.json"
 
-whitelist:
+allow_list:
   office: "217.33.148.210/32"
   health-kick: "35.177.252.195/32"
   mojvpn: "81.134.202.29/32"
