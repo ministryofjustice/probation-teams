@@ -4,15 +4,15 @@ declare -A AUTH_URL
 declare -A PROBATION_TEAMS_URL
 
 # DEV
-AUTH_URL['dev']=https://gateway.t3.nomis-api.hmpps.dsd.io/auth
+AUTH_URL['dev']=https://sign-in-dev.hmpps.service.justice.gov.uk/auth
 PROBATION_TEAMS_URL['dev']=https://probation-teams-dev.prison.service.justice.gov.uk
 
 # PREPROD
-AUTH_URL['preprod']=https://gateway.preprod.nomis-api.service.hmpps.dsd.io/auth
+AUTH_URL['preprod']=https://sign-in-preprod.hmpps.service.justice.gov.uk/auth
 PROBATION_TEAMS_URL['preprod']=https://probation-teams-preprod.prison.service.justice.gov.uk
 
 # PROD
-AUTH_URL['prod']=https://gateway.prod.nomis-api.service.hmpps.dsd.io/auth
+AUTH_URL['prod']=https://sign-in.hmpps.service.justice.gov.uk/auth
 PROBATION_TEAMS_URL['prod']=https://probation-teams.prison.service.justice.gov.uk
 
 usage() {
