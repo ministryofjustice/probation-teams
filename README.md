@@ -4,6 +4,8 @@
 
 Probation Team Contact and Reference Service
 
+Swagger doc can be found [here](https://probation-teams-dev.prison.service.justice.gov.uk/swagger-ui/index.html)
+
 There is a command line script at `scripts/probation-teams.sh` that can be used to test the service.
 
 Run the script without any arguments for some help text.

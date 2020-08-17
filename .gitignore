@@ -25,3 +25,6 @@ hs_err_pid*
 .gradle
 build
 out
+
+
+dps-gradle-spring-boot-suppressions.xml

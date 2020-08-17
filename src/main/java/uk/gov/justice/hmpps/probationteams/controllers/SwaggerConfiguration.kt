@@ -1,6 +1,5 @@
 package uk.gov.justice.hmpps.probationteams.controllers
 
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.info.BuildProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -8,17 +7,32 @@ import springfox.documentation.builders.AuthorizationCodeGrantBuilder
 import springfox.documentation.builders.OAuthBuilder
 import springfox.documentation.builders.PathSelectors
 import springfox.documentation.builders.RequestHandlerSelectors
-import springfox.documentation.service.*
+import springfox.documentation.service.ApiInfo
+import springfox.documentation.service.AuthorizationScope
+import springfox.documentation.service.Contact
+import springfox.documentation.service.SecurityReference
+import springfox.documentation.service.SecurityScheme
+import springfox.documentation.service.StringVendorExtension
+import springfox.documentation.service.TokenEndpoint
+import springfox.documentation.service.TokenRequestEndpoint
+import springfox.documentation.service.VendorExtension
 import springfox.documentation.spi.DocumentationType
 import springfox.documentation.spi.service.contexts.SecurityContext
 import springfox.documentation.spring.web.plugins.Docket
-import springfox.documentation.swagger2.annotations.EnableSwagger2
+import springfox.documentation.swagger.web.DocExpansion
+import springfox.documentation.swagger.web.ModelRendering
+import springfox.documentation.swagger.web.OperationsSorter
+import springfox.documentation.swagger.web.TagsSorter
+import springfox.documentation.swagger.web.UiConfiguration
+import springfox.documentation.swagger.web.UiConfigurationBuilder
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
-import java.util.*
+import java.util.ArrayList
+import java.util.Date
+import java.util.Optional
+
 
 @Configuration
-@EnableSwagger2
 class SwaggerConfiguration(buildProperties: BuildProperties) {
     private val version: String = buildProperties.version
 
@@ -79,5 +93,26 @@ class SwaggerConfiguration(buildProperties: BuildProperties) {
                 "https://gateway.nomis-api.service.justice.gov.uk/auth/terms",
                 contactInfo(),
                 "MIT", "https://opensource.org/licenses/MIT", vendorExtensions)
+    }
+
+    @Bean
+    fun uiConfig(): UiConfiguration? {
+        return UiConfigurationBuilder.builder()
+                .deepLinking(true)
+                .displayOperationId(false)
+                .defaultModelsExpandDepth(3)
+                .defaultModelExpandDepth(3)
+                .defaultModelRendering(ModelRendering.EXAMPLE)
+                .displayRequestDuration(false)
+                .docExpansion(DocExpansion.LIST)
+                .filter(false)
+                .maxDisplayedTags(null)
+                .operationsSorter(OperationsSorter.ALPHA)
+                .showExtensions(false)
+                .showCommonExtensions(false)
+                .tagsSorter(TagsSorter.ALPHA)
+                .supportedSubmitMethods(UiConfiguration.Constants.DEFAULT_SUBMIT_METHODS)
+                .validatorUrl(null)
+                .build()
     }
 }

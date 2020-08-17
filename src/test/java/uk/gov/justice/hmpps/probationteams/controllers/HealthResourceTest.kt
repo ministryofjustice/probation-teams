@@ -43,8 +43,25 @@ class HealthResourceTest(@Autowired val testRestTemplate: TestRestTemplate) {
         assertThat(jsonTester.from(response.body)).hasJsonPathStringValue("$.test-message", "Info Test")
     }
 
+    @Test
+    fun `Health liveness page is accessible`() {
+        val response = testRestTemplate.getForEntity(LIVENESS_URL, String::class.java)
+        assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
+        assertThat(jsonTester.from(response.body)).hasJsonPathStringValue("$.status", "UP")
+    }
+
+    @Test
+    fun `Health readiness page is accessible`() {
+        val response = testRestTemplate.getForEntity(READINESS_URL, String::class.java)
+        assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
+        assertThat(jsonTester.from(response.body)).hasJsonPathStringValue("$.status", "UP")
+
+    }
+
     companion object {
         private const val PING_URL = "/health/ping"
+        private const val LIVENESS_URL = "/health/liveness"
+        private const val READINESS_URL = "/health/readiness"
         private const val HEALTH_URL = "/health"
         private const val INFO_URL = "/info"
     }
