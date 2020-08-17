@@ -34,7 +34,7 @@ class ResourceServerConfiguration : WebSecurityConfigurerAdapter() {
                                     "/info",
                                     "/h2-console/**",
                                     "/v2/api-docs",
-                                    "/swagger-ui.html",
+                                    "/swagger-ui/**",
                                     "/swagger-resources",
                                     "/swagger-resources/configuration/ui",
                                     "/swagger-resources/configuration/security")

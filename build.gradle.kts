@@ -22,8 +22,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
 
-    implementation("io.springfox:springfox-swagger2:3.0.0")
-    implementation("io.springfox:springfox-swagger-ui:3.0.0")
+    implementation("io.springfox:springfox-boot-starter:3.0.0")
     implementation("net.sf.ehcache:ehcache:2.10.6")
     implementation("org.apache.commons:commons-lang3:3.11")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.2")
