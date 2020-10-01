@@ -1,7 +1,7 @@
 plugins {
-    id("uk.gov.justice.hmpps.gradle-spring-boot") version "0.4.8"
-    kotlin("plugin.spring") version "1.3.72"
-    kotlin("plugin.jpa") version "1.3.72"
+    id("uk.gov.justice.hmpps.gradle-spring-boot") version "1.0.6"
+    kotlin("plugin.spring") version "1.4.10"
+    kotlin("plugin.jpa") version "1.4.10"
 }
 
 configurations {
@@ -13,8 +13,8 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     runtimeOnly("com.h2database:h2:1.4.200")
-    runtimeOnly("org.flywaydb:flyway-core:6.5.4")
-    runtimeOnly("org.postgresql:postgresql:42.2.15")
+    runtimeOnly("org.flywaydb:flyway-core:6.5.6")
+    runtimeOnly("org.postgresql:postgresql:42.2.16")
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-cache")
@@ -27,7 +27,6 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:3.11")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.2")
     implementation( "com.fasterxml.jackson.module:jackson-module-kotlin:2.11.2")
-    implementation("com.nimbusds:nimbus-jose-jwt:8.20")
     implementation("com.google.guava:guava:29.0-jre")
 
     testAnnotationProcessor("org.springframework.boot:spring-boot-configuration-processor")

@@ -13,8 +13,6 @@ import springfox.documentation.service.Contact
 import springfox.documentation.service.SecurityReference
 import springfox.documentation.service.SecurityScheme
 import springfox.documentation.service.StringVendorExtension
-import springfox.documentation.service.TokenEndpoint
-import springfox.documentation.service.TokenRequestEndpoint
 import springfox.documentation.service.VendorExtension
 import springfox.documentation.spi.DocumentationType
 import springfox.documentation.spi.service.contexts.SecurityContext
@@ -54,9 +52,10 @@ class SwaggerConfiguration(buildProperties: BuildProperties) {
 
     private fun securityScheme(): SecurityScheme {
         val grantType = AuthorizationCodeGrantBuilder()
-                .tokenEndpoint(TokenEndpoint("http://localhost:9090/auth/oauth" + "/token", "oauthtoken"))
-                .tokenRequestEndpoint(
-                        TokenRequestEndpoint("http://localhost:9090/auth/oauth" + "/authorize", "swagger-client", "clientsecret"))
+                .tokenEndpoint { it.url("http://localhost:9090/auth/oauth/token").tokenName("oauthtoken") }
+                .tokenRequestEndpoint {
+                    it.url("http://localhost:9090/auth/oauth/authorize").clientIdName("swagger-client").clientSecretName("clientsecret")
+                }
                 .build()
         return OAuthBuilder().name("spring_oauth")
                 .grantTypes(listOf(grantType))
@@ -72,7 +71,6 @@ class SwaggerConfiguration(buildProperties: BuildProperties) {
 
     private fun securityContext() = SecurityContext.builder()
             .securityReferences(listOf(SecurityReference("spring_oauth", scopes())))
-            .forPaths(PathSelectors.regex("/.*"))
             .build()
 
 
