@@ -1,10 +1,8 @@
 # probation-teams
 [![CircleCI](https://circleci.com/gh/ministryofjustice/probation-teams/tree/main.svg?style=svg)](https://circleci.com/gh/ministryofjustice/probation-teams)
-[![Known Vulnerabilities](https://snyk.io/test/github/ministryofjustice/probation-teams/badge.svg)](https://snyk.io/test/github/ministryofjustice/probation-teams)
+[![API docs](https://img.shields.io/badge/API_docs-view-85EA2D.svg?logo=swagger)](https://probation-teams-dev.prison.service.justice.gov.uk/swagger-ui/index.html)
 
 Probation Team Contact and Reference Service
-
-Swagger doc can be found [here](https://probation-teams-dev.prison.service.justice.gov.uk/swagger-ui/index.html)
 
 There is a command line script at `scripts/probation-teams.sh` that can be used to test the service.
 
