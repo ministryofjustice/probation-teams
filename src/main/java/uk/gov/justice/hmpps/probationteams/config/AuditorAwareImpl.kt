@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.hmpps.probationteams.security.AuthenticationFacade
 import java.util.Optional
 
-
 @Configuration
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
 @Service(value = "auditorAware")

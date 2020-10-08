@@ -55,7 +55,6 @@ class HealthResourceTest(@Autowired val testRestTemplate: TestRestTemplate) {
         val response = testRestTemplate.getForEntity(READINESS_URL, String::class.java)
         assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
         assertThat(jsonTester.from(response.body)).hasJsonPathStringValue("$.status", "UP")
-
     }
 
     companion object {

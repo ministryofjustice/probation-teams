@@ -1,7 +1,11 @@
 package uk.gov.justice.hmpps.probationteams.services
 
-import io.mockk.*
+import io.mockk.clearMocks
+import io.mockk.confirmVerified
+import io.mockk.every
 import io.mockk.junit5.MockKExtension
+import io.mockk.mockk
+import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
@@ -11,7 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.hmpps.probationteams.model.LocalDeliveryUnit
 import uk.gov.justice.hmpps.probationteams.model.ProbationTeam
 import uk.gov.justice.hmpps.probationteams.repository.LocalDeliveryUnitRepository
-import java.util.*
+import java.util.Optional
 
 @ExtendWith(MockKExtension::class)
 @DisplayName("LDU Service tests")
@@ -42,7 +46,6 @@ class LocalDeliveryUnitServiceTest {
             assertThat(service.getProbationArea(PROBATION_AREA_CODE)).isEmpty()
         }
     }
-
 
     @Nested
     @DisplayName("getLocalDeliveryUnit()")
@@ -204,7 +207,7 @@ class LocalDeliveryUnitServiceTest {
             assertThat(service.deleteFunctionalMailbox(PROBATION_AREA_CODE, LDU_CODE, TEAM_CODE_1)).isEqualTo(DeleteOutcome.NOT_FOUND)
 
             verify(inverse = true) { repository.delete(any()) }
-       }
+        }
 
         @Test
         fun `No matching team`() {
@@ -228,7 +231,7 @@ class LocalDeliveryUnitServiceTest {
             ldu.probationTeams[TEAM_CODE_1] = ProbationTeam(FMB)
             ldu.probationTeams[TEAM_CODE_2] = ProbationTeam(FMB2)
 
-             every { repository.findByProbationAreaCodeAndLocalDeliveryUnitCode(any(), any()) } returns Optional.of(ldu)
+            every { repository.findByProbationAreaCodeAndLocalDeliveryUnitCode(any(), any()) } returns Optional.of(ldu)
 
             assertThat(service.deleteFunctionalMailbox(PROBATION_AREA_CODE, LDU_CODE, TEAM_CODE_1)).isEqualTo(DeleteOutcome.DELETED)
 
@@ -264,7 +267,6 @@ class LocalDeliveryUnitServiceTest {
 
             verify { repository.delete(ldu) }
         }
-
     }
 
     companion object {
@@ -276,14 +278,14 @@ class LocalDeliveryUnitServiceTest {
         private const val FMB2 = "x@y.gov.uk"
 
         fun lduWithFmb() = LocalDeliveryUnit(
-                probationAreaCode = PROBATION_AREA_CODE,
-                localDeliveryUnitCode = LDU_CODE,
-                functionalMailbox = FMB
+            probationAreaCode = PROBATION_AREA_CODE,
+            localDeliveryUnitCode = LDU_CODE,
+            functionalMailbox = FMB
         )
 
         fun lduWithNoFmb() = LocalDeliveryUnit(
-                probationAreaCode = PROBATION_AREA_CODE,
-                localDeliveryUnitCode = LDU_CODE)
-
+            probationAreaCode = PROBATION_AREA_CODE,
+            localDeliveryUnitCode = LDU_CODE
+        )
     }
 }

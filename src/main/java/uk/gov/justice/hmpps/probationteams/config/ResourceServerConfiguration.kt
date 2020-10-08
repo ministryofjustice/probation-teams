@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.core.convert.converter.Converter
 import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
-import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
@@ -22,31 +21,31 @@ class ResourceServerConfiguration : WebSecurityConfigurerAdapter() {
     @Throws(Exception::class)
     public override fun configure(http: HttpSecurity) {
         http.headers().frameOptions().sameOrigin().and()
-                .sessionManagement()
-                .sessionCreationPolicy(STATELESS) // Can't have CSRF protection as requires session
-                .and().csrf().disable()
-                .authorizeRequests({ auth ->
-                    auth
-                            .antMatchers(
-                                    "/webjars/**",
-                                    "/favicon.ico",
-                                    "/health/**",
-                                    "/info",
-                                    "/h2-console/**",
-                                    "/v2/api-docs",
-                                    "/swagger-ui/**",
-                                    "/swagger-resources",
-                                    "/swagger-resources/configuration/ui",
-                                    "/swagger-resources/configuration/security")
-                            .permitAll()
-                            .anyRequest()
-                            .authenticated()
-                })
-                .oauth2ResourceServer().jwt().jwtAuthenticationConverter(AuthAwareTokenConverter())
+            .sessionManagement()
+            .sessionCreationPolicy(STATELESS) // Can't have CSRF protection as requires session
+            .and().csrf().disable()
+            .authorizeRequests({ auth ->
+                auth
+                    .antMatchers(
+                        "/webjars/**",
+                        "/favicon.ico",
+                        "/health/**",
+                        "/info",
+                        "/h2-console/**",
+                        "/v2/api-docs",
+                        "/swagger-ui/**",
+                        "/swagger-resources",
+                        "/swagger-resources/configuration/ui",
+                        "/swagger-resources/configuration/security"
+                    )
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated()
+            })
+            .oauth2ResourceServer().jwt().jwtAuthenticationConverter(AuthAwareTokenConverter())
     }
 
-
-    class AuthAwareTokenConverter : Converter<Jwt   , AbstractAuthenticationToken> {
+    class AuthAwareTokenConverter : Converter<Jwt, AbstractAuthenticationToken> {
         private val jwtGrantedAuthoritiesConverter: Converter<Jwt, Collection<GrantedAuthority>> = JwtGrantedAuthoritiesConverter()
 
         override fun convert(jwt: Jwt): AbstractAuthenticationToken? = AuthAwareAuthenticationToken(jwt, extractAuthorities(jwt))
@@ -56,8 +55,9 @@ class ResourceServerConfiguration : WebSecurityConfigurerAdapter() {
             val authorities = jwtGrantedAuthoritiesConverter.convert(jwt).toMutableSet()
             if (jwt.claims.containsKey("authorities")) {
                 authorities.addAll(
-                        (jwt.claims["authorities"] as Collection<String?>)
-                                .map { SimpleGrantedAuthority(it) }.toSet())
+                    (jwt.claims["authorities"] as Collection<String?>)
+                        .map { SimpleGrantedAuthority(it) }.toSet()
+                )
             }
             return authorities.toSet()
         }

@@ -2,7 +2,11 @@ package uk.gov.justice.hmpps.probationteams.config
 
 import com.microsoft.applicationinsights.TelemetryClient
 import org.apache.commons.lang3.StringUtils
-import org.springframework.context.annotation.*
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Condition
+import org.springframework.context.annotation.ConditionContext
+import org.springframework.context.annotation.Conditional
+import org.springframework.context.annotation.Configuration
 import org.springframework.core.type.AnnotatedTypeMetadata
 
 /**
@@ -19,5 +23,5 @@ class ApplicationInsightsConfiguration {
 
 class AppInsightKeyAbsentCondition : Condition {
     override fun matches(context: ConditionContext, metadata: AnnotatedTypeMetadata) =
-            StringUtils.isBlank(context.environment.getProperty("appinsights.instrumentationkey"))
+        StringUtils.isBlank(context.environment.getProperty("appinsights.instrumentationkey"))
 }

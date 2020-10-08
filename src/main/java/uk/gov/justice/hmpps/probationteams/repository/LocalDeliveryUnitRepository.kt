@@ -4,7 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 import uk.gov.justice.hmpps.probationteams.model.LocalDeliveryUnit
-import java.util.*
+import java.util.Optional
+import java.util.UUID
 
 @Repository
 interface LocalDeliveryUnitRepository : JpaRepository<LocalDeliveryUnit, UUID> {

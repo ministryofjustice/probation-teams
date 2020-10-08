@@ -25,8 +25,8 @@ import java.time.Duration
 @ActiveProfiles("test")
 
 class ClientTrackingTelemetryModuleTest(
-        @Autowired val clientTrackingTelemetryModule: ClientTrackingTelemetryModule,
-        @Autowired val jwtAuthenticationHelper: JwtAuthenticationHelper
+    @Autowired val clientTrackingTelemetryModule: ClientTrackingTelemetryModule,
+    @Autowired val jwtAuthenticationHelper: JwtAuthenticationHelper
 ) {
 
     @BeforeEach
@@ -65,11 +65,10 @@ class ClientTrackingTelemetryModuleTest(
     }
 
     private fun createJwt(user: String?, roles: List<String>, duration: Long): String =
-            jwtAuthenticationHelper.createJwt(
-                            subject = user,
-                            roles = roles,
-                            scope = listOf("read", "write"),
-                            expiryTime = Duration.ofDays(duration)
-                    )
-
+        jwtAuthenticationHelper.createJwt(
+            subject = user,
+            roles = roles,
+            scope = listOf("read", "write"),
+            expiryTime = Duration.ofDays(duration)
+        )
 }

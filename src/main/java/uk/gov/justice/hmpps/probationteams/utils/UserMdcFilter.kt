@@ -38,5 +38,4 @@ class UserMdcFilter @Autowired constructor(private val userSecurityUtils: UserSe
     companion object {
         private const val USER_ID_HEADER = "userId"
     }
-
 }

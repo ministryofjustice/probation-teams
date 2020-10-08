@@ -6,7 +6,6 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import uk.gov.justice.hmpps.probationteams.utils.JwtAuthenticationHelper
-import uk.gov.justice.hmpps.probationteams.utils.JwtParameters
 import java.time.Duration
 
 @Component
@@ -28,10 +27,10 @@ class EntityWithJwtAuthorisationBuilder(@Autowired val jwtAuthenticationHelper: 
     }
 
     fun createJwt(user: String, roles: List<String>): String =
-            jwtAuthenticationHelper.createJwt(
-                            subject = user,
-                            roles = roles,
-                            scope = listOf("read", "write"),
-                            expiryTime = Duration.ofDays(1)
-                    )
+        jwtAuthenticationHelper.createJwt(
+            subject = user,
+            roles = roles,
+            scope = listOf("read", "write"),
+            expiryTime = Duration.ofDays(1)
+        )
 }

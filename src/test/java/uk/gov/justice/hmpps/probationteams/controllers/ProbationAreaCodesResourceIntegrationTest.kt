@@ -20,9 +20,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 @ActiveProfiles(value = ["test"])
 @DisplayName("Integration Tests for ProbationAreaCodesController")
 class ProbationAreaCodesResourceIntegrationTest(
-        @Autowired val testRestTemplate: TestRestTemplate,
-        @Autowired val entityBuilder: EntityWithJwtAuthorisationBuilder
-)  {
+    @Autowired val testRestTemplate: TestRestTemplate,
+    @Autowired val entityBuilder: EntityWithJwtAuthorisationBuilder
+) {
     val jsonTester = BasicJsonTester(this.javaClass)
 
     @Nested
@@ -39,11 +39,12 @@ class ProbationAreaCodesResourceIntegrationTest(
     }
 
     fun getProbationAreaCodes(): ResponseEntity<String> =
-            testRestTemplate.exchange(
-                    PROBATION_AREA_CODES_TEMPLATE,
-                    HttpMethod.GET,
-                    entityBuilder.entityWithJwtAuthorisation(A_USER, NO_ROLES),
-                    String::class.java)
+        testRestTemplate.exchange(
+            PROBATION_AREA_CODES_TEMPLATE,
+            HttpMethod.GET,
+            entityBuilder.entityWithJwtAuthorisation(A_USER, NO_ROLES),
+            String::class.java
+        )
 
     companion object {
         private const val PROBATION_AREA_CODES_TEMPLATE = "/probation-area-codes"
