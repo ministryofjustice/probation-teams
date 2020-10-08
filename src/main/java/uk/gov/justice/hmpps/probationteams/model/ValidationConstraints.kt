@@ -19,9 +19,9 @@ import kotlin.reflect.KClass
 @Constraint(validatedBy = [])
 @MustBeDocumented
 annotation class ProbationAreaCode(
-    val message: String = "Must be a valid Probation Area Code",
-    val groups: Array<KClass<out Any>> = [],
-    val payload: Array<KClass<out Any>> = []
+  val message: String = "Must be a valid Probation Area Code",
+  val groups: Array<KClass<out Any>> = [],
+  val payload: Array<KClass<out Any>> = []
 )
 
 @NotBlank()
@@ -32,9 +32,9 @@ annotation class ProbationAreaCode(
 @Constraint(validatedBy = [])
 @MustBeDocumented
 annotation class LduCode(
-    val message: String = "Must be a valid Local Delivery Unit Code",
-    val groups: Array<KClass<out Any>> = [],
-    val payload: Array<KClass<out Any>> = []
+  val message: String = "Must be a valid Local Delivery Unit Code",
+  val groups: Array<KClass<out Any>> = [],
+  val payload: Array<KClass<out Any>> = []
 )
 
 @NotBlank()
@@ -45,9 +45,9 @@ annotation class LduCode(
 @Constraint(validatedBy = [])
 @MustBeDocumented
 annotation class TeamCode(
-    val message: String = "Must be a valid Probation Team Code",
-    val groups: Array<KClass<out Any>> = [],
-    val payload: Array<KClass<out Any>> = []
+  val message: String = "Must be a valid Probation Team Code",
+  val groups: Array<KClass<out Any>> = [],
+  val payload: Array<KClass<out Any>> = []
 )
 
 @NotBlank()
@@ -58,7 +58,7 @@ annotation class TeamCode(
 @Constraint(validatedBy = [])
 @MustBeDocumented
 annotation class Email(
-    val message: String = "Must be a valid email address",
-    val groups: Array<KClass<out Any>> = [],
-    val payload: Array<KClass<out Any>> = []
+  val message: String = "Must be a valid email address",
+  val groups: Array<KClass<out Any>> = [],
+  val payload: Array<KClass<out Any>> = []
 )

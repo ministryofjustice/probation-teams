@@ -13,18 +13,18 @@ import uk.gov.justice.hmpps.probationteams.services.LocalDeliveryUnitService
 @Api(tags = ["probation-area-codes"])
 @RestController
 @RequestMapping(
-    value = ["probation-area-codes"],
-    produces = [MediaType.APPLICATION_JSON_VALUE]
+  value = ["probation-area-codes"],
+  produces = [MediaType.APPLICATION_JSON_VALUE]
 )
 
 class ProbationAreaCodesController(val localDeliveryUnitService: LocalDeliveryUnitService) {
 
-    @GetMapping
-    @ApiOperation(value = "Retrieve all Probation Area codes", nickname = "Retrieve all Probation Area codes")
-    @ApiResponses(
-        value = [
-            ApiResponse(code = 200, message = "OK", response = List::class)
-        ]
-    )
-    fun getProbationAreaCodes(): List<String> = localDeliveryUnitService.getProbationAreaCodes()
+  @GetMapping
+  @ApiOperation(value = "Retrieve all Probation Area codes", nickname = "Retrieve all Probation Area codes")
+  @ApiResponses(
+    value = [
+      ApiResponse(code = 200, message = "OK", response = List::class)
+    ]
+  )
+  fun getProbationAreaCodes(): List<String> = localDeliveryUnitService.getProbationAreaCodes()
 }

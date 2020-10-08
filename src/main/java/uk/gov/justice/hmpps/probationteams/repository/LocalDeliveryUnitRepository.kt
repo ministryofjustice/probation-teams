@@ -9,8 +9,8 @@ import java.util.UUID
 
 @Repository
 interface LocalDeliveryUnitRepository : JpaRepository<LocalDeliveryUnit, UUID> {
-    @Query("select distinct probationAreaCode from LocalDeliveryUnit order by probationAreaCode")
-    fun getProbationAreaCodes(): List<String>
-    fun findByProbationAreaCode(probationAreaCode: String): List<LocalDeliveryUnit>
-    fun findByProbationAreaCodeAndLocalDeliveryUnitCode(probationAreaCode: String, localDeliveryUnitCode: String): Optional<LocalDeliveryUnit>
+  @Query("select distinct probationAreaCode from LocalDeliveryUnit order by probationAreaCode")
+  fun getProbationAreaCodes(): List<String>
+  fun findByProbationAreaCode(probationAreaCode: String): List<LocalDeliveryUnit>
+  fun findByProbationAreaCodeAndLocalDeliveryUnitCode(probationAreaCode: String, localDeliveryUnitCode: String): Optional<LocalDeliveryUnit>
 }

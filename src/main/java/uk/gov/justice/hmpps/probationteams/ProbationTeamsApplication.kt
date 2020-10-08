@@ -9,5 +9,5 @@ import org.springframework.transaction.annotation.EnableTransactionManagement
 open class ProbationTeamsApplication
 
 fun main(args: Array<String>) {
-    runApplication<ProbationTeamsApplication>(*args)
+  runApplication<ProbationTeamsApplication>(*args)
 }

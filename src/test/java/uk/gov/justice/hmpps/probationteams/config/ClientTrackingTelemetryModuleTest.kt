@@ -25,50 +25,50 @@ import java.time.Duration
 @ActiveProfiles("test")
 
 class ClientTrackingTelemetryModuleTest(
-    @Autowired val clientTrackingTelemetryModule: ClientTrackingTelemetryModule,
-    @Autowired val jwtAuthenticationHelper: JwtAuthenticationHelper
+  @Autowired val clientTrackingTelemetryModule: ClientTrackingTelemetryModule,
+  @Autowired val jwtAuthenticationHelper: JwtAuthenticationHelper
 ) {
 
-    @BeforeEach
-    fun setup() {
-        ThreadContext.setRequestTelemetryContext(RequestTelemetryContext(1L))
-    }
+  @BeforeEach
+  fun setup() {
+    ThreadContext.setRequestTelemetryContext(RequestTelemetryContext(1L))
+  }
 
-    @AfterEach
-    fun tearDown() {
-        ThreadContext.remove()
-    }
+  @AfterEach
+  fun tearDown() {
+    ThreadContext.remove()
+  }
 
-    @Test
-    fun shouldAddClientIdAndUserNameToInsightTelemetry() {
-        val token = createJwt("bob", java.util.List.of(), 1L)
-        val req = MockHttpServletRequest()
-        req.addHeader(HttpHeaders.AUTHORIZATION, "Bearer $token")
-        val res = MockHttpServletResponse()
-        clientTrackingTelemetryModule.onBeginRequest(req, res)
-        val insightTelemetry = ThreadContext.getRequestTelemetryContext().httpRequestTelemetry.properties
-        assertThat(insightTelemetry).hasSize(2)
-        assertThat(insightTelemetry["username"]).isEqualTo("bob")
-        assertThat(insightTelemetry["clientId"]).isEqualTo("elite2apiclient")
-    }
+  @Test
+  fun shouldAddClientIdAndUserNameToInsightTelemetry() {
+    val token = createJwt("bob", java.util.List.of(), 1L)
+    val req = MockHttpServletRequest()
+    req.addHeader(HttpHeaders.AUTHORIZATION, "Bearer $token")
+    val res = MockHttpServletResponse()
+    clientTrackingTelemetryModule.onBeginRequest(req, res)
+    val insightTelemetry = ThreadContext.getRequestTelemetryContext().httpRequestTelemetry.properties
+    assertThat(insightTelemetry).hasSize(2)
+    assertThat(insightTelemetry["username"]).isEqualTo("bob")
+    assertThat(insightTelemetry["clientId"]).isEqualTo("elite2apiclient")
+  }
 
-    @Test
-    fun shouldAddOnlyClientIdIfUsernameNullToInsightTelemetry() {
-        val token = createJwt(null, listOf(), 1L)
-        val req = MockHttpServletRequest()
-        req.addHeader(HttpHeaders.AUTHORIZATION, "Bearer $token")
-        val res = MockHttpServletResponse()
-        clientTrackingTelemetryModule.onBeginRequest(req, res)
-        val insightTelemetry = ThreadContext.getRequestTelemetryContext().httpRequestTelemetry.properties
-        assertThat(insightTelemetry).hasSize(1)
-        assertThat(insightTelemetry["clientId"]).isEqualTo("elite2apiclient")
-    }
+  @Test
+  fun shouldAddOnlyClientIdIfUsernameNullToInsightTelemetry() {
+    val token = createJwt(null, listOf(), 1L)
+    val req = MockHttpServletRequest()
+    req.addHeader(HttpHeaders.AUTHORIZATION, "Bearer $token")
+    val res = MockHttpServletResponse()
+    clientTrackingTelemetryModule.onBeginRequest(req, res)
+    val insightTelemetry = ThreadContext.getRequestTelemetryContext().httpRequestTelemetry.properties
+    assertThat(insightTelemetry).hasSize(1)
+    assertThat(insightTelemetry["clientId"]).isEqualTo("elite2apiclient")
+  }
 
-    private fun createJwt(user: String?, roles: List<String>, duration: Long): String =
-        jwtAuthenticationHelper.createJwt(
-            subject = user,
-            roles = roles,
-            scope = listOf("read", "write"),
-            expiryTime = Duration.ofDays(duration)
-        )
+  private fun createJwt(user: String?, roles: List<String>, duration: Long): String =
+    jwtAuthenticationHelper.createJwt(
+      subject = user,
+      roles = roles,
+      scope = listOf("read", "write"),
+      expiryTime = Duration.ofDays(duration)
+    )
 }
