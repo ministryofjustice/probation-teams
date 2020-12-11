@@ -8,7 +8,7 @@ import javax.validation.constraints.Email
 
 @ApiModel(description = "Probation Team")
 data class ProbationTeamDto @JsonCreator constructor(
-    @ApiModelProperty(required = true, value = "Functional Mailbox", position = 1, example = "a@b.com")
-    @JsonProperty("functionalMailbox")
-    val functionalMailbox: @Email String
+  @ApiModelProperty(required = true, value = "Functional Mailbox", position = 1, example = "a@b.com")
+  @JsonProperty("functionalMailbox")
+  val functionalMailbox: @Email String
 )

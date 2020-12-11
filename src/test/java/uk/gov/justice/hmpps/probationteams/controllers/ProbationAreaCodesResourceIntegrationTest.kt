@@ -20,35 +20,36 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 @ActiveProfiles(value = ["test"])
 @DisplayName("Integration Tests for ProbationAreaCodesController")
 class ProbationAreaCodesResourceIntegrationTest(
-        @Autowired val testRestTemplate: TestRestTemplate,
-        @Autowired val entityBuilder: EntityWithJwtAuthorisationBuilder
-)  {
-    val jsonTester = BasicJsonTester(this.javaClass)
+  @Autowired val testRestTemplate: TestRestTemplate,
+  @Autowired val entityBuilder: EntityWithJwtAuthorisationBuilder
+) {
+  val jsonTester = BasicJsonTester(this.javaClass)
 
-    @Nested
-    @DisplayName("GET $PROBATION_AREA_CODES_TEMPLATE")
-    inner class GetProbationAreaCodesTests {
-        @Test
-        fun `It returns all the probation area codes`() {
-            val response = getProbationAreaCodes()
-            with(response) {
-                assertThat(statusCode).isEqualTo(HttpStatus.OK)
-                assertThat(jsonTester.from(body)).hasJsonPathArrayValue("$")
-            }
-        }
+  @Nested
+  @DisplayName("GET $PROBATION_AREA_CODES_TEMPLATE")
+  inner class GetProbationAreaCodesTests {
+    @Test
+    fun `It returns all the probation area codes`() {
+      val response = getProbationAreaCodes()
+      with(response) {
+        assertThat(statusCode).isEqualTo(HttpStatus.OK)
+        assertThat(jsonTester.from(body)).hasJsonPathArrayValue("$")
+      }
     }
+  }
 
-    fun getProbationAreaCodes(): ResponseEntity<String> =
-            testRestTemplate.exchange(
-                    PROBATION_AREA_CODES_TEMPLATE,
-                    HttpMethod.GET,
-                    entityBuilder.entityWithJwtAuthorisation(A_USER, NO_ROLES),
-                    String::class.java)
+  fun getProbationAreaCodes(): ResponseEntity<String> =
+    testRestTemplate.exchange(
+      PROBATION_AREA_CODES_TEMPLATE,
+      HttpMethod.GET,
+      entityBuilder.entityWithJwtAuthorisation(A_USER, NO_ROLES),
+      String::class.java
+    )
 
-    companion object {
-        private const val PROBATION_AREA_CODES_TEMPLATE = "/probation-area-codes"
+  companion object {
+    private const val PROBATION_AREA_CODES_TEMPLATE = "/probation-area-codes"
 
-        private const val A_USER = "API_TEST_USER"
-        private val NO_ROLES = listOf<String>()
-    }
+    private const val A_USER = "API_TEST_USER"
+    private val NO_ROLES = listOf<String>()
+  }
 }
