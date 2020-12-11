@@ -9,18 +9,18 @@ import javax.validation.constraints.NotBlank
 
 @ApiModel(description = "Local Delivery Unit")
 data class LocalDeliveryUnitDto @JsonCreator constructor(
-        @ApiModelProperty(required = true, value = "Probation Area code", position = 1, example = "NO2")
-        @JsonProperty("probationAreaCode")
-        val probationAreaCode: @NotBlank String,
+  @ApiModelProperty(required = true, value = "Probation Area code", position = 1, example = "NO2")
+  @JsonProperty("probationAreaCode")
+  val probationAreaCode: @NotBlank String,
 
-        @ApiModelProperty(required = true, value = "Local Delivery Unit code", position = 1, example = "NO2SUK")
-        @JsonProperty("localDeliveryUnitCode")
-        val localDeliveryUnitCode: @NotBlank String,
+  @ApiModelProperty(required = true, value = "Local Delivery Unit code", position = 1, example = "NO2SUK")
+  @JsonProperty("localDeliveryUnitCode")
+  val localDeliveryUnitCode: @NotBlank String,
 
-        @ApiModelProperty(required = true, value = "Functional Mailbox", position = 2, example = "a@b.com")
-        @JsonProperty("functionalMailbox")
-        val functionalMailbox: @Email String? = null,
+  @ApiModelProperty(required = true, value = "Functional Mailbox", position = 2, example = "a@b.com")
+  @JsonProperty("functionalMailbox")
+  val functionalMailbox: @Email String? = null,
 
-        @JsonProperty("probationTeams")
-        val probationTeams: Map<String, ProbationTeamDto>? = mapOf()
+  @JsonProperty("probationTeams")
+  val probationTeams: Map<String, ProbationTeamDto>? = mapOf()
 )

@@ -16,27 +16,26 @@ import javax.servlet.ServletResponse
 @Component
 @Order(1)
 class UserMdcFilter @Autowired constructor(private val userSecurityUtils: UserSecurityUtils) : Filter {
-    override fun init(filterConfig: FilterConfig) {
-        // Initialise - no functionality
-    }
+  override fun init(filterConfig: FilterConfig) {
+    // Initialise - no functionality
+  }
 
-    @Throws(IOException::class, ServletException::class)
-    override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
-        val currentUsername = userSecurityUtils.currentUsername
-        try {
-            MDC.put(USER_ID_HEADER, currentUsername)
-            chain.doFilter(request, response)
-        } finally {
-            MDC.remove(USER_ID_HEADER)
-        }
+  @Throws(IOException::class, ServletException::class)
+  override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
+    val currentUsername = userSecurityUtils.currentUsername
+    try {
+      MDC.put(USER_ID_HEADER, currentUsername)
+      chain.doFilter(request, response)
+    } finally {
+      MDC.remove(USER_ID_HEADER)
     }
+  }
 
-    override fun destroy() {
-        // Destroy - no functionality
-    }
+  override fun destroy() {
+    // Destroy - no functionality
+  }
 
-    companion object {
-        private const val USER_ID_HEADER = "userId"
-    }
-
+  companion object {
+    private const val USER_ID_HEADER = "userId"
+  }
 }
