@@ -1,13 +1,6 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "1.1.2"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "2.1.0"
 
-  /**
-   * The gradle-spring-boot plugin above selects versions of hibernate etc that are vulnerable.
-   * Override by specifying a later version of the org.springframework.boot plugin below.
-   *
-   * Remove this dependency when updating the version of gradle-spring-boot plugin above.
-   */
-  id("org.springframework.boot") version "2.4.1"
   kotlin("plugin.spring") version "1.4.21"
   kotlin("plugin.jpa") version "1.4.21"
 }
