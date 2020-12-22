@@ -7,10 +7,9 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.hmpps.probationteams.security.AuthenticationFacade
 import java.util.Optional
 
-
 @Configuration
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
 @Service(value = "auditorAware")
 class AuditorAwareImpl(private val authenticationFacade: AuthenticationFacade) : AuditorAware<String> {
-    override fun getCurrentAuditor(): Optional<String> = Optional.ofNullable(authenticationFacade.currentUsername)
+  override fun getCurrentAuditor(): Optional<String> = Optional.ofNullable(authenticationFacade.currentUsername)
 }

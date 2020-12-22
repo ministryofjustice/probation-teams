@@ -7,54 +7,62 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.LocalDateTime
-import java.util.*
-import javax.persistence.*
+import java.util.UUID
+import javax.persistence.CollectionTable
+import javax.persistence.Column
+import javax.persistence.ElementCollection
+import javax.persistence.Entity
+import javax.persistence.EntityListeners
+import javax.persistence.FetchType
+import javax.persistence.GeneratedValue
+import javax.persistence.Id
+import javax.persistence.JoinColumn
+import javax.persistence.MapKeyColumn
+import javax.persistence.Table
 
 @Entity
 @EntityListeners(AuditingEntityListener::class)
 @Table(name = "LOCAL_DELIVERY_UNIT2")
 data class LocalDeliveryUnit(
 
-        @Column(nullable = false)
-        var probationAreaCode: String,
+  @Column(nullable = false)
+  var probationAreaCode: String,
 
-        @Column(nullable = false)
-        var localDeliveryUnitCode: String,
+  @Column(nullable = false)
+  var localDeliveryUnitCode: String,
 
-        @Column
-        var functionalMailbox: String? = null,
+  @Column
+  var functionalMailbox: String? = null,
 
-        /**
-         * Map of probation team code to ProbationTeam
-         */
-        @ElementCollection(fetch = FetchType.EAGER)
-        @CollectionTable(
-                name = "PROBATION_TEAM",
-                joinColumns = [JoinColumn(name = "LOCAL_DELIVERY_UNIT_ID")])
-        @MapKeyColumn(name = "TEAM_CODE")
-        var probationTeams: MutableMap<String, ProbationTeam> = mutableMapOf()
+  /**
+   * Map of probation team code to ProbationTeam
+   */
+  @ElementCollection(fetch = FetchType.EAGER)
+  @CollectionTable(
+    name = "PROBATION_TEAM",
+    joinColumns = [JoinColumn(name = "LOCAL_DELIVERY_UNIT_ID")]
+  )
+  @MapKeyColumn(name = "TEAM_CODE")
+  var probationTeams: MutableMap<String, ProbationTeam> = mutableMapOf()
 ) {
 
-    @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "LOCAL_DELIVERY_UNIT_ID", updatable = false, nullable = false)
-    var id: UUID? = null
+  @Id
+  @GeneratedValue(generator = "UUID")
+  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+  @Column(name = "LOCAL_DELIVERY_UNIT_ID", updatable = false, nullable = false)
+  var id: UUID? = null
 
+  @CreatedDate
+  @Column(nullable = false)
+  var createDateTime: LocalDateTime? = null
 
-    @CreatedDate
-    @Column(nullable = false)
-    var createDateTime: LocalDateTime? = null
+  @CreatedBy
+  @Column(nullable = false)
+  var createUserId: String? = null
 
-    @CreatedBy
-    @Column(nullable = false)
-    var createUserId: String? = null
+  @LastModifiedDate
+  var modifyDateTime: LocalDateTime? = null
 
-    @LastModifiedDate
-    var modifyDateTime: LocalDateTime? = null
-
-    @LastModifiedBy
-    var modifyUserId: String? = null
+  @LastModifiedBy
+  var modifyUserId: String? = null
 }
-
-
