@@ -1,5 +1,5 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "2.1.0"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "2.1.1"
 
   kotlin("plugin.spring") version "1.4.21"
   kotlin("plugin.jpa") version "1.4.21"
@@ -22,6 +22,8 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-security")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+  // CVE fix for 1.4.4 bought in from spring-boot-starter-oauth2-client:5.4.2
+  implementation("com.nimbusds:lang-tag:1.5")
 
   implementation("io.springfox:springfox-boot-starter:3.0.0")
   implementation("net.sf.ehcache:ehcache")
