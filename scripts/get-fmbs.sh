@@ -31,7 +31,7 @@ done < probation-areas.txt
 echo "Converting JSON to CSV format"
 
 echo 'Probation Area code, LDU code, Probation Team code, Functional Mailbox address' > "$OUTPUT_FILE"
-cat "$TEMPFILE" | jq -r '
+jq -r '
  . as $all
  | (
      paths(scalars)
@@ -53,6 +53,6 @@ cat "$TEMPFILE" | jq -r '
          .functionalMailbox
        ]
    )
- | @csv' | sort >> "$OUTPUT_FILE"
+ | @csv' < "$TEMPFILE" | sort >> "$OUTPUT_FILE"
 
  echo "Output in $OUTPUT_FILE"
