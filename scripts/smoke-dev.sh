@@ -47,3 +47,16 @@ echo
 echo "Add the FMB '$EMAIL1' to team $PA/$LDU/$TEAM"
 ./probation-teams.sh -ns dev -pa $PA -ldu $LDU -team $TEAM -update a@b.com
 view
+
+echo
+echo "get all probation team codes"
+./probation-teams.sh -ns dev -pacs
+
+echo
+echo
+echo "get all Probation Team functional mailboxes"
+./probation-teams.sh -ns dev -fmbs | jq -r '.[].probationTeams[].functionalMailbox' | sort
+
+echo
+echo "get all functional mailboxes"
+./get-fmbs.sh -ns dev
