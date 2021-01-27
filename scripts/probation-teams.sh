@@ -28,6 +28,7 @@ usage() {
   echo "   -team <team code>          Required when a team functional mailbox is to be updated or deleted"
   echo "   -update <email address>    PUT the email address to the selected LDU or team functional mailbox"
   echo "   -delete                    DELETE the selected LDU or team functional mailbox"
+  echo "   -pacs                      Retrieve all probation area codes"
   echo
   echo "  Examples:"
   echo
@@ -48,6 +49,9 @@ usage() {
   echo
   echo "  DELETE a team's functional mailbox"
   echo "  probation-teams -ns dev -pa N02 -ldu YSNYOR -team T1 -delete"
+  echo
+  echo "  GET all the probation area codes"
+  echo "  probation-teams -ns dev -pacs"
   echo
   exit
 }
@@ -84,6 +88,9 @@ read_command_line() {
       ;;
     -help)
       usage
+      ;;
+    -pacs)
+      COMMAND=probationAreaCodes
       ;;
     *)
       echo
@@ -174,18 +181,27 @@ delete_mailbox() {
   echo "DELETE ${BASE_URL}/functional-mailbox"
   confirm
   curl -s -H "${AUTH_HEADER}" -X DELETE ${BASE_URL}/functional-mailbox -w 'HTTP status: %{http_code}\n'
+}
 
+get_probation_area_codes() {
+  curl -s -H "${AUTH_HEADER}" -X GET ${PROBATION_TEAMS_URL[$NS_KEY]}/probation-area-codes
 }
 
 do_command() {
   case $COMMAND in
   update)
+    set_base_url
     update_mailbox
     ;;
   delete)
+    set_base_url
     delete_mailbox
     ;;
+  probationAreaCodes)
+    get_probation_area_codes
+    ;;
   *)
+    set_base_url
     get_ldu_or_probation_area
     ;;
   esac
@@ -193,6 +209,5 @@ do_command() {
 
 read_command_line "$@"
 check_namespace
-set_base_url
 set_auth_header
 do_command
