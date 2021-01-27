@@ -83,7 +83,10 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitSer
     path = ["/{probationAreaCode}/local-delivery-units/{localDeliveryUnitCode}/functional-mailbox"],
     consumes = [APPLICATION_JSON_VALUE]
   )
-  @ApiOperation(value = "Set the Functional Mailbox for a Local Delivery Unit", notes = "Set the Functional Mailbox for a Local Delivery Unit")
+  @ApiOperation(
+    value = "Set the Functional Mailbox for a Local Delivery Unit",
+    notes = "Set the Functional Mailbox for a Local Delivery Unit"
+  )
   @ApiResponses(
     value = [
       ApiResponse(code = 201, message = "The functional mailbox has been set")
@@ -116,11 +119,18 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitSer
   }
 
   @DeleteMapping(path = ["/{probationAreaCode}/local-delivery-units/{localDeliveryUnitCode}/functional-mailbox"])
-  @ApiOperation(value = "Delete a Local Delivery Unit's functional mailbox", notes = "Delete a Local Delivery Unit's functional mailbox")
+  @ApiOperation(
+    value = "Delete a Local Delivery Unit's functional mailbox",
+    notes = "Delete a Local Delivery Unit's functional mailbox"
+  )
   @ApiResponses(
     value = [
       ApiResponse(code = 204, message = "The Local Delivery Unit's functional mailbox has been deleted"),
-      ApiResponse(code = 404, message = "Either the LDU didn't exist or it didn't have a functional mailbox", response = ErrorResponse::class)
+      ApiResponse(
+        code = 404,
+        message = "Either the LDU didn't exist or it didn't have a functional mailbox",
+        response = ErrorResponse::class
+      )
     ]
   )
 
@@ -150,7 +160,10 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitSer
     path = ["/{probationAreaCode}/local-delivery-units/{localDeliveryUnitCode}/teams/{teamCode}/functional-mailbox"],
     consumes = [APPLICATION_JSON_VALUE]
   )
-  @ApiOperation(value = "Set the Functional Mailbox for a Probation team", notes = "Set the Functional Mailbox for a Probation team")
+  @ApiOperation(
+    value = "Set the Functional Mailbox for a Probation team",
+    notes = "Set the Functional Mailbox for a Probation team"
+  )
   @ApiResponses(
     value = [
       ApiResponse(code = 201, message = "The functional mailbox has been set")
@@ -188,11 +201,18 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitSer
   }
 
   @DeleteMapping(path = ["/{probationAreaCode}/local-delivery-units/{localDeliveryUnitCode}/teams/{teamCode}/functional-mailbox"])
-  @ApiOperation(value = "Delete a Probation Teams's functional mailbox", notes = "Delete a Probation Teams's functional mailbox")
+  @ApiOperation(
+    value = "Delete a Probation Teams's functional mailbox",
+    notes = "Delete a Probation Teams's functional mailbox"
+  )
   @ApiResponses(
     value = [
       ApiResponse(code = 204, message = "The Probation Team's functional mailbox has been deleted"),
-      ApiResponse(code = 404, message = "The Probation Team didn't have a functional mailbox", response = ErrorResponse::class)
+      ApiResponse(
+        code = 404,
+        message = "The Probation Team didn't have a functional mailbox",
+        response = ErrorResponse::class
+      )
     ]
   )
 

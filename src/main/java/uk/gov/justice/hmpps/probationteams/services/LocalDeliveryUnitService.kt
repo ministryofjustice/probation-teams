@@ -1,6 +1,7 @@
 package uk.gov.justice.hmpps.probationteams.services
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Sort
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -20,6 +21,9 @@ import java.util.Optional
 class LocalDeliveryUnitService(@Autowired val repository: LocalDeliveryUnitRepository) {
 
   fun getProbationAreaCodes(): List<String> = repository.getProbationAreaCodes()
+
+  fun getLocalDeliveryUnits(): List<LocalDeliveryUnit> =
+    repository.findAll(Sort.by("probationAreaCode", "localDeliveryUnitCode"))
 
   fun getProbationArea(probationAreaCode: String): List<LocalDeliveryUnit> =
     repository.findByProbationAreaCode(probationAreaCode)
@@ -106,7 +110,11 @@ class LocalDeliveryUnitService(@Autowired val repository: LocalDeliveryUnitRepos
     return SetOutcome.CREATED
   }
 
-  private fun setTeamFunctionalMailbox(ldu: LocalDeliveryUnit, teamCode: String, proposedFunctionalMailbox: String): SetOutcome {
+  private fun setTeamFunctionalMailbox(
+    ldu: LocalDeliveryUnit,
+    teamCode: String,
+    proposedFunctionalMailbox: String
+  ): SetOutcome {
     val probationTeam = ldu.probationTeams[teamCode]
     return when (probationTeam) {
       null -> {
