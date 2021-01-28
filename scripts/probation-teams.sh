@@ -29,6 +29,7 @@ usage() {
   echo "   -update <email address>    PUT the email address to the selected LDU or team functional mailbox"
   echo "   -delete                    DELETE the selected LDU or team functional mailbox"
   echo "   -pacs                      Retrieve all probation area codes"
+  echo "   -fmbs                      Retrieve all functional mailboxes with ldu and probation team context"
   echo
   echo "  Examples:"
   echo
@@ -52,6 +53,9 @@ usage() {
   echo
   echo "  GET all the probation area codes"
   echo "  probation-teams -ns dev -pacs"
+  echo
+  echo "  GET all fmbs"
+  echo "  probation-teams -ns dev -fmbs"
   echo
   exit
 }
@@ -91,6 +95,9 @@ read_command_line() {
       ;;
     -pacs)
       COMMAND=probationAreaCodes
+      ;;
+    -fmbs)
+      COMMAND=allFunctionalMailboxes
       ;;
     *)
       echo
@@ -187,6 +194,10 @@ get_probation_area_codes() {
   curl -s -H "${AUTH_HEADER}" -X GET ${PROBATION_TEAMS_URL[$NS_KEY]}/probation-area-codes
 }
 
+get_all_functional_mailboxes() {
+  curl -s -H "${AUTH_HEADER}" -X GET ${PROBATION_TEAMS_URL[$NS_KEY]}/local-delivery-units
+}
+
 do_command() {
   case $COMMAND in
   update)
@@ -199,6 +210,9 @@ do_command() {
     ;;
   probationAreaCodes)
     get_probation_area_codes
+    ;;
+  allFunctionalMailboxes)
+    get_all_functional_mailboxes
     ;;
   *)
     set_base_url

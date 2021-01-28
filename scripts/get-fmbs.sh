@@ -15,40 +15,80 @@
 # See notes for that script.
 # You must also have the command-line program jq installed.
 #
-PROBATION_AREA_CODES_TMP=$(mktemp /tmp/probation-area-codes.XXXXXX)
 FMB_JSON_TMP=$(mktemp /tmp/functional-mailboxes-json.XXXXXX)
 DATE_TIME=$(date +'%F_%H-%M')
-OUTPUT_FILE=functional-mailboxes-${DATE_TIME}.csv
-NAMESPACE=prod
 
-echo "Extracting Probation Area Codes to $PROBATION_AREA_CODES_TMP"
-./probation-teams.sh -ns $NAMESPACE -pacs | jq -r '.[]' > "$PROBATION_AREA_CODES_TMP"
+usage() {
+  echo
+  echo "Usage:"
+  echo
+  echo " command line parameters:"
+  echo
+  echo "   -ns <namespace>            One of 'dev', 'preprod' or 'prod'. Selects the kubernetes namespace. "
+  echo
+  echo "  Examples:"
+  echo
+  echo "  get-fmbs -ns dev"
+  echo
+  exit
+}
 
-echo "Extracting Functional Mailbox JSON to $FMB_JSON_TMP:"
+read_command_line() {
+  if [[ ! $1 ]]; then
+    usage
+  fi
+  while [[ $1 ]]; do
+    case $1 in
+    -ns)
+      shift
+      NS_KEY=$1
+      ;;
+    *)
+      echo
+      echo "Unknown argument '$1'"
+      echo
+      exit
+      ;;
+    esac
+    shift
+  done
+}
 
-while IFS="" read -r p || [ -n "$p" ]
-do
-  echo "Probation area $p"
-  ./probation-teams.sh -ns $NAMESPACE -pa "$p" >> "$FMB_JSON_TMP"
-done < "$PROBATION_AREA_CODES_TMP"
+check_namespace() {
+  case "$NS_KEY" in
+  dev | preprod | prod) ;;
 
-echo "Converting JSON to CSV format"
+  *)
+    echo "-ns must be 'dev', 'preprod' or 'prod'"
+    exit
+    ;;
+  esac
+}
 
-echo 'Probation Area code, LDU code, Probation Team code, Functional Mailbox address' > "$OUTPUT_FILE"
-jq -r '
+get_fmb_json() {
+  echo "Extracting Functional Mailbox JSON to $FMB_JSON_TMP:"
+  ./probation-teams.sh -ns "$NS_KEY" -fmbs >>"$FMB_JSON_TMP"
+}
+
+convert_to_csv() {
+  echo "Converting JSON to CSV format"
+  OUTPUT_FILE=functional-mailboxes-${NS_KEY}_${DATE_TIME}.csv
+
+  echo 'Probation Area code, LDU code, Probation Team code, Functional Mailbox address' >"$OUTPUT_FILE"
+  jq -r '
  . as $all
  | (
      paths(scalars)
-     | select(.[4] == "functionalMailbox")
+     | select(.[3] == "functionalMailbox")
      | [
-         $all.localDeliveryUnits[.[1]].probationAreaCode,
-         $all.localDeliveryUnits[.[1]].localDeliveryUnitCode,
-         .[3],
-         $all.localDeliveryUnits[.[1]].probationTeams[.[3]].functionalMailbox
+         $all[.[0]].probationAreaCode,
+         $all[.[0]].localDeliveryUnitCode,
+         .[2],
+         $all[.[0]].probationTeams[.[2]].functionalMailbox
        ]
    ),
    (
-     $all.localDeliveryUnits[]
+     $all[]
      | select(.functionalMailbox )
      | [
          .probationAreaCode,
@@ -57,6 +97,12 @@ jq -r '
          .functionalMailbox
        ]
    )
- | @csv' < "$FMB_JSON_TMP" | sort >> "$OUTPUT_FILE"
+ | @csv' <"$FMB_JSON_TMP" | sort >>"$OUTPUT_FILE"
 
- echo "Output in $OUTPUT_FILE"
+  echo "Output in $OUTPUT_FILE"
+}
+
+read_command_line "$@"
+check_namespace
+get_fmb_json
+convert_to_csv
