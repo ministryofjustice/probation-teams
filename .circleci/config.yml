@@ -49,16 +49,20 @@ workflows:
           env: "dev"
           context:
             - hmpps-common-vars
-          filters:
-            branches:
-              only:
-                - main
+#          filters:
+#            branches:
+#              only:
+#                - main
           requires:
             - validate
             - helm_lint
             - build_docker
       - request-preprod-approval:
           type: approval
+          filters:
+            branches:
+              only:
+                - main
           requires:
             - deploy_dev
       - hmpps/deploy_env:
