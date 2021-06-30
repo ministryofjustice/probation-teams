@@ -1,7 +1,8 @@
 version: '3.1'
 services:
   probation-teams:
-    image: quay.io/hmpps/probation-teams:latest
+#    image: quay.io/hmpps/probation-teams:latest
+    build: .
     networks:
       - hmpps
     container_name: probation-teams
@@ -22,6 +23,7 @@ services:
       - SUPERUSER_USERNAME=admin
       - SUPERUSER_PASSWORD=admin_password
       - SPRING_PROFILES_ACTIVE=postgres,stdout
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=https://nomis-oauth2-server/auth/.well-known/jwks.json
 
   probation-teams-db:
     image: postgres
