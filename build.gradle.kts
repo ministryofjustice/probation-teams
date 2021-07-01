@@ -1,12 +1,12 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "3.1.1"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "3.3.2"
 
-  kotlin("plugin.spring") version "1.4.31"
-  kotlin("plugin.jpa") version "1.4.31"
+  kotlin("plugin.spring") version "1.5.20"
+  kotlin("plugin.jpa") version "1.5.20"
 }
 
 configurations {
-  implementation { exclude(mapOf("module" to "tomcat-jdbc")) }
+  implementation { exclude(group = "tomcat-jdbc") }
 }
 
 dependencies {
@@ -32,7 +32,16 @@ dependencies {
     exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     exclude(module = "mockito-core")
   }
+
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("com.ninja-squad:springmockk:3.0.1")
   testImplementation("io.jsonwebtoken:jjwt:0.9.1")
+}
+
+allOpen {
+  annotations(
+    "javax.persistence.Entity",
+    "javax.persistence.MappedSuperclass",
+    "javax.persistence.Embeddable"
+  )
 }
