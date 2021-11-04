@@ -1,5 +1,5 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "3.3.9"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "3.3.12"
 
   kotlin("plugin.spring") version "1.5.31"
   kotlin("plugin.jpa") version "1.5.31"
@@ -44,4 +44,18 @@ allOpen {
     "javax.persistence.MappedSuperclass",
     "javax.persistence.Embeddable"
   )
+}
+
+tasks {
+  compileKotlin {
+    kotlinOptions {
+      jvmTarget = "16"
+    }
+  }
+
+  compileTestKotlin {
+    kotlinOptions {
+      jvmTarget = "16"
+    }
+  }
 }
