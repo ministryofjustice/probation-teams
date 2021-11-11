@@ -3,3 +3,7 @@
 
 generic-prometheus-alerts:
   targetApplication: probation-teams
+
+
+  ingress:
+    external-dns.alpha.kubernetes.io/aws-weight: "100"
