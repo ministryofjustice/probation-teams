@@ -32,9 +32,9 @@ generic-service:
   #     [name of environment variable as seen by app]: [key of kubernetes secret to load]
 
   namespace_secrets:
-    hmpps-welcome-people-into-prison-api:
+    probation-teams:
       APPINSIGHTS_INSTRUMENTATIONKEY: "APPINSIGHTS_INSTRUMENTATIONKEY"
-    rds-postgresql-instance-output:
+    dps-rds-instance-output:
       SPRING_DATASOURCE_PASSWORD: "probation_teams_password"
       DATABASE_NAME: "database_name"
       DATABASE_ENDPOINT: "rds_instance_endpoint"

@@ -1,5 +1,5 @@
 ---
-# Per environment values which override defaults in hmpps-welcome-people-into-prison-api/values.yaml
+# Per environment values which override defaults in probation-teams/values.yaml
 
 generic-service:
   replicaCount: 2
