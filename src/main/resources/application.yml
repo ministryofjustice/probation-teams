@@ -1,46 +1,61 @@
+info.app:
+  name: Probation Teams API
+  version: 1.0
+
 spring:
   application:
     name: probation-teams
-
-  jpa:
-    open-in-view: false
-    properties:
-      hibernate:
-        jdbc:
-          lob:
-            non_contextual_creation: true
-            
-    show-sql: false
-    generate-ddl: false
-    hibernate:
-      ddl-auto: none
-
-  flyway:
-    enabled: true
-    locations: classpath:db/migration/general,classpath:db/migration/{vendor}
-    schemas: probation_teams
-    url: 'jdbc:h2:mem:probation-teams-db;MODE=PostgreSQL;DB_CLOSE_DELAY=-1'
-    user: 'sa'
-    password: ''
-    placeholders:
-      database_password: dummy
-
-  datasource:
-    # This reopens the H2 database prepared by flyway with default schema and user probation_teams
-    url: 'jdbc:h2:mem:probation-teams-db;MODE=PostgreSQL;SCHEMA="probation_teams";IFEXISTS=TRUE'
-    continue-on-error: true
-    username: probation_teams
-    password: dummy
-
-    hikari:
-      pool-name: ProbationTeams-CP
-      connectionTimeout: 1000
-      validationTimeout:  500
 
   jackson:
     date-format: "yyyy-MM-dd HH:mm:ss"
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
+
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    show-sql: false
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+
+  datasource:
+    url: 'jdbc:postgresql://${database.endpoint}/${database.name}?sslmode=prefer&currentSchema=probation_teams'
+    username: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    continue-on-error: true
+    hikari:
+      pool-name: ProbationTeams-CP
+      connectionTimeout: 1000
+      validationTimeout: 500
+      schema: probation_teams
+
+
+  flyway:
+    locations: classpath:/db/migration/general,classpath:/db/migration/postgres
+    url: ${spring.datasource.url}
+    user: ${SUPERUSER_USERNAME}
+    password: ${SUPERUSER_PASSWORD}
+    placeholders:
+      database_password: ${spring.datasource.password}
+    schemas: probation_teams
+
+  profiles:
+    group:
+      test:
+        - "stdout"
+        - "h2flyway"
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${oauth.endpoint.url}/.well-known/jwks.json
 
 server:
   port: 8080
@@ -51,7 +66,10 @@ server:
     remoteip:
       remote-ip-header: x-forwarded-for
       protocol-header: x-forwarded-proto
+      internal-proxies: 10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|169\.254\.\d{1,3}\.\d{1,3}|127\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.1[6-9]{1}\.\d{1,3}\.\d{1,3}|172\.2[0-9]{1}\.\d{1,3}\.\d{1,3}|172\.3[0-1]{1}\.\d{1,3}\.\d{1,3}|0:0:0:0:0:0:0:1|::1|100\.6[4-9]\.\d{1,3}\.\d{1,3}|100\.[7-9][0-9]{1}\.\d{1,3}\.\d{1,3}|100\.1[0-1][0-9]{1}\.\d{1,3}\.\d{1,3}|100\.12[0-7]\.\d{1,3}\.\d{1,3}
   shutdown: graceful
+  error:
+    include-message: always
 
 management:
   endpoints:

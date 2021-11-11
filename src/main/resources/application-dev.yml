@@ -1,7 +1,6 @@
 spring:
   flyway:
-    enabled: true
-    locations: classpath:db/migration/general,classpath:db/migration/{vendor},classpath:db/test/migration
+    locations: classpath:db/migration/general,classpath:db/migration/postgres,classpath:db/test/migration
 
   h2:
     console:
@@ -17,3 +16,10 @@ spring:
 
 server:
   shutdown: immediate
+
+oauth:
+  endpoint.url: http://localhost:8080/auth
+
+management.endpoint:
+  health.cache.time-to-live: 0
+  info.cache.time-to-live: 0

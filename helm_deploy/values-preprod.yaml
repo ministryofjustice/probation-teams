@@ -1,28 +1,20 @@
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+---
+# Per environment values which override defaults in hmpps-welcome-people-into-prison-api/values.yaml
 
-replicaCount: 4
+generic-service:
+  replicaCount: 4
 
-image:
-  repository: quay.io/hmpps/probation-teams
-  tag: latest
-  port: 8080
+  ingress:
+    host: probation-teams-preprod.prison.service.justice.gov.uk
+  env:
+    APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.json
+    OAUTH_ENDPOINT_URL: "https://sign-in-preprod.hmpps.service.justice.gov.uk/auth"
+    PRISON_ENDPOINT_URL: "https://api-preprod.prison.service.justice.gov.uk"
+    BASM_ENDPOINT_URL: "https://hmpps-book-secure-move-api-preprod.apps.live-1.cloud-platform.service.justice.gov.uk"
+    PRISONER_SEARCH_ENDPOINT_URL: "https://prisoner-offender-search-preprod.prison.service.justice.gov.uk"
+    PRISON_REGISTER_ENDPOINT_URL: "https://prison-register-preprod.hmpps.service.justice.gov.uk"
 
-ingress:
-  enabled: true
-  enable_allow_list: true
-  host: probation-teams-preprod.prison.service.justice.gov.uk
-  cert_secret: probation-teams-cert
-  path: /
-
-env:
-  JAVA_OPTS: "-Xmx512m"
-  SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: "https://sign-in-preprod.hmpps.service.justice.gov.uk/auth/.well-known/jwks.json"
-
-allow_list:
-  office: "217.33.148.210/32"
-  health-kick: "35.177.252.195/32"
-  mojvpn: "81.134.202.29/32"
-  cloudplatform-live1-1: "35.178.209.113/32"
-  cloudplatform-live1-2: "3.8.51.207/32"
-  cloudplatform-live1-3: "35.177.252.54/32"
+# CloudPlatform AlertManager receiver to route prometheus alerts to slack
+# See https://user-guide.cloud-platform.service.justice.gov.uk/documentation/monitoring-an-app/how-to-create-alarms.html#creating-your-own-custom-alerts
+generic-prometheus-alerts:
+  alertSeverity: probation-teams-dev

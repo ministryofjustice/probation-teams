@@ -31,12 +31,10 @@ class ResourceServerConfiguration : WebSecurityConfigurerAdapter() {
             "/favicon.ico",
             "/health/**",
             "/info",
-            "/h2-console/**",
-            "/v2/api-docs",
+            "/ping",
+            "/v3/api-docs/**",
             "/swagger-ui/**",
-            "/swagger-resources",
-            "/swagger-resources/configuration/ui",
-            "/swagger-resources/configuration/security"
+            "/swagger-ui.html"
           )
           .permitAll()
           .anyRequest()
@@ -52,28 +50,25 @@ class AuthAwareTokenConverter : Converter<Jwt, AbstractAuthenticationToken> {
 
   override fun convert(jwt: Jwt): AbstractAuthenticationToken {
     val claims: Map<String, Any> = jwt.claims
-    val principal: Any? = findPrincipal(claims)
+    val principal: String = findPrincipal(claims)
     val authorities = extractAuthorities(jwt)
 
     return AuthAwareAuthenticationToken(jwt, principal, authorities)
   }
 
-  private fun findPrincipal(claims: Map<String, Any>): Any? =
+  private fun findPrincipal(claims: Map<String, Any?>): String =
     if (claims.containsKey("user_name")) {
-      claims["user_name"]
+      claims["user_name"] as String
     } else {
-      claims["client_id"]
+      claims["client_id"] as String
     }
 
-  @Suppress("UNCHECKED_CAST", "RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
   private fun extractAuthorities(jwt: Jwt): Collection<GrantedAuthority> {
-    val authorities = jwtGrantedAuthoritiesConverter.convert(jwt).toMutableSet()
+    val authorities = mutableListOf<GrantedAuthority>().apply { addAll(jwtGrantedAuthoritiesConverter.convert(jwt)!!) }
     if (jwt.claims.containsKey("authorities")) {
-      authorities.addAll(
-        (jwt.claims["authorities"] as Collection<String?>)
-          .map { SimpleGrantedAuthority(it) }
-          .toSet()
-      )
+      @Suppress("UNCHECKED_CAST")
+      val claimAuthorities = (jwt.claims["authorities"] as Collection<String>).toList()
+      authorities.addAll(claimAuthorities.map(::SimpleGrantedAuthority))
     }
     return authorities.toSet()
   }
@@ -81,10 +76,10 @@ class AuthAwareTokenConverter : Converter<Jwt, AbstractAuthenticationToken> {
 
 class AuthAwareAuthenticationToken(
   jwt: Jwt,
-  principal: Any?,
+  principal: String,
   authorities: Collection<GrantedAuthority>
 ) : JwtAuthenticationToken(jwt, authorities) {
-  private val privatePrincipal: Any? = principal
-  override fun getPrincipal(): Any? = privatePrincipal
-  override fun getName(): String = principal?.toString() ?: ""
+  private val privatePrincipal: Any = principal
+  override fun getPrincipal(): Any = privatePrincipal
+  override fun getName(): String = principal.toString()
 }
