@@ -8,7 +8,7 @@ services:
     container_name: probation-teams
     depends_on:
       - probation-teams-db
-      - nomis-oauth2-server
+      - hmpps-auth
     ports:
       - '8085:8080'
     healthcheck:
@@ -17,13 +17,13 @@ services:
       - SERVER_PORT=8080
       - DATABASE_ENDPOINT=probation-teams-db
       - DATABASE_NAME=probation-teams-db
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://probation-teams-db/probation-teams-db
-      - DATABASE_USERNAME=probation_teams
-      - DATABASE_PASSWORD=probation_teams
+      - SPRING_DATASOURCE_USERNAME=probation_teams
+      - SPRING_DATASOURCE_PASSWORD=probation_teams
       - SUPERUSER_USERNAME=admin
       - SUPERUSER_PASSWORD=admin_password
-      - SPRING_PROFILES_ACTIVE=postgres,stdout
-      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=https://nomis-oauth2-server/auth/.well-known/jwks.json
+      - SPRING_PROFILES_ACTIVE=dev
+      - OAUTH_ENDPOINT_URL=http://hmpps-auth:8080/auth
+
 
   probation-teams-db:
     image: postgres
@@ -38,17 +38,18 @@ services:
       - POSTGRES_PASSWORD=admin_password
       - POSTGRES_DB=probation-teams-db
 
-  nomis-oauth2-server:
+  hmpps-auth:
     image: quay.io/hmpps/hmpps-auth:latest
     networks:
       - hmpps
-    container_name: nomis-oauth2-server
+    container_name: hmpps-auth
     ports:
       - '8080:8080'
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:8080/auth/health']
     environment:
       - SPRING_PROFILES_ACTIVE=dev
+      - DELIUS_ENABLED=false
 
 networks:
   hmpps:

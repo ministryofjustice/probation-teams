@@ -9,15 +9,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 @Configuration
 class WebMvcConfiguration {
   /**
-   * Remove any StringHttpMessageConverters from the set configured by Spring Boot.  Now @RestControllers will correctly encode a response of type String as JSON string
+   * Remove any StringHttpMessageConverters from the set configured by Spring Boot.
+   * Now @RestControllers will correctly encode and decode JSON strings.
    * @return The default List of HttpMessageConverter minus any StringHttpMessageConverter instances.
    */
   @Bean
   fun messageConverterReconfigurer(): WebMvcConfigurer = object : WebMvcConfigurer {
     override fun extendMessageConverters(converters: MutableList<HttpMessageConverter<*>>) {
-      val filtered = converters.filter { it !is StringHttpMessageConverter }
-      converters.clear()
-      converters.addAll(filtered)
+      converters.removeIf { it is StringHttpMessageConverter }
     }
   }
 }

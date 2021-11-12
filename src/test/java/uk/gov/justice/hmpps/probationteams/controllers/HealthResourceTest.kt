@@ -40,7 +40,7 @@ class HealthResourceTest(@Autowired val testRestTemplate: TestRestTemplate) {
   fun `Info test`() {
     val response = testRestTemplate.getForEntity(INFO_URL, String::class.java)
     assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
-    assertThat(jsonTester.from(response.body)).hasJsonPathStringValue("$.test-message", "Info Test")
+    assertThat(jsonTester.from(response.body)).hasJsonPathStringValue("$.app.name", "Probation Teams API")
   }
 
   @Test

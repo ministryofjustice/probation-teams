@@ -1,10 +1,9 @@
 package uk.gov.justice.hmpps.probationteams.controllers
 
-import io.swagger.annotations.Api
-import io.swagger.annotations.ApiOperation
-import io.swagger.annotations.ApiParam
-import io.swagger.annotations.ApiResponse
-import io.swagger.annotations.ApiResponses
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.http.ResponseEntity
@@ -24,7 +23,6 @@ import uk.gov.justice.hmpps.probationteams.services.DeleteOutcome
 import uk.gov.justice.hmpps.probationteams.services.LocalDeliveryUnitService
 import uk.gov.justice.hmpps.probationteams.services.SetOutcome
 
-@Api(tags = ["probation-areas"])
 @RestController
 @RequestMapping(
   value = ["probation-areas"],
@@ -33,15 +31,19 @@ import uk.gov.justice.hmpps.probationteams.services.SetOutcome
 class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitService) {
 
   @GetMapping(path = ["/{probationAreaCode}"])
-  @ApiOperation(value = "Retrieve a Probation Area", nickname = "Retrieve a Probation Area")
-  @ApiResponses(
-    value = [
-      ApiResponse(code = 200, message = "OK", response = ProbationAreaDto::class)
+  @Operation(
+    description = "Retrieve a Probation Area",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        content = [
+          Content(mediaType = APPLICATION_JSON_VALUE, schema = Schema(implementation = ProbationAreaDto::class))
+        ]
+      )
     ]
   )
   fun getProbationArea(
-
-    @ApiParam(value = "Probation Area code", required = true, example = "N02")
+    @Schema(description = "Probation Area code", example = "N02", required = true)
     @PathVariable("probationAreaCode")
     probationAreaCode: String
 
@@ -54,22 +56,30 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitSer
         .associateBy(LocalDeliveryUnitDto::localDeliveryUnitCode)
     )
 
-  @GetMapping(path = ["/{probationAreaCode}/local-delivery-units/{localDeliveryUnitCode}"])
-
-  @ApiOperation(value = "Retrieve a Local Delivery Unit", nickname = "Retrieve a Local Delivery Unit")
-  @ApiResponses(
-    value = [
-      ApiResponse(code = 404, message = "Local Delivery Unit not found"),
-      ApiResponse(code = 200, message = "OK", response = LocalDeliveryUnitDto::class)
+  @Operation(
+    description = "Retrieve a Local Delivery Unit",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        content = [
+          Content(
+            mediaType = APPLICATION_JSON_VALUE,
+            schema = Schema(implementation = LocalDeliveryUnitDto::class)
+          )
+        ]
+      ),
+      ApiResponse(responseCode = "404", description = "Local Delivery Unit not found")
     ]
   )
+
+  @GetMapping(path = ["/{probationAreaCode}/local-delivery-units/{localDeliveryUnitCode}"])
   fun getLocalDeliveryUnit(
 
-    @ApiParam(value = "Probation Area code", required = true, example = "N02")
+    @Schema(description = "Probation Area code", required = true, example = "N02")
     @PathVariable("probationAreaCode")
     probationAreaCode: String,
 
-    @ApiParam(value = "Local Delivery Unit code", required = true, example = "N02KSUK")
+    @Schema(description = "Local Delivery Unit code", required = true, example = "N02KSUK")
     @PathVariable("localDeliveryUnitCode")
     localDeliveryUnitCode: String
 
@@ -79,27 +89,24 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitSer
       .map(::fromLocalDeliveryUnit)
   )
 
+  @Operation(
+    description = "Set the Functional Mailbox for a Local Delivery Unit",
+    responses = [
+      ApiResponse(responseCode = "201", description = "The functional mailbox has been set"),
+    ]
+  )
+
   @PutMapping(
     path = ["/{probationAreaCode}/local-delivery-units/{localDeliveryUnitCode}/functional-mailbox"],
     consumes = [APPLICATION_JSON_VALUE]
   )
-  @ApiOperation(
-    value = "Set the Functional Mailbox for a Local Delivery Unit",
-    notes = "Set the Functional Mailbox for a Local Delivery Unit"
-  )
-  @ApiResponses(
-    value = [
-      ApiResponse(code = 201, message = "The functional mailbox has been set")
-    ]
-  )
-
   fun setFunctionalMailbox(
 
-    @ApiParam(value = "Probation Area code", required = true, example = "N02")
+    @Schema(description = "Probation Area code", required = true, example = "N02")
     @PathVariable("probationAreaCode")
     probationAreaCode: String,
 
-    @ApiParam(value = "Local Delivery Unit code", required = true, example = "N02KSUK")
+    @Schema(description = "Local Delivery Unit code", required = true, example = "N02KSUK")
     @PathVariable("localDeliveryUnitCode")
     localDeliveryUnitCode: String,
 
@@ -118,29 +125,26 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitSer
     SetOutcome.NO_CHANGE -> ResponseEntity.noContent().build()
   }
 
-  @DeleteMapping(path = ["/{probationAreaCode}/local-delivery-units/{localDeliveryUnitCode}/functional-mailbox"])
-  @ApiOperation(
-    value = "Delete a Local Delivery Unit's functional mailbox",
-    notes = "Delete a Local Delivery Unit's functional mailbox"
-  )
-  @ApiResponses(
-    value = [
-      ApiResponse(code = 204, message = "The Local Delivery Unit's functional mailbox has been deleted"),
+  @Operation(
+    description = "Delete a Local Delivery Unit's functional mailbox",
+    responses = [
+      ApiResponse(responseCode = "204", description = "The Local Delivery Unit's functional mailbox has been deleted"),
       ApiResponse(
-        code = 404,
-        message = "Either the LDU didn't exist or it didn't have a functional mailbox",
-        response = ErrorResponse::class
-      )
+        responseCode = "404",
+        description = "Either the LDU didn't exist or it didn't have a functional mailbox",
+        content = [Content(mediaType = APPLICATION_JSON_VALUE, schema = Schema(implementation = ErrorResponse::class))]
+      ),
     ]
   )
 
+  @DeleteMapping(path = ["/{probationAreaCode}/local-delivery-units/{localDeliveryUnitCode}/functional-mailbox"])
   fun deleteFunctionalMailbox(
 
-    @ApiParam(value = "Probation Area code", required = true, example = "N02")
+    @Schema(description = "Probation Area code", required = true, example = "N02")
     @PathVariable("probationAreaCode")
     probationAreaCode: String,
 
-    @ApiParam(value = "Local Delivery Unit code", required = true, example = "N02KSUK")
+    @Schema(description = "Local Delivery Unit code", required = true, example = "N02KSUK")
     @PathVariable("localDeliveryUnitCode")
     localDeliveryUnitCode: String
 
@@ -156,31 +160,28 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitSer
       DeleteOutcome.NOT_FOUND -> ResponseEntity.notFound().build()
     }
 
+  @Operation(
+    description = "Set the Functional Mailbox for a Probation team",
+    responses = [
+      ApiResponse(responseCode = "201", description = "The functional mailbox has been set"),
+    ]
+  )
+
   @PutMapping(
     path = ["/{probationAreaCode}/local-delivery-units/{localDeliveryUnitCode}/teams/{teamCode}/functional-mailbox"],
     consumes = [APPLICATION_JSON_VALUE]
   )
-  @ApiOperation(
-    value = "Set the Functional Mailbox for a Probation team",
-    notes = "Set the Functional Mailbox for a Probation team"
-  )
-  @ApiResponses(
-    value = [
-      ApiResponse(code = 201, message = "The functional mailbox has been set")
-    ]
-  )
-
   fun setFunctionalMailbox(
 
-    @ApiParam(value = "Probation Area code", required = true, example = "N02")
+    @Schema(description = "Probation Area code", required = true, example = "N02")
     @PathVariable("probationAreaCode")
     probationAreaCode: String,
 
-    @ApiParam(value = "Local Delivery Unit code", required = true, example = "N02KSUK")
+    @Schema(description = "Local Delivery Unit code", required = true, example = "N02KSUK")
     @PathVariable("localDeliveryUnitCode")
     localDeliveryUnitCode: String,
 
-    @ApiParam(value = "Team code", required = true, example = "N02KSUK")
+    @Schema(description = "Team code", required = true, example = "N02KSUK")
     @PathVariable("teamCode")
     teamCode: String,
 
@@ -200,33 +201,30 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitSer
     SetOutcome.NO_CHANGE -> ResponseEntity.noContent().build()
   }
 
-  @DeleteMapping(path = ["/{probationAreaCode}/local-delivery-units/{localDeliveryUnitCode}/teams/{teamCode}/functional-mailbox"])
-  @ApiOperation(
-    value = "Delete a Probation Teams's functional mailbox",
-    notes = "Delete a Probation Teams's functional mailbox"
-  )
-  @ApiResponses(
-    value = [
-      ApiResponse(code = 204, message = "The Probation Team's functional mailbox has been deleted"),
+  @Operation(
+    description = "Delete a Probation Teams's functional mailbox",
+    responses = [
+      ApiResponse(responseCode = "204", description = "The Probation Team's functional mailbox has been deleted"),
       ApiResponse(
-        code = 404,
-        message = "The Probation Team didn't have a functional mailbox",
-        response = ErrorResponse::class
-      )
+        responseCode = "404",
+        description = "The Probation Team didn't have a functional mailbox",
+        content = [Content(mediaType = APPLICATION_JSON_VALUE, schema = Schema(implementation = ErrorResponse::class))]
+      ),
     ]
   )
 
+  @DeleteMapping(path = ["/{probationAreaCode}/local-delivery-units/{localDeliveryUnitCode}/teams/{teamCode}/functional-mailbox"])
   fun deleteFunctionalMailbox(
 
-    @ApiParam(value = "Probation Area code", required = true, example = "N02")
+    @Schema(description = "Probation Area code", required = true, example = "N02")
     @PathVariable("probationAreaCode")
     probationAreaCode: String,
 
-    @ApiParam(value = "Local Delivery Unit code", required = true, example = "N02KSUK")
+    @Schema(description = "Local Delivery Unit code", required = true, example = "N02KSUK")
     @PathVariable("localDeliveryUnitCode")
     localDeliveryUnitCode: String,
 
-    @ApiParam(value = "Team code", required = true, example = "N02KSUK")
+    @Schema(description = "Team code", required = true, example = "N02KSUK")
     @PathVariable("teamCode")
     teamCode: String
 

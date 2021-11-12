@@ -2,22 +2,20 @@ package uk.gov.justice.hmpps.probationteams.dto
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
-import io.swagger.annotations.ApiModel
-import io.swagger.annotations.ApiModelProperty
+import io.swagger.v3.oas.annotations.media.Schema
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
 
-@ApiModel(description = "Local Delivery Unit")
 data class LocalDeliveryUnitDto @JsonCreator constructor(
-  @ApiModelProperty(required = true, value = "Probation Area code", position = 1, example = "NO2")
+  @Schema(description = "Probation Area code", example = "NO2", required = true)
   @JsonProperty("probationAreaCode")
   val probationAreaCode: @NotBlank String,
 
-  @ApiModelProperty(required = true, value = "Local Delivery Unit code", position = 1, example = "NO2SUK")
+  @Schema(description = "Local Delivery Unit code", example = "NO2SUK", required = true)
   @JsonProperty("localDeliveryUnitCode")
   val localDeliveryUnitCode: @NotBlank String,
 
-  @ApiModelProperty(required = true, value = "Functional Mailbox", position = 2, example = "a@b.com")
+  @Schema(description = "Functional Mailbox", example = "a@b.com", required = true)
   @JsonProperty("functionalMailbox")
   val functionalMailbox: @Email String? = null,
 
