@@ -27,5 +27,8 @@ build
 out
 .editorconfig
 
+.project
+.settings
+.classpath
 
 dps-gradle-spring-boot-suppressions.xml
