@@ -31,4 +31,5 @@ out
 .settings
 .classpath
 
+scripts/functional-mailboxes-*.csv
 dps-gradle-spring-boot-suppressions.xml
