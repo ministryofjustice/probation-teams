@@ -3,6 +3,14 @@ version: 2.1
 orbs:
   hmpps: ministryofjustice/hmpps@3.12
 
+parameters:
+  alerts-slack-channel:
+    type: string
+    default: elp_alerts_security
+  releases-slack-channel:
+    type: string
+    default: dps-releases
+
 jobs:
   validate:
     executor:
@@ -15,7 +23,7 @@ jobs:
             - gradle-{{ checksum "build.gradle.kts" }}
             - gradle-
       - run:
-          command: ./gradlew check
+          command: ./gradlew -Dorg.gradle.jvmargs="--illegal-access=permit" -Dkotlin.daemon.jvm.options="--illegal-access=permit" check
       - save_cache:
           paths:
             - ~/.gradle
@@ -24,11 +32,6 @@ jobs:
           path: build/test-results
       - store_artifacts:
           path: build/reports/tests
-      - persist_to_workspace:
-          root: .
-          paths:
-            - build/libs
-            - build.gradle.kts
 
 workflows:
   version: 2
@@ -49,16 +52,15 @@ workflows:
       - hmpps/deploy_env:
           name: deploy_dev
           env: "dev"
-          context:
-            - hmpps-common-vars
+          context: hmpps-common-vars
           filters:
             branches:
               only:
                 - main
           requires:
             - validate
-            - helm_lint
             - build_docker
+            - helm_lint
       - request-preprod-approval:
           type: approval
           requires:
@@ -67,8 +69,8 @@ workflows:
           name: deploy_preprod
           env: "preprod"
           context:
-            - probation-teams-preprod
             - hmpps-common-vars
+            - probation-teams-preprod
           requires:
             - request-preprod-approval
       - request-prod-approval:
@@ -79,9 +81,10 @@ workflows:
           name: deploy_prod
           env: "prod"
           slack_notification: true
+          slack_channel_name: << pipeline.parameters.releases-slack-channel >>
           context:
-            - probation-teams-prod
             - hmpps-common-vars
+            - probation-teams-prod
           requires:
             - request-prod-approval
 
@@ -95,25 +98,15 @@ workflows:
                 - main
     jobs:
       - hmpps/gradle_owasp_dependency_check:
+          slack_channel: << pipeline.parameters.alerts-slack-channel >>
           context:
             - hmpps-common-vars
       - hmpps/trivy_latest_scan:
+          slack_channel: << pipeline.parameters.alerts-slack-channel >>
           context:
             - hmpps-common-vars
-      - hmpps/veracode_pipeline_scan:
-          context:
-            - veracode-credentials
-            - hmpps-common-vars
-  security-weekly:
-    triggers:
-      - schedule:
-          cron: "30 6 * * 1"
-          filters:
-            branches:
-              only:
-                - main
-    jobs:
       - hmpps/veracode_policy_scan:
+          slack_channel: << pipeline.parameters.alerts-slack-channel >>
           context:
             - veracode-credentials
             - hmpps-common-vars
