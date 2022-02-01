@@ -6,6 +6,7 @@ generic-service:
 
   ingress:
     host: probation-teams-preprod.prison.service.justice.gov.uk
+    contextColour: green
   env:
     APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.json
     OAUTH_ENDPOINT_URL: "https://sign-in-preprod.hmpps.service.justice.gov.uk/auth"
