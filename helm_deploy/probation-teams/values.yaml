@@ -16,6 +16,7 @@ generic-service:
     host: app-hostname.local    # override per environment
     tlsSecretName: probation-teams-cert
     path: /
+    contextColour: green
 
   # Environment variables to load into the deployment
   env:
