@@ -54,3 +54,4 @@ generic-service:
 
 generic-prometheus-alerts:
   targetApplication: probation-teams
+  alertSeverity: digital-prison-service-dev
