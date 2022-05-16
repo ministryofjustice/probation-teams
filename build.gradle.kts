@@ -1,7 +1,7 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.1.3"
-  kotlin("plugin.spring") version "1.6.10"
-  kotlin("plugin.jpa") version "1.6.10"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.1.6"
+  kotlin("plugin.spring") version "1.6.21"
+  kotlin("plugin.jpa") version "1.6.21"
 }
 
 configurations {
@@ -17,13 +17,13 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-  implementation("org.springdoc:springdoc-openapi-webmvc-core:1.6.6")
-  implementation("org.springdoc:springdoc-openapi-ui:1.6.6")
-  implementation("org.springdoc:springdoc-openapi-kotlin:1.6.6")
+  implementation("org.springdoc:springdoc-openapi-webmvc-core:1.6.8")
+  implementation("org.springdoc:springdoc-openapi-ui:1.6.8")
+  implementation("org.springdoc:springdoc-openapi-kotlin:1.6.8")
 
-  runtimeOnly("com.h2database:h2:2.1.210")
-  runtimeOnly("org.flywaydb:flyway-core:8.5.6")
-  runtimeOnly("org.postgresql:postgresql:42.3.3")
+  runtimeOnly("com.h2database:h2:2.1.212")
+  runtimeOnly("org.flywaydb:flyway-core:8.5.10")
+  runtimeOnly("org.postgresql:postgresql:42.3.5")
 
   testImplementation("org.springframework.boot:spring-boot-starter-test")
   testImplementation("org.springframework.security:spring-security-test")
@@ -40,13 +40,13 @@ allOpen {
 }
 
 java {
-  toolchain.languageVersion.set(JavaLanguageVersion.of(16))
+  toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 }
 
 tasks {
   withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
-      jvmTarget = "16"
+      jvmTarget = "17"
       freeCompilerArgs += "-Xemit-jvm-type-annotations"
     }
   }
