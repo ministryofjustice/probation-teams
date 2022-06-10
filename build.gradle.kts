@@ -22,8 +22,8 @@ dependencies {
   implementation("org.springdoc:springdoc-openapi-kotlin:1.6.8")
 
   runtimeOnly("com.h2database:h2:2.1.212")
-  runtimeOnly("org.flywaydb:flyway-core:8.5.10")
-  runtimeOnly("org.postgresql:postgresql:42.3.5")
+  runtimeOnly("org.flywaydb:flyway-core:8.5.12")
+  runtimeOnly("org.postgresql:postgresql:42.4.0")
 
   testImplementation("org.springframework.boot:spring-boot-starter-test")
   testImplementation("org.springframework.security:spring-security-test")
