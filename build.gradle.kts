@@ -17,9 +17,9 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-  implementation("org.springdoc:springdoc-openapi-webmvc-core:1.6.8")
-  implementation("org.springdoc:springdoc-openapi-ui:1.6.8")
-  implementation("org.springdoc:springdoc-openapi-kotlin:1.6.8")
+  implementation("org.springdoc:springdoc-openapi-webmvc-core:1.6.9")
+  implementation("org.springdoc:springdoc-openapi-ui:1.6.9")
+  implementation("org.springdoc:springdoc-openapi-kotlin:1.6.9")
 
   runtimeOnly("com.h2database:h2:2.1.214")
   runtimeOnly("org.flywaydb:flyway-core:8.5.13")
