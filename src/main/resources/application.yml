@@ -28,7 +28,6 @@ spring:
     url: 'jdbc:postgresql://${database.endpoint}/${database.name}?sslmode=prefer&currentSchema=probation_teams'
     username: ${spring.datasource.username}
     password: ${spring.datasource.password}
-    continue-on-error: true
     hikari:
       pool-name: ProbationTeams-CP
       connectionTimeout: 1000
@@ -56,6 +55,9 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: ${oauth.endpoint.url}/.well-known/jwks.json
+  sql:
+    init:
+      continue-on-error: true
 
 server:
   port: 8080

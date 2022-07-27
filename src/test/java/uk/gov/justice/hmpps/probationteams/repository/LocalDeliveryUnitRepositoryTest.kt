@@ -2,13 +2,13 @@ package uk.gov.justice.hmpps.probationteams.repository
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
+import org.springdoc.kotlin.SpringDocKotlinConfiguration
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.security.test.context.support.WithAnonymousUser
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.context.transaction.TestTransaction
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.hmpps.probationteams.model.LocalDeliveryUnit
@@ -17,8 +17,8 @@ import uk.gov.justice.hmpps.probationteams.utils.uniqueLduCode
 import java.util.UUID
 
 @ActiveProfiles("test")
-@ExtendWith(SpringExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@EnableAutoConfiguration(exclude = [SpringDocKotlinConfiguration::class])
 @Transactional
 @WithAnonymousUser
 
@@ -183,13 +183,14 @@ class LocalDeliveryUnitRepositoryTest(
     )
 
   companion object {
-    fun lduWithProbationTeams(lduCode: String, probationAreaCode: String = "ABC"): LocalDeliveryUnit = LocalDeliveryUnit(
-      probationAreaCode,
-      localDeliveryUnitCode = lduCode,
-      probationTeams = mutableMapOf(
-        "T1" to ProbationTeam("t1@team.com"),
-        "T2" to ProbationTeam("t2@team.com")
+    fun lduWithProbationTeams(lduCode: String, probationAreaCode: String = "ABC"): LocalDeliveryUnit =
+      LocalDeliveryUnit(
+        probationAreaCode,
+        localDeliveryUnitCode = lduCode,
+        probationTeams = mutableMapOf(
+          "T1" to ProbationTeam("t1@team.com"),
+          "T2" to ProbationTeam("t2@team.com")
+        )
       )
-    )
   }
 }
