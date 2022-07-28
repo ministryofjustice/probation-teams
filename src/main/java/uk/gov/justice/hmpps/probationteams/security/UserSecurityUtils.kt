@@ -7,31 +7,17 @@ import org.springframework.stereotype.Component
 
 @Component
 class UserSecurityUtils : AuthenticationFacade {
-  val authentication: Authentication
+  val authentication: Authentication?
     get() = SecurityContextHolder.getContext().authentication
 
-  override fun getCurrentUsername(): String? {
-    val username: String?
-    val userPrincipal = userPrincipal
-    if (userPrincipal is String) {
-      username = userPrincipal
-    } else if (userPrincipal is UserDetails) {
-      username = userPrincipal.username
-    } else if (userPrincipal is Map<*, *>) {
-      username = (userPrincipal["username"] as String?)!!
-    } else {
-      username = null
+  override fun getCurrentUsername(): String? =
+    when (userPrincipal) {
+      is String -> userPrincipal as String
+      is UserDetails -> (userPrincipal as UserDetails).username
+      is Map<*, *> -> (userPrincipal as Map<*, *>)["username"] as String?
+      else -> null
     }
-    return username
-  }
 
   private val userPrincipal: Any?
-    get() {
-      var userPrincipal: Any? = null
-      val auth = authentication
-      if (auth != null) {
-        userPrincipal = auth.principal
-      }
-      return userPrincipal
-    }
+    get() = authentication?.principal
 }
