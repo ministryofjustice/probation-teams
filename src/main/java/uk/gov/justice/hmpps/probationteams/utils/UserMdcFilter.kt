@@ -22,7 +22,7 @@ class UserMdcFilter @Autowired constructor(private val userSecurityUtils: UserSe
 
   @Throws(IOException::class, ServletException::class)
   override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
-    val currentUsername = userSecurityUtils.currentUsername
+    val currentUsername = userSecurityUtils.getCurrentUsername()
     try {
       MDC.put(USER_ID_HEADER, currentUsername)
       chain.doFilter(request, response)
