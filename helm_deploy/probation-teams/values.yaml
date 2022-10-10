@@ -17,7 +17,7 @@ generic-service:
     tlsSecretName: probation-teams-cert
     path: /
     v1_2_enabled: true
-    v0_47_enabled: true
+    v0_47_enabled: false
 
   # Environment variables to load into the deployment
   env:

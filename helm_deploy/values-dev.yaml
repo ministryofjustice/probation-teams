@@ -5,7 +5,8 @@ generic-service:
   replicaCount: 2
 
   ingress:
-    host: probation-teams-dev.prison.service.justice.gov.uk
+    hosts:
+      - probation-teams-dev.prison.service.justice.gov.uk
 
   env:
     APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.dev.json
