@@ -71,7 +71,6 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitSer
       ApiResponse(responseCode = "404", description = "Local Delivery Unit not found"),
     ],
   )
-
   @GetMapping(path = ["/{probationAreaCode}/local-delivery-units/{localDeliveryUnitCode}"])
   fun getLocalDeliveryUnit(
 
@@ -95,7 +94,6 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitSer
       ApiResponse(responseCode = "201", description = "The functional mailbox has been set"),
     ],
   )
-
   @PutMapping(
     path = ["/{probationAreaCode}/local-delivery-units/{localDeliveryUnitCode}/functional-mailbox"],
     consumes = [APPLICATION_JSON_VALUE],
@@ -137,7 +135,6 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitSer
       ),
     ],
   )
-
   @DeleteMapping(path = ["/{probationAreaCode}/local-delivery-units/{localDeliveryUnitCode}/functional-mailbox"])
   fun deleteFunctionalMailbox(
 
@@ -167,7 +164,6 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitSer
       ApiResponse(responseCode = "201", description = "The functional mailbox has been set"),
     ],
   )
-
   @PutMapping(
     path = ["/{probationAreaCode}/local-delivery-units/{localDeliveryUnitCode}/teams/{teamCode}/functional-mailbox"],
     consumes = [APPLICATION_JSON_VALUE],
@@ -214,7 +210,6 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitSer
       ),
     ],
   )
-
   @DeleteMapping(path = ["/{probationAreaCode}/local-delivery-units/{localDeliveryUnitCode}/teams/{teamCode}/functional-mailbox"])
   fun deleteFunctionalMailbox(
 
