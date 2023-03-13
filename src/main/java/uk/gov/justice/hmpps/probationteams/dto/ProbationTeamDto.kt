@@ -8,5 +8,5 @@ import javax.validation.constraints.Email
 data class ProbationTeamDto @JsonCreator constructor(
   @Schema(required = true, description = "Functional Mailbox", example = "a@b.com")
   @JsonProperty("functionalMailbox")
-  val functionalMailbox: @Email String
+  val functionalMailbox: @Email String,
 )

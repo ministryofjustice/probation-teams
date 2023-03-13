@@ -12,5 +12,5 @@ data class ProbationAreaDto @JsonCreator constructor(
 
   @Schema(required = true, description = "Local Delivery Units by Local Delivery Unit code")
   @JsonProperty("localDeliveryUnits")
-  val localDeliveryUnits: Map<String, LocalDeliveryUnitDto> = mapOf()
+  val localDeliveryUnits: Map<String, LocalDeliveryUnitDto> = mapOf(),
 )

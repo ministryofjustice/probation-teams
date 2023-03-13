@@ -40,10 +40,10 @@ data class LocalDeliveryUnit(
   @ElementCollection(fetch = FetchType.EAGER)
   @CollectionTable(
     name = "PROBATION_TEAM",
-    joinColumns = [JoinColumn(name = "LOCAL_DELIVERY_UNIT_ID")]
+    joinColumns = [JoinColumn(name = "LOCAL_DELIVERY_UNIT_ID")],
   )
   @MapKeyColumn(name = "TEAM_CODE")
-  var probationTeams: MutableMap<String, ProbationTeam> = mutableMapOf()
+  var probationTeams: MutableMap<String, ProbationTeam> = mutableMapOf(),
 ) {
 
   @Id

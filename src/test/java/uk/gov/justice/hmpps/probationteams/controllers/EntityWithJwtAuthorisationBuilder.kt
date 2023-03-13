@@ -31,6 +31,6 @@ class EntityWithJwtAuthorisationBuilder(@Autowired val jwtAuthenticationHelper: 
       subject = user,
       roles = roles,
       scope = listOf("read", "write"),
-      expiryTime = Duration.ofDays(1)
+      expiryTime = Duration.ofDays(1),
     )
 }

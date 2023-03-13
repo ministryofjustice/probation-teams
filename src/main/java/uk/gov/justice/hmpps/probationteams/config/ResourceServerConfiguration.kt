@@ -35,7 +35,7 @@ class ResourceServerConfiguration {
             "/ping",
             "/v3/api-docs/**",
             "/swagger-ui/**",
-            "/swagger-ui.html"
+            "/swagger-ui.html",
           )
           .permitAll()
           .anyRequest()
@@ -79,7 +79,7 @@ class AuthAwareTokenConverter : Converter<Jwt, AbstractAuthenticationToken> {
 class AuthAwareAuthenticationToken(
   jwt: Jwt,
   principal: String,
-  authorities: Collection<GrantedAuthority>
+  authorities: Collection<GrantedAuthority>,
 ) : JwtAuthenticationToken(jwt, authorities) {
   private val privatePrincipal: Any = principal
   override fun getPrincipal(): Any = privatePrincipal

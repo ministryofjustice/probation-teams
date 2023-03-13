@@ -14,7 +14,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles(value = ["test"])
-
 class HealthResourceTest(@Autowired val testRestTemplate: TestRestTemplate) {
 
   val jsonTester = BasicJsonTester(this.javaClass)

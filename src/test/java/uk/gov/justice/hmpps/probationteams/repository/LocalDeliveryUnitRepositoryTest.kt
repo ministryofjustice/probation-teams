@@ -21,10 +21,9 @@ import java.util.UUID
 @EnableAutoConfiguration(exclude = [SpringDocKotlinConfiguration::class])
 @Transactional
 @WithAnonymousUser
-
 class LocalDeliveryUnitRepositoryTest(
   @Autowired val repository: LocalDeliveryUnitRepository,
-  @Autowired val jdbcTemplate: JdbcTemplate
+  @Autowired val jdbcTemplate: JdbcTemplate,
 ) {
 
   @Test
@@ -33,7 +32,7 @@ class LocalDeliveryUnitRepositoryTest(
     val ldu = LocalDeliveryUnit(
       probationAreaCode = "ABC",
       localDeliveryUnitCode = lduCode,
-      functionalMailbox = "pqr@stu.ltd.uk"
+      functionalMailbox = "pqr@stu.ltd.uk",
     )
 
     repository.save(ldu)
@@ -157,7 +156,7 @@ class LocalDeliveryUnitRepositoryTest(
                 from LOCAL_DELIVERY_UNIT2
                 order by PROBATION_AREA_CODE
       """.trimIndent(),
-      String::class.java
+      String::class.java,
     )
 
   private fun probationTeamCount(lduId: UUID?) =
@@ -168,7 +167,7 @@ class LocalDeliveryUnitRepositoryTest(
                  where LOCAL_DELIVERY_UNIT_ID = ?
       """.trimIndent(),
       Long::class.java,
-      lduId
+      lduId,
     )
 
   private fun lduCount(lduId: UUID?) =
@@ -179,7 +178,7 @@ class LocalDeliveryUnitRepositoryTest(
                  where LOCAL_DELIVERY_UNIT_ID = ?
       """.trimIndent(),
       Long::class.java,
-      lduId
+      lduId,
     )
 
   companion object {
@@ -189,8 +188,8 @@ class LocalDeliveryUnitRepositoryTest(
         localDeliveryUnitCode = lduCode,
         probationTeams = mutableMapOf(
           "T1" to ProbationTeam("t1@team.com"),
-          "T2" to ProbationTeam("t2@team.com")
-        )
+          "T2" to ProbationTeam("t2@team.com"),
+        ),
       )
   }
 }

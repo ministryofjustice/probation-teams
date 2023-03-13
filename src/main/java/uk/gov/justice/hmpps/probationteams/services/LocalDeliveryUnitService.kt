@@ -35,7 +35,7 @@ class LocalDeliveryUnitService(@Autowired val repository: LocalDeliveryUnitRepos
   fun setFunctionalMailbox(
     @ProbationAreaCode probationAreaCode: String,
     @LduCode localDeliveryUnitCode: String,
-    @Email proposedFunctionalMailbox: String
+    @Email proposedFunctionalMailbox: String,
   ): SetOutcome =
 
     getLocalDeliveryUnit(probationAreaCode, localDeliveryUnitCode)
@@ -44,7 +44,7 @@ class LocalDeliveryUnitService(@Autowired val repository: LocalDeliveryUnitRepos
         createLduFunctionalMailbox(
           probationAreaCode,
           localDeliveryUnitCode,
-          proposedFunctionalMailbox
+          proposedFunctionalMailbox,
         )
       }
 
@@ -53,7 +53,7 @@ class LocalDeliveryUnitService(@Autowired val repository: LocalDeliveryUnitRepos
     @ProbationAreaCode probationAreaCode: String,
     @LduCode localDeliveryUnitCode: String,
     @TeamCode teamCode: String,
-    @Email proposedFunctionalMailbox: String
+    @Email proposedFunctionalMailbox: String,
   ): SetOutcome =
 
     getLocalDeliveryUnit(probationAreaCode, localDeliveryUnitCode)
@@ -63,14 +63,14 @@ class LocalDeliveryUnitService(@Autowired val repository: LocalDeliveryUnitRepos
           probationAreaCode,
           localDeliveryUnitCode,
           teamCode,
-          proposedFunctionalMailbox
+          proposedFunctionalMailbox,
         )
       }
 
   @PreAuthorize("hasAnyRole('MAINTAIN_REF_DATA', 'SYSTEM_USER')")
   fun deleteFunctionalMailbox(
     @ProbationAreaCode probationAreaCode: String,
-    @LduCode localDeliveryUnitCode: String
+    @LduCode localDeliveryUnitCode: String,
   ): DeleteOutcome =
 
     getLocalDeliveryUnit(probationAreaCode, localDeliveryUnitCode)
@@ -81,7 +81,7 @@ class LocalDeliveryUnitService(@Autowired val repository: LocalDeliveryUnitRepos
   fun deleteFunctionalMailbox(
     @ProbationAreaCode probationAreaCode: String,
     @LduCode localDeliveryUnitCode: String,
-    @TeamCode teamCode: String
+    @TeamCode teamCode: String,
   ): DeleteOutcome =
 
     getLocalDeliveryUnit(probationAreaCode, localDeliveryUnitCode)
@@ -104,7 +104,7 @@ class LocalDeliveryUnitService(@Autowired val repository: LocalDeliveryUnitRepos
   private fun createLduFunctionalMailbox(
     probationAreaCode: String,
     localDeliveryUnitCode: String,
-    proposedFunctionalMailbox: String
+    proposedFunctionalMailbox: String,
   ): SetOutcome {
     repository.save(LocalDeliveryUnit(probationAreaCode, localDeliveryUnitCode, proposedFunctionalMailbox))
     return SetOutcome.CREATED
@@ -113,7 +113,7 @@ class LocalDeliveryUnitService(@Autowired val repository: LocalDeliveryUnitRepos
   private fun setTeamFunctionalMailbox(
     ldu: LocalDeliveryUnit,
     teamCode: String,
-    proposedFunctionalMailbox: String
+    proposedFunctionalMailbox: String,
   ): SetOutcome {
     val probationTeam = ldu.probationTeams[teamCode]
     return when (probationTeam) {
@@ -132,12 +132,12 @@ class LocalDeliveryUnitService(@Autowired val repository: LocalDeliveryUnitRepos
     probationAreaCode: String,
     localDeliveryUnitCode: String,
     teamCode: String,
-    proposedFunctionalMailbox: String
+    proposedFunctionalMailbox: String,
   ): SetOutcome {
     val localDeliveryUnit = LocalDeliveryUnit(
       probationAreaCode = probationAreaCode,
       localDeliveryUnitCode = localDeliveryUnitCode,
-      probationTeams = mutableMapOf(teamCode to ProbationTeam(proposedFunctionalMailbox))
+      probationTeams = mutableMapOf(teamCode to ProbationTeam(proposedFunctionalMailbox)),
     )
     repository.save(localDeliveryUnit)
     return SetOutcome.CREATED

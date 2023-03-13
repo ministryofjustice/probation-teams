@@ -18,10 +18,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles(value = ["test"])
 @DisplayName("Integration Tests for LocalDeliveryUnitController")
-
 class LocalDeliveryUnitControllerResourceIntegrationTest(
   @Autowired val testRestTemplate: TestRestTemplate,
-  @Autowired val entityBuilder: EntityWithJwtAuthorisationBuilder
+  @Autowired val entityBuilder: EntityWithJwtAuthorisationBuilder,
 ) {
   val jsonTester = BasicJsonTester(this.javaClass)
 
@@ -42,7 +41,7 @@ class LocalDeliveryUnitControllerResourceIntegrationTest(
       ALL_LDU_TEMPLATE,
       HttpMethod.GET,
       entityBuilder.entityWithJwtAuthorisation(A_USER, NO_ROLES),
-      String::class.java
+      String::class.java,
     )
 
   companion object {

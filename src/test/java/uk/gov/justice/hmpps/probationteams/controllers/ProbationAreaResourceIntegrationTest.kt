@@ -22,10 +22,9 @@ import uk.gov.justice.hmpps.probationteams.utils.uniqueLduCode
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles(value = ["test"])
 @DisplayName("Integration Tests for ProbationAreaController")
-
 class ProbationAreaResourceIntegrationTest(
   @Autowired val testRestTemplate: TestRestTemplate,
-  @Autowired val entityBuilder: EntityWithJwtAuthorisationBuilder
+  @Autowired val entityBuilder: EntityWithJwtAuthorisationBuilder,
 ) {
 
   val jsonTester = BasicJsonTester(this.javaClass)
@@ -273,41 +272,41 @@ class ProbationAreaResourceIntegrationTest(
       DescribedRestApiInvocation("PUT    LDU  FMB, try Probation Area Code") { putLduFmb(it, uniqueLduCode(), FMB1, SYSTEM_USER_ROLE) },
       DescribedRestApiInvocation("DELETE LDU  FMB, try Probation Area Code") { deleteLduFmb(it, uniqueLduCode(), SYSTEM_USER_ROLE) },
       DescribedRestApiInvocation("PUT    Team FMB, try Probation Area Code") { putTeamFmb(it, uniqueLduCode(), TEAM_1_CODE, FMB1, SYSTEM_USER_ROLE) },
-      DescribedRestApiInvocation("DELETE Team FMB, try Probation Area Code") { deleteTeamFmb(it, uniqueLduCode(), TEAM_1_CODE, SYSTEM_USER_ROLE) }
+      DescribedRestApiInvocation("DELETE Team FMB, try Probation Area Code") { deleteTeamFmb(it, uniqueLduCode(), TEAM_1_CODE, SYSTEM_USER_ROLE) },
     )
 
     val lduCodeConsumers1 = listOf(
       DescribedRestApiInvocation("PUT    LDU  FMB, try LDU code") { putLduFmb(PROBATION_AREA_CODE, it, FMB1, SYSTEM_USER_ROLE) },
-      DescribedRestApiInvocation("DELETE LDU  FMB, try LDU code") { deleteLduFmb(PROBATION_AREA_CODE, it, SYSTEM_USER_ROLE) }
+      DescribedRestApiInvocation("DELETE LDU  FMB, try LDU code") { deleteLduFmb(PROBATION_AREA_CODE, it, SYSTEM_USER_ROLE) },
     )
 
     val lduCodeConsumers2 = listOf(
       DescribedRestApiInvocation("PUT    Team FMB, try LDU code") { putTeamFmb(PROBATION_AREA_CODE, it, TEAM_1_CODE, FMB1, SYSTEM_USER_ROLE) },
-      DescribedRestApiInvocation("PUT    Team FMB, try LDU code") { deleteTeamFmb(PROBATION_AREA_CODE, it, TEAM_1_CODE, SYSTEM_USER_ROLE) }
+      DescribedRestApiInvocation("PUT    Team FMB, try LDU code") { deleteTeamFmb(PROBATION_AREA_CODE, it, TEAM_1_CODE, SYSTEM_USER_ROLE) },
     )
 
     val teamCodeConsumers = listOf(
       DescribedRestApiInvocation("PUT    Team FMB, try Team code") { putTeamFmb(PROBATION_AREA_CODE, uniqueLduCode(), it, FMB1, SYSTEM_USER_ROLE) },
-      DescribedRestApiInvocation("PUT    Team FMB, try Team code") { deleteTeamFmb(PROBATION_AREA_CODE, uniqueLduCode(), it, SYSTEM_USER_ROLE) }
+      DescribedRestApiInvocation("PUT    Team FMB, try Team code") { deleteTeamFmb(PROBATION_AREA_CODE, uniqueLduCode(), it, SYSTEM_USER_ROLE) },
     )
 
     val emailAddressConsumers = listOf(
       DescribedRestApiInvocation("PUT    LDU  FMB, try email address") { putLduFmb(PROBATION_AREA_CODE, uniqueLduCode(), it, SYSTEM_USER_ROLE) },
-      DescribedRestApiInvocation("PUT    Team FMB, try email address") { putTeamFmb(PROBATION_AREA_CODE, uniqueLduCode(), TEAM_1_CODE, it, SYSTEM_USER_ROLE) }
+      DescribedRestApiInvocation("PUT    Team FMB, try email address") { putTeamFmb(PROBATION_AREA_CODE, uniqueLduCode(), TEAM_1_CODE, it, SYSTEM_USER_ROLE) },
     )
 
     val invalidProbationAreaCodes = listOf(
       ValidationTestData("a", HttpStatus.BAD_REQUEST, INVALID_PROBATION_AREA_MESSAGE),
       ValidationTestData("-", HttpStatus.BAD_REQUEST, INVALID_PROBATION_AREA_MESSAGE),
       ValidationTestData(" ", HttpStatus.BAD_REQUEST, INVALID_PROBATION_AREA_MESSAGE),
-      ValidationTestData("", HttpStatus.UNAUTHORIZED, null)
+      ValidationTestData("", HttpStatus.UNAUTHORIZED, null),
     )
 
     val invalidLocalDeliveryUnitCodes2 = listOf(
       ValidationTestData("a", HttpStatus.BAD_REQUEST, INVALID_LDU_MESSAGE),
       ValidationTestData("-", HttpStatus.BAD_REQUEST, INVALID_LDU_MESSAGE),
       ValidationTestData(" ", HttpStatus.BAD_REQUEST, INVALID_LDU_MESSAGE),
-      ValidationTestData("", HttpStatus.UNAUTHORIZED, null)
+      ValidationTestData("", HttpStatus.UNAUTHORIZED, null),
     )
 
     val invalidLocalDeliveryUnitCodes1 = invalidLocalDeliveryUnitCodes2.map(::adaptTestData)
@@ -316,13 +315,13 @@ class ProbationAreaResourceIntegrationTest(
       ValidationTestData("a", HttpStatus.BAD_REQUEST, INVALID_TEAM_CODE_MESSAGE),
       ValidationTestData("-", HttpStatus.BAD_REQUEST, INVALID_TEAM_CODE_MESSAGE),
       ValidationTestData(" ", HttpStatus.BAD_REQUEST, INVALID_TEAM_CODE_MESSAGE),
-      ValidationTestData("", HttpStatus.UNAUTHORIZED, null)
+      ValidationTestData("", HttpStatus.UNAUTHORIZED, null),
     )
 
     val invalidEmailAddresses = listOf(
       ValidationTestData("abc.def.com", HttpStatus.BAD_REQUEST, INVALID_EMAIL_MESSAGE),
       ValidationTestData(" ", HttpStatus.BAD_REQUEST, INVALID_EMAIL_MESSAGE),
-      ValidationTestData("", HttpStatus.BAD_REQUEST, INVALID_EMAIL_MESSAGE)
+      ValidationTestData("", HttpStatus.BAD_REQUEST, INVALID_EMAIL_MESSAGE),
     )
   }
 
@@ -332,7 +331,7 @@ class ProbationAreaResourceIntegrationTest(
       HttpMethod.GET,
       entityBuilder.entityWithJwtAuthorisation(A_USER, NO_ROLES),
       String::class.java,
-      probationAreaCode
+      probationAreaCode,
     )
 
   fun getLdu(probationAreaCode: String, lduCode: String): ResponseEntity<String> =
@@ -342,7 +341,7 @@ class ProbationAreaResourceIntegrationTest(
       entityBuilder.entityWithJwtAuthorisation(A_USER, NO_ROLES),
       String::class.java,
       probationAreaCode,
-      lduCode
+      lduCode,
     )
 
   fun putLduFmb(probationAreaCode: String, lduCode: String, functionalMailbox: String, roles: List<String>): ResponseEntity<String> =
@@ -352,7 +351,7 @@ class ProbationAreaResourceIntegrationTest(
       entityBuilder.entityWithJwtAuthorisation(A_USER, roles, "\"${functionalMailbox}\""),
       String::class.java,
       probationAreaCode,
-      lduCode
+      lduCode,
     )
 
   fun putTeamFmb(probationAreaCode: String, lduCode: String, teamCode: String, functionalMailbox: String, roles: List<String>): ResponseEntity<String> =
@@ -363,7 +362,7 @@ class ProbationAreaResourceIntegrationTest(
       String::class.java,
       probationAreaCode,
       lduCode,
-      teamCode
+      teamCode,
     )
 
   fun deleteLduFmb(probationAreaCode: String, lduCode: String, roles: List<String>): ResponseEntity<String> =
@@ -373,7 +372,7 @@ class ProbationAreaResourceIntegrationTest(
       entityBuilder.entityWithJwtAuthorisation(A_USER, roles),
       String::class.java,
       probationAreaCode,
-      lduCode
+      lduCode,
     )
 
   fun deleteTeamFmb(probationAreaCode: String, lduCode: String, teamCode: String, roles: List<String>): ResponseEntity<String> =
@@ -384,7 +383,7 @@ class ProbationAreaResourceIntegrationTest(
       String::class.java,
       probationAreaCode,
       lduCode,
-      teamCode
+      teamCode,
     )
 
   companion object {

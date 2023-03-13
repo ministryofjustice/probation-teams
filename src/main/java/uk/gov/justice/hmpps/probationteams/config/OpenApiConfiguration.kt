@@ -20,12 +20,12 @@ class OpenApiConfiguration(buildProperties: BuildProperties) {
         Server().url("https://probation-teams-preprod.prison.service.justice.gov.uk/").description("PreProd"),
         Server().url("https://probation-teams-dev.prison.service.justice.gov.uk/").description("Development"),
         Server().url("http://localhost:8080").description("Local"),
-      )
+      ),
     )
     .info(
       Info().title("probation-teams API")
         .version(version)
         .description("Providing Functional Mailboxes for Probation Teams")
-        .contact(Contact().name("HMPPS Digital Studio").email("feedback@digital.justice.gov.uk"))
+        .contact(Contact().name("HMPPS Digital Studio").email("feedback@digital.justice.gov.uk")),
     )
 }
