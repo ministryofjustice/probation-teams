@@ -23,20 +23,23 @@ class ResourceServerConfiguration {
   fun securityFilterChain(http: HttpSecurity): SecurityFilterChain =
     http
       .sessionManagement()
-      .sessionCreationPolicy(STATELESS)
+      .sessionCreationPolicy(STATELESS) // Can't have CSRF protection as requires session
       .and().csrf().disable()
       .authorizeHttpRequests { auth ->
-        auth.requestMatchers(
-          "/webjars/**",
-          "/favicon.ico",
-          "/health/**",
-          "/info",
-          "/ping",
-          "/v3/api-docs/**",
-          "/swagger-ui/**",
-          "/swagger-ui.html"
-        )
-          .permitAll().anyRequest().authenticated()
+        auth
+          .requestMatchers(
+            "/webjars/**",
+            "/favicon.ico",
+            "/health/**",
+            "/info",
+            "/ping",
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html"
+          )
+          .permitAll()
+          .anyRequest()
+          .authenticated()
       }
       .also {
         it.oauth2ResourceServer().jwt().jwtAuthenticationConverter(AuthAwareTokenConverter())
