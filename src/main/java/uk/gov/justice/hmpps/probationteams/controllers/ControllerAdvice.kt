@@ -1,5 +1,7 @@
 package uk.gov.justice.hmpps.probationteams.controllers
 
+import jakarta.persistence.EntityExistsException
+import jakarta.validation.ValidationException
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -10,8 +12,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.client.RestClientException
 import org.springframework.web.client.RestClientResponseException
 import uk.gov.justice.hmpps.probationteams.dto.ErrorResponse
-import javax.persistence.EntityExistsException
-import javax.validation.ValidationException
 
 @RestControllerAdvice(basePackages = ["uk.gov.justice.hmpps.probationteams.controllers"])
 class ControllerAdvice {

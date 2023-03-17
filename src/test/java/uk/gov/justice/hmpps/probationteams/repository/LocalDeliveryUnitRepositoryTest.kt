@@ -2,9 +2,8 @@ package uk.gov.justice.hmpps.probationteams.repository
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.springdoc.kotlin.SpringDocKotlinConfiguration
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.security.test.context.support.WithAnonymousUser
@@ -17,8 +16,8 @@ import uk.gov.justice.hmpps.probationteams.utils.uniqueLduCode
 import java.util.UUID
 
 @ActiveProfiles("test")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@EnableAutoConfiguration(exclude = [SpringDocKotlinConfiguration::class])
+@SpringBootTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
 @WithAnonymousUser
 class LocalDeliveryUnitRepositoryTest(

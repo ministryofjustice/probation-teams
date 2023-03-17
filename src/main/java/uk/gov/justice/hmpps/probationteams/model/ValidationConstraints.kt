@@ -1,10 +1,10 @@
 package uk.gov.justice.hmpps.probationteams.model
 
-import javax.validation.Constraint
-import javax.validation.ReportAsSingleViolation
-import javax.validation.constraints.Email
-import javax.validation.constraints.NotBlank
-import javax.validation.constraints.Pattern
+import jakarta.validation.Constraint
+import jakarta.validation.ReportAsSingleViolation
+import jakarta.validation.constraints.Email
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.Pattern
 import kotlin.annotation.AnnotationRetention.RUNTIME
 import kotlin.annotation.AnnotationTarget.ANNOTATION_CLASS
 import kotlin.annotation.AnnotationTarget.PROPERTY
