@@ -27,11 +27,14 @@ class ResourceServerConfiguration {
       .and().csrf().disable()
       .authorizeHttpRequests { auth ->
         auth.requestMatchers(
-          "/webjars/**", "/favicon.ico", "/csrf",
-          "/health/**", "/info", "/ping", "/h2-console/**",
-          "/v3/api-docs/**", "/swagger-ui.html",
-          "/swagger-ui/**", "/swagger-resources", "/swagger-resources/configuration/ui",
-          "/swagger-resources/configuration/security", "/queue-admin/retry-all-dlqs",
+          "/webjars/**",
+          "/favicon.ico",
+          "/health/**",
+          "/info",
+          "/ping",
+          "/v3/api-docs/**",
+          "/swagger-ui/**",
+          "/swagger-ui.html"
         )
           .permitAll().anyRequest().authenticated()
       }

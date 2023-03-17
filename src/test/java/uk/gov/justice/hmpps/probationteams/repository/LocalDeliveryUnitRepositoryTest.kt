@@ -17,7 +17,6 @@ import java.util.UUID
 
 @ActiveProfiles("test")
 @SpringBootTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
 @WithAnonymousUser
 class LocalDeliveryUnitRepositoryTest(
