@@ -21,7 +21,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 @DisplayName("Integration Tests for ProbationAreaCodesController")
 class ProbationAreaCodesResourceIntegrationTest(
   @Autowired val testRestTemplate: TestRestTemplate,
-  @Autowired val entityBuilder: EntityWithJwtAuthorisationBuilder
+  @Autowired val entityBuilder: EntityWithJwtAuthorisationBuilder,
 ) {
   val jsonTester = BasicJsonTester(this.javaClass)
 
@@ -43,7 +43,7 @@ class ProbationAreaCodesResourceIntegrationTest(
       PROBATION_AREA_CODES_TEMPLATE,
       HttpMethod.GET,
       entityBuilder.entityWithJwtAuthorisation(A_USER, NO_ROLES),
-      String::class.java
+      String::class.java,
     )
 
   companion object {

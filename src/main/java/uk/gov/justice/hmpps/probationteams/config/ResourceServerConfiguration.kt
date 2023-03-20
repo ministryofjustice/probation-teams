@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.convert.converter.Converter
 import org.springframework.security.authentication.AbstractAuthenticationToken
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy.STATELESS
@@ -17,17 +17,17 @@ import org.springframework.security.web.SecurityFilterChain
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity(prePostEnabled = true, proxyTargetClass = true)
 class ResourceServerConfiguration {
   @Bean
   fun securityFilterChain(http: HttpSecurity): SecurityFilterChain =
-    http.headers().frameOptions().sameOrigin().and()
+    http
       .sessionManagement()
       .sessionCreationPolicy(STATELESS) // Can't have CSRF protection as requires session
       .and().csrf().disable()
-      .authorizeRequests { auth ->
+      .authorizeHttpRequests { auth ->
         auth
-          .antMatchers(
+          .requestMatchers(
             "/webjars/**",
             "/favicon.ico",
             "/health/**",
@@ -35,12 +35,13 @@ class ResourceServerConfiguration {
             "/ping",
             "/v3/api-docs/**",
             "/swagger-ui/**",
-            "/swagger-ui.html"
+            "/swagger-ui.html",
           )
           .permitAll()
           .anyRequest()
           .authenticated()
-      }.also {
+      }
+      .also {
         it.oauth2ResourceServer().jwt().jwtAuthenticationConverter(AuthAwareTokenConverter())
       }.build()
 }
@@ -79,7 +80,7 @@ class AuthAwareTokenConverter : Converter<Jwt, AbstractAuthenticationToken> {
 class AuthAwareAuthenticationToken(
   jwt: Jwt,
   principal: String,
-  authorities: Collection<GrantedAuthority>
+  authorities: Collection<GrantedAuthority>,
 ) : JwtAuthenticationToken(jwt, authorities) {
   private val privatePrincipal: Any = principal
   override fun getPrincipal(): Any = privatePrincipal

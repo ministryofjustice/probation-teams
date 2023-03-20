@@ -280,12 +280,12 @@ class LocalDeliveryUnitServiceTest {
     fun lduWithFmb() = LocalDeliveryUnit(
       probationAreaCode = PROBATION_AREA_CODE,
       localDeliveryUnitCode = LDU_CODE,
-      functionalMailbox = FMB
+      functionalMailbox = FMB,
     )
 
     fun lduWithNoFmb() = LocalDeliveryUnit(
       probationAreaCode = PROBATION_AREA_CODE,
-      localDeliveryUnitCode = LDU_CODE
+      localDeliveryUnitCode = LDU_CODE,
     )
   }
 }

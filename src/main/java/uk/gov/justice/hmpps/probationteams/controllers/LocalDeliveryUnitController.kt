@@ -17,7 +17,7 @@ import uk.gov.justice.hmpps.probationteams.services.LocalDeliveryUnitService
 @RestController
 @RequestMapping(
   value = ["local-delivery-units"],
-  produces = [APPLICATION_JSON_VALUE]
+  produces = [APPLICATION_JSON_VALUE],
 )
 class LocalDeliveryUnitController(val localDeliveryUnitService: LocalDeliveryUnitService) {
 
@@ -30,10 +30,10 @@ class LocalDeliveryUnitController(val localDeliveryUnitService: LocalDeliveryUni
         responseCode = "200",
         description = "JSON object of imprisonment statuses and movement reasons",
         content = [
-          Content(mediaType = APPLICATION_JSON_VALUE, array = ArraySchema(schema = Schema(implementation = LocalDeliveryUnitDto::class)))
-        ]
+          Content(mediaType = APPLICATION_JSON_VALUE, array = ArraySchema(schema = Schema(implementation = LocalDeliveryUnitDto::class))),
+        ],
       ),
-    ]
+    ],
   )
   fun getAllLocalDeliveryUnits(): List<LocalDeliveryUnitDto> =
     localDeliveryUnitService
@@ -47,7 +47,7 @@ class LocalDeliveryUnitController(val localDeliveryUnitService: LocalDeliveryUni
         probationAreaCode = probationAreaCode,
         localDeliveryUnitCode = localDeliveryUnitCode,
         functionalMailbox = functionalMailbox,
-        probationTeams = probationTeams.mapValues { ProbationTeamDto(it.value.functionalMailbox) }
+        probationTeams = probationTeams.mapValues { ProbationTeamDto(it.value.functionalMailbox) },
       )
     }
   }

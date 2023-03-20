@@ -14,9 +14,8 @@ import uk.gov.justice.hmpps.probationteams.services.LocalDeliveryUnitService
 @RestController
 @RequestMapping(
   value = ["probation-area-codes"],
-  produces = [MediaType.APPLICATION_JSON_VALUE]
+  produces = [MediaType.APPLICATION_JSON_VALUE],
 )
-
 class ProbationAreaCodesController(val localDeliveryUnitService: LocalDeliveryUnitService) {
 
   @GetMapping
@@ -28,11 +27,11 @@ class ProbationAreaCodesController(val localDeliveryUnitService: LocalDeliveryUn
         content = [
           Content(
             mediaType = MediaType.APPLICATION_JSON_VALUE,
-            array = ArraySchema(schema = Schema(implementation = String::class))
-          )
-        ]
-      )
-    ]
+            array = ArraySchema(schema = Schema(implementation = String::class)),
+          ),
+        ],
+      ),
+    ],
   )
   fun getProbationAreaCodes(): List<String> = localDeliveryUnitService.getProbationAreaCodes()
 }

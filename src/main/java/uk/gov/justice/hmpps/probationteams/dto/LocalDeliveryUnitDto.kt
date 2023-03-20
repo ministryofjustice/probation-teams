@@ -3,8 +3,8 @@ package uk.gov.justice.hmpps.probationteams.dto
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.v3.oas.annotations.media.Schema
-import javax.validation.constraints.Email
-import javax.validation.constraints.NotBlank
+import jakarta.validation.constraints.Email
+import jakarta.validation.constraints.NotBlank
 
 data class LocalDeliveryUnitDto @JsonCreator constructor(
   @Schema(description = "Probation Area code", example = "NO2", required = true)
@@ -20,5 +20,5 @@ data class LocalDeliveryUnitDto @JsonCreator constructor(
   val functionalMailbox: @Email String? = null,
 
   @JsonProperty("probationTeams")
-  val probationTeams: Map<String, ProbationTeamDto>? = mapOf()
+  val probationTeams: Map<String, ProbationTeamDto>? = mapOf(),
 )

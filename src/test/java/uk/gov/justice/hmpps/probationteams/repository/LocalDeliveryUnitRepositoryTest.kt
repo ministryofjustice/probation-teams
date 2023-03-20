@@ -2,9 +2,7 @@ package uk.gov.justice.hmpps.probationteams.repository
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.springdoc.kotlin.SpringDocKotlinConfiguration
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.security.test.context.support.WithAnonymousUser
@@ -17,14 +15,12 @@ import uk.gov.justice.hmpps.probationteams.utils.uniqueLduCode
 import java.util.UUID
 
 @ActiveProfiles("test")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@EnableAutoConfiguration(exclude = [SpringDocKotlinConfiguration::class])
+@SpringBootTest
 @Transactional
 @WithAnonymousUser
-
 class LocalDeliveryUnitRepositoryTest(
   @Autowired val repository: LocalDeliveryUnitRepository,
-  @Autowired val jdbcTemplate: JdbcTemplate
+  @Autowired val jdbcTemplate: JdbcTemplate,
 ) {
 
   @Test
@@ -33,7 +29,7 @@ class LocalDeliveryUnitRepositoryTest(
     val ldu = LocalDeliveryUnit(
       probationAreaCode = "ABC",
       localDeliveryUnitCode = lduCode,
-      functionalMailbox = "pqr@stu.ltd.uk"
+      functionalMailbox = "pqr@stu.ltd.uk",
     )
 
     repository.save(ldu)
@@ -157,7 +153,7 @@ class LocalDeliveryUnitRepositoryTest(
                 from LOCAL_DELIVERY_UNIT2
                 order by PROBATION_AREA_CODE
       """.trimIndent(),
-      String::class.java
+      String::class.java,
     )
 
   private fun probationTeamCount(lduId: UUID?) =
@@ -168,7 +164,7 @@ class LocalDeliveryUnitRepositoryTest(
                  where LOCAL_DELIVERY_UNIT_ID = ?
       """.trimIndent(),
       Long::class.java,
-      lduId
+      lduId,
     )
 
   private fun lduCount(lduId: UUID?) =
@@ -179,7 +175,7 @@ class LocalDeliveryUnitRepositoryTest(
                  where LOCAL_DELIVERY_UNIT_ID = ?
       """.trimIndent(),
       Long::class.java,
-      lduId
+      lduId,
     )
 
   companion object {
@@ -189,8 +185,8 @@ class LocalDeliveryUnitRepositoryTest(
         localDeliveryUnitCode = lduCode,
         probationTeams = mutableMapOf(
           "T1" to ProbationTeam("t1@team.com"),
-          "T2" to ProbationTeam("t2@team.com")
-        )
+          "T2" to ProbationTeam("t2@team.com"),
+        ),
       )
   }
 }

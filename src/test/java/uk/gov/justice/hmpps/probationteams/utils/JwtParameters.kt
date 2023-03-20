@@ -7,5 +7,5 @@ data class JwtParameters(
   val userId: String? = null,
   val scope: List<String>,
   val roles: List<String>,
-  val expiryTime: Duration
+  val expiryTime: Duration,
 )
