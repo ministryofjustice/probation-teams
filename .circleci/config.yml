@@ -6,10 +6,10 @@ orbs:
 parameters:
   alerts-slack-channel:
     type: string
-    default: elp_alerts_security
+    default: cvl_alerts_security
   releases-slack-channel:
     type: string
-    default: dps-releases
+    default: the_elephants_devs
 
 jobs:
   validate:
