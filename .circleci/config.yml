@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  hmpps: ministryofjustice/hmpps@6
+  hmpps: ministryofjustice/hmpps@7
 
 parameters:
   alerts-slack-channel:
@@ -10,12 +10,15 @@ parameters:
   releases-slack-channel:
     type: string
     default: the_elephants_devs
+  java-version:
+    type: string
+    default: "18.0"
 
 jobs:
   validate:
     executor:
       name: hmpps/java
-      tag: "18.0"
+      tag: << pipeline.parameters.java-version >>
     steps:
       - checkout
       - restore_cache:
@@ -99,6 +102,7 @@ workflows:
     jobs:
       - hmpps/gradle_owasp_dependency_check:
           slack_channel: << pipeline.parameters.alerts-slack-channel >>
+          jdk_tag: << pipeline.parameters.java-version >>
           context:
             - hmpps-common-vars
       - hmpps/trivy_latest_scan:
