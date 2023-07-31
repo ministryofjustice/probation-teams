@@ -1,5 +1,5 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.2.4"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.3.0-beta"
   kotlin("plugin.spring") version "1.9.0"
   kotlin("plugin.jpa") version "1.9.0"
 }
@@ -39,13 +39,13 @@ allOpen {
 }
 
 java {
-  toolchain.languageVersion.set(JavaLanguageVersion.of(18))
+  toolchain.languageVersion.set(JavaLanguageVersion.of(19))
 }
 
 tasks {
   withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
-      jvmTarget = "18"
+      jvmTarget = "19"
       freeCompilerArgs += "-Xemit-jvm-type-annotations"
     }
   }
