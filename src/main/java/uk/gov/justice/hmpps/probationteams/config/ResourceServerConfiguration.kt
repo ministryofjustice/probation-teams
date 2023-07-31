@@ -7,6 +7,8 @@ import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.config.annotation.web.invoke
+import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.config.http.SessionCreationPolicy.STATELESS
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -20,30 +22,32 @@ import org.springframework.security.web.SecurityFilterChain
 @EnableMethodSecurity(prePostEnabled = true, proxyTargetClass = true)
 class ResourceServerConfiguration {
   @Bean
-  fun securityFilterChain(http: HttpSecurity): SecurityFilterChain =
-    http
-      .sessionManagement()
-      .sessionCreationPolicy(STATELESS) // Can't have CSRF protection as requires session
-      .and().csrf().disable()
-      .authorizeHttpRequests { auth ->
-        auth
-          .requestMatchers(
-            "/webjars/**",
-            "/favicon.ico",
-            "/health/**",
-            "/info",
-            "/ping",
-            "/v3/api-docs/**",
-            "/swagger-ui/**",
-            "/swagger-ui.html",
-          )
-          .permitAll()
-          .anyRequest()
-          .authenticated()
+  fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+    http {
+      headers { frameOptions { sameOrigin = true } }
+      sessionManagement { sessionCreationPolicy = SessionCreationPolicy.STATELESS }
+      // Can't have CSRF protection as requires session
+      csrf { disable() }
+      authorizeHttpRequests {
+        listOf(
+          "/webjars/**",
+          "/favicon.ico",
+          "/health/**",
+          "/info",
+          "/h2-console/**",
+          "/v3/api-docs/**",
+          "/swagger-ui.html",
+          "/swagger-ui/**",
+          "/swagger-resources",
+          "/swagger-resources/configuration/ui",
+          "/swagger-resources/configuration/security",
+        ).forEach { authorize(it, permitAll) }
+        authorize(anyRequest, authenticated)
       }
-      .also {
-        it.oauth2ResourceServer().jwt().jwtAuthenticationConverter(AuthAwareTokenConverter())
-      }.build()
+      oauth2ResourceServer { jwt { jwtAuthenticationConverter = AuthAwareTokenConverter() } }
+    }
+    return http.build()
+  }
 }
 
 class AuthAwareTokenConverter : Converter<Jwt, AbstractAuthenticationToken> {
