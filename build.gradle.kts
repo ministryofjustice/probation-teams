@@ -1,5 +1,5 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.3.0-beta"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.4.1"
   kotlin("plugin.spring") version "1.9.0"
   kotlin("plugin.jpa") version "1.9.0"
 }
@@ -7,10 +7,6 @@ plugins {
 configurations {
   implementation { exclude(group = "tomcat-jdbc") }
   testImplementation { exclude(group = "org.junit.vintage") }
-}
-
-dependencyCheck {
-  suppressionFiles.add("suppressions.xml")
 }
 
 dependencies {
