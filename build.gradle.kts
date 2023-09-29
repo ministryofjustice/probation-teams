@@ -9,10 +9,6 @@ configurations {
   testImplementation { exclude(group = "org.junit.vintage") }
 }
 
-dependencyCheck {
-  suppressionFiles.add("suppressions.xml")
-}
-
 dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
