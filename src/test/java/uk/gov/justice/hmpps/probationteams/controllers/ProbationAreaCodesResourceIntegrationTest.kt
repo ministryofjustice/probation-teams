@@ -30,7 +30,7 @@ class ProbationAreaCodesResourceIntegrationTest(
   inner class GetProbationAreaCodesTests {
     @Test
     fun `It returns all the probation area codes`() {
-      val response = getProbationAreaCodes()
+      val response = getProbationAreaCodes(SYSTEM_USER_ROLE)
       with(response) {
         assertThat(statusCode).isEqualTo(HttpStatus.OK)
         assertThat(jsonTester.from(body)).hasJsonPathArrayValue("$")
@@ -38,11 +38,11 @@ class ProbationAreaCodesResourceIntegrationTest(
     }
   }
 
-  fun getProbationAreaCodes(): ResponseEntity<String> =
+  fun getProbationAreaCodes(roles: List<String>): ResponseEntity<String> =
     testRestTemplate.exchange(
       PROBATION_AREA_CODES_TEMPLATE,
       HttpMethod.GET,
-      entityBuilder.entityWithJwtAuthorisation(A_USER, NO_ROLES),
+      entityBuilder.entityWithJwtAuthorisation(A_USER, roles),
       String::class.java,
     )
 
@@ -50,6 +50,6 @@ class ProbationAreaCodesResourceIntegrationTest(
     private const val PROBATION_AREA_CODES_TEMPLATE = "/probation-area-codes"
 
     private const val A_USER = "API_TEST_USER"
-    private val NO_ROLES = listOf<String>()
+    private val SYSTEM_USER_ROLE = listOf("ROLE_SYSTEM_USER")
   }
 }
