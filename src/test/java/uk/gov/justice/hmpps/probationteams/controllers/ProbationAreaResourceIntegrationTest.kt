@@ -34,7 +34,7 @@ class ProbationAreaResourceIntegrationTest(
   inner class GetProbationAreaTests {
     @Test
     fun `A Probation area that doesn't contain any FMBs`() {
-      val response = getProbationArea("ZZZ")
+      val response = getProbationArea("ZZZ", SYSTEM_USER_ROLE)
       with(response) {
         assertThat(statusCode).isEqualTo(HttpStatus.OK)
         assertThat(jsonTester.from(body)).isEqualToJson("{ probationAreaCode: \"ZZZ\"}")
@@ -43,7 +43,7 @@ class ProbationAreaResourceIntegrationTest(
 
     @Test
     fun `A probation area that contains FMBs`() {
-      val response = getProbationArea("ABC")
+      val response = getProbationArea("ABC", SYSTEM_USER_ROLE)
       with(response) {
         assertThat(statusCode).isEqualTo(HttpStatus.OK)
         assertThat(jsonTester.from(body)).isEqualToJson("probationArea.json")
@@ -56,7 +56,7 @@ class ProbationAreaResourceIntegrationTest(
   inner class GetLduTests {
     @Test
     fun `An LDU that doesn't exist`() {
-      val response = getLdu("ABC", "ABC123")
+      val response = getLdu("ABC", "ABC123", SYSTEM_USER_ROLE)
       with(response) {
         assertThat(statusCode).isEqualTo(HttpStatus.NOT_FOUND)
         assertThat(body).isNullOrEmpty()
@@ -65,7 +65,7 @@ class ProbationAreaResourceIntegrationTest(
 
     @Test
     fun `An LDU with nested Probation Teams`() {
-      val response = getLdu("ABC", "ABC125")
+      val response = getLdu("ABC", "ABC125", SYSTEM_USER_ROLE)
       with(response) {
         assertThat(statusCode).isEqualTo(HttpStatus.OK)
         assertThat(jsonTester.from(body)).isEqualToJson("lduDto2WithTeams.json")
@@ -74,7 +74,7 @@ class ProbationAreaResourceIntegrationTest(
 
     @Test
     fun `An LDU that exists`() {
-      val response = getLdu("ABC", "ABC124")
+      val response = getLdu("ABC", "ABC124", SYSTEM_USER_ROLE)
       with(response) {
         assertThat(statusCode).isEqualTo(HttpStatus.OK)
         assertThat(jsonTester.from(body)).isEqualToJson("lduDto2.json")
@@ -93,12 +93,12 @@ class ProbationAreaResourceIntegrationTest(
     fun `Add a functional mailbox to an LDU`(roles: List<String>) {
       val lduCode = uniqueLduCode()
 
-      assertThat(getLdu(PROBATION_AREA_CODE, lduCode).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
+      assertThat(getLdu(PROBATION_AREA_CODE, lduCode, SYSTEM_USER_ROLE).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
 
       val putResponse = putLduFmb(PROBATION_AREA_CODE, lduCode, FMB1, roles)
       assertThat(putResponse.statusCode).isEqualTo(HttpStatus.CREATED)
 
-      val response = getLdu(PROBATION_AREA_CODE, lduCode)
+      val response = getLdu(PROBATION_AREA_CODE, lduCode, SYSTEM_USER_ROLE)
       assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
       val content = jsonTester.from(response.body)
       assertThat(content).extractingJsonPathStringValue("$.probationAreaCode").isEqualTo(PROBATION_AREA_CODE)
@@ -114,7 +114,7 @@ class ProbationAreaResourceIntegrationTest(
 
       assertThat(putLduFmb(PROBATION_AREA_CODE, lduCode, FMB2, SYSTEM_USER_ROLE).statusCode).isEqualTo(HttpStatus.NO_CONTENT)
 
-      val response = getLdu(PROBATION_AREA_CODE, lduCode)
+      val response = getLdu(PROBATION_AREA_CODE, lduCode, SYSTEM_USER_ROLE)
       val content = jsonTester.from(response.body)
       assertThat(content).extractingJsonPathStringValue("$.functionalMailbox").isEqualTo(FMB2)
     }
@@ -139,7 +139,7 @@ class ProbationAreaResourceIntegrationTest(
 
       putLduFmb(PROBATION_AREA_CODE, lduCode, FMB1, roles)
       assertThat(deleteLduFmb(PROBATION_AREA_CODE, lduCode, roles).statusCode).isEqualTo(HttpStatus.NO_CONTENT)
-      assertThat(getLdu(PROBATION_AREA_CODE, lduCode).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
+      assertThat(getLdu(PROBATION_AREA_CODE, lduCode, SYSTEM_USER_ROLE).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
       assertThat(deleteLduFmb(PROBATION_AREA_CODE, lduCode, roles).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
     }
 
@@ -159,10 +159,10 @@ class ProbationAreaResourceIntegrationTest(
     fun `Create a new FMB for a team`(roles: List<String>) {
       val lduCode = uniqueLduCode()
 
-      assertThat(getLdu(PROBATION_AREA_CODE, lduCode).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
+      assertThat(getLdu(PROBATION_AREA_CODE, lduCode, SYSTEM_USER_ROLE).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
       assertThat(putTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, FMB1, roles).statusCode).isEqualTo(HttpStatus.CREATED)
 
-      val content = jsonTester.from(getLdu(PROBATION_AREA_CODE, lduCode).body)
+      val content = jsonTester.from(getLdu(PROBATION_AREA_CODE, lduCode, SYSTEM_USER_ROLE).body)
       assertThat(content).extractingJsonPathStringValue("$.probationTeams.$TEAM_1_CODE.functionalMailbox").isEqualTo(FMB1)
     }
 
@@ -170,11 +170,11 @@ class ProbationAreaResourceIntegrationTest(
     fun `Update an FMB for a team`() {
       val lduCode = uniqueLduCode()
 
-      assertThat(getLdu(PROBATION_AREA_CODE, lduCode).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
+      assertThat(getLdu(PROBATION_AREA_CODE, lduCode, SYSTEM_USER_ROLE).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
       assertThat(putTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, FMB1, SYSTEM_USER_ROLE).statusCode).isEqualTo(HttpStatus.CREATED)
       assertThat(putTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, FMB2, SYSTEM_USER_ROLE).statusCode).isEqualTo(HttpStatus.NO_CONTENT)
 
-      val content = jsonTester.from(getLdu(PROBATION_AREA_CODE, lduCode).body)
+      val content = jsonTester.from(getLdu(PROBATION_AREA_CODE, lduCode, SYSTEM_USER_ROLE).body)
       assertThat(content).extractingJsonPathStringValue("$.probationTeams.$TEAM_1_CODE.functionalMailbox").isEqualTo(FMB2)
     }
 
@@ -210,7 +210,7 @@ class ProbationAreaResourceIntegrationTest(
       putTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, FMB1, roles)
       assertThat(deleteTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, roles).statusCode).isEqualTo(HttpStatus.NO_CONTENT)
       assertThat(deleteTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, roles).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
-      assertThat(getLdu(PROBATION_AREA_CODE, lduCode).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
+      assertThat(getLdu(PROBATION_AREA_CODE, lduCode, SYSTEM_USER_ROLE).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
     }
 
     @Test
@@ -227,7 +227,7 @@ class ProbationAreaResourceIntegrationTest(
       putTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_2_CODE, FMB2, SYSTEM_USER_ROLE)
       assertThat(deleteTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, SYSTEM_USER_ROLE).statusCode).isEqualTo(HttpStatus.NO_CONTENT)
       assertThat(deleteTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, SYSTEM_USER_ROLE).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
-      assertThat(getLdu(PROBATION_AREA_CODE, lduCode).statusCode).isEqualTo(HttpStatus.OK)
+      assertThat(getLdu(PROBATION_AREA_CODE, lduCode, SYSTEM_USER_ROLE).statusCode).isEqualTo(HttpStatus.OK)
     }
 
     @Test
@@ -237,7 +237,7 @@ class ProbationAreaResourceIntegrationTest(
       putLduFmb(PROBATION_AREA_CODE, lduCode, FMB2, SYSTEM_USER_ROLE)
       assertThat(deleteTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, SYSTEM_USER_ROLE).statusCode).isEqualTo(HttpStatus.NO_CONTENT)
       assertThat(deleteTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, SYSTEM_USER_ROLE).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
-      assertThat(getLdu(PROBATION_AREA_CODE, lduCode).statusCode).isEqualTo(HttpStatus.OK)
+      assertThat(getLdu(PROBATION_AREA_CODE, lduCode, SYSTEM_USER_ROLE).statusCode).isEqualTo(HttpStatus.OK)
     }
   }
 
@@ -325,20 +325,20 @@ class ProbationAreaResourceIntegrationTest(
     )
   }
 
-  fun getProbationArea(probationAreaCode: String): ResponseEntity<String> =
+  fun getProbationArea(probationAreaCode: String, roles: List<String>): ResponseEntity<String> =
     testRestTemplate.exchange(
       PROBATION_AREA_TEMPLATE,
       HttpMethod.GET,
-      entityBuilder.entityWithJwtAuthorisation(A_USER, NO_ROLES),
+      entityBuilder.entityWithJwtAuthorisation(A_USER, roles),
       String::class.java,
       probationAreaCode,
     )
 
-  fun getLdu(probationAreaCode: String, lduCode: String): ResponseEntity<String> =
+  fun getLdu(probationAreaCode: String, lduCode: String, roles: List<String>): ResponseEntity<String> =
     testRestTemplate.exchange(
       LDU_TEMPLATE,
       HttpMethod.GET,
-      entityBuilder.entityWithJwtAuthorisation(A_USER, NO_ROLES),
+      entityBuilder.entityWithJwtAuthorisation(A_USER, roles),
       String::class.java,
       probationAreaCode,
       lduCode,

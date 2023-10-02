@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -28,6 +29,7 @@ import uk.gov.justice.hmpps.probationteams.services.SetOutcome
   value = ["probation-areas"],
   produces = [APPLICATION_JSON_VALUE],
 )
+@PreAuthorize("hasAnyRole('MAINTAIN_REF_DATA', 'SYSTEM_USER', 'ROLE_SYSTEM_USER')")
 class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitService) {
 
   @GetMapping(path = ["/{probationAreaCode}"])

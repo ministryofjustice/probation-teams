@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import org.springframework.http.MediaType
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -16,6 +17,7 @@ import uk.gov.justice.hmpps.probationteams.services.LocalDeliveryUnitService
   value = ["probation-area-codes"],
   produces = [MediaType.APPLICATION_JSON_VALUE],
 )
+@PreAuthorize("hasAnyRole('MAINTAIN_REF_DATA', 'SYSTEM_USER', 'ROLE_SYSTEM_USER')")
 class ProbationAreaCodesController(val localDeliveryUnitService: LocalDeliveryUnitService) {
 
   @GetMapping
