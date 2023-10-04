@@ -2,7 +2,6 @@ package uk.gov.justice.hmpps.probationteams.services
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Sort
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
@@ -31,7 +30,6 @@ class LocalDeliveryUnitService(@Autowired val repository: LocalDeliveryUnitRepos
   fun getLocalDeliveryUnit(probationAreaCode: String, localDeliveryUnitCode: String): Optional<LocalDeliveryUnit> =
     repository.findByProbationAreaCodeAndLocalDeliveryUnitCode(probationAreaCode, localDeliveryUnitCode)
 
-  @PreAuthorize("hasAnyRole('MAINTAIN_REF_DATA', 'SYSTEM_USER')")
   fun setFunctionalMailbox(
     @ProbationAreaCode probationAreaCode: String,
     @LduCode localDeliveryUnitCode: String,
@@ -48,7 +46,6 @@ class LocalDeliveryUnitService(@Autowired val repository: LocalDeliveryUnitRepos
         )
       }
 
-  @PreAuthorize("hasAnyRole('MAINTAIN_REF_DATA', 'SYSTEM_USER')")
   fun setFunctionalMailbox(
     @ProbationAreaCode probationAreaCode: String,
     @LduCode localDeliveryUnitCode: String,
@@ -67,7 +64,6 @@ class LocalDeliveryUnitService(@Autowired val repository: LocalDeliveryUnitRepos
         )
       }
 
-  @PreAuthorize("hasAnyRole('MAINTAIN_REF_DATA', 'SYSTEM_USER')")
   fun deleteFunctionalMailbox(
     @ProbationAreaCode probationAreaCode: String,
     @LduCode localDeliveryUnitCode: String,
@@ -77,7 +73,6 @@ class LocalDeliveryUnitService(@Autowired val repository: LocalDeliveryUnitRepos
       .map { ldu -> doDeleteFmb(ldu) }
       .orElse(DeleteOutcome.NOT_FOUND)
 
-  @PreAuthorize("hasAnyRole('MAINTAIN_REF_DATA', 'SYSTEM_USER')")
   fun deleteFunctionalMailbox(
     @ProbationAreaCode probationAreaCode: String,
     @LduCode localDeliveryUnitCode: String,
