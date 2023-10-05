@@ -26,7 +26,7 @@ class LocalDeliveryUnitControllerResourceIntegrationTest(
 
   @Test
   fun `All LDUs`() {
-    val response = getLocalDeliveryUnits()
+    val response = getLocalDeliveryUnits(MAINTAIN_REF_DATA_ROLE)
     with(response) {
       assertThat(statusCode).isEqualTo(HttpStatus.OK)
 
@@ -36,11 +36,11 @@ class LocalDeliveryUnitControllerResourceIntegrationTest(
     }
   }
 
-  fun getLocalDeliveryUnits(): ResponseEntity<String> =
+  fun getLocalDeliveryUnits(roles: List<String>): ResponseEntity<String> =
     testRestTemplate.exchange(
       ALL_LDU_TEMPLATE,
       HttpMethod.GET,
-      entityBuilder.entityWithJwtAuthorisation(A_USER, NO_ROLES),
+      entityBuilder.entityWithJwtAuthorisation(A_USER, roles),
       String::class.java,
     )
 
@@ -48,6 +48,6 @@ class LocalDeliveryUnitControllerResourceIntegrationTest(
     private const val ALL_LDU_TEMPLATE = "/local-delivery-units"
 
     private const val A_USER = "API_TEST_USER"
-    private val NO_ROLES = listOf<String>()
+    private val MAINTAIN_REF_DATA_ROLE = listOf("ROLE_MAINTAIN_REF_DATA")
   }
 }
