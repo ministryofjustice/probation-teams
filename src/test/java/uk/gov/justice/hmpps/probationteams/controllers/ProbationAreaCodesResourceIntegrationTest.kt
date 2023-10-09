@@ -30,7 +30,7 @@ class ProbationAreaCodesResourceIntegrationTest(
   inner class GetProbationAreaCodesTests {
     @Test
     fun `It returns all the probation area codes`() {
-      val response = getProbationAreaCodes(MAINTAIN_REF_DATA_ROLE)
+      val response = getProbationAreaCodes(VIEW_PROBATION_TEAMS_ROLE)
       with(response) {
         assertThat(statusCode).isEqualTo(HttpStatus.OK)
         assertThat(jsonTester.from(body)).hasJsonPathArrayValue("$")
@@ -50,6 +50,6 @@ class ProbationAreaCodesResourceIntegrationTest(
     private const val PROBATION_AREA_CODES_TEMPLATE = "/probation-area-codes"
 
     private const val A_USER = "API_TEST_USER"
-    private val MAINTAIN_REF_DATA_ROLE = listOf("ROLE_MAINTAIN_REF_DATA")
+    private val VIEW_PROBATION_TEAMS_ROLE = listOf("ROLE_VIEW_PROBATION_TEAMS")
   }
 }

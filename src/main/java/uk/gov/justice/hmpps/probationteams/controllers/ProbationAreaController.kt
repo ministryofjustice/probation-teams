@@ -29,7 +29,7 @@ import uk.gov.justice.hmpps.probationteams.services.SetOutcome
   value = ["probation-areas"],
   produces = [APPLICATION_JSON_VALUE],
 )
-@PreAuthorize("hasAnyRole('MAINTAIN_REF_DATA')")
+@PreAuthorize("hasAnyRole('VIEW_PROBATION_TEAMS')")
 class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitService) {
 
   @GetMapping(path = ["/{probationAreaCode}"])

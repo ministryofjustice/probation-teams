@@ -20,7 +20,7 @@ import uk.gov.justice.hmpps.probationteams.services.LocalDeliveryUnitService
   value = ["local-delivery-units"],
   produces = [APPLICATION_JSON_VALUE],
 )
-@PreAuthorize("hasAnyRole('MAINTAIN_REF_DATA')")
+@PreAuthorize("hasAnyRole('VIEW_PROBATION_TEAMS')")
 class LocalDeliveryUnitController(val localDeliveryUnitService: LocalDeliveryUnitService) {
 
   @GetMapping

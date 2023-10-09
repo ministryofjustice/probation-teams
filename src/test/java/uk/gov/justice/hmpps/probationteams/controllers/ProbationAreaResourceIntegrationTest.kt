@@ -34,7 +34,7 @@ class ProbationAreaResourceIntegrationTest(
   inner class GetProbationAreaTests {
     @Test
     fun `A Probation area that doesn't contain any FMBs`() {
-      val response = getProbationArea("ZZZ", MAINTAIN_REF_DATA_ROLE)
+      val response = getProbationArea("ZZZ", VIEW_PROBATION_TEAMS_ROLE)
       with(response) {
         assertThat(statusCode).isEqualTo(HttpStatus.OK)
         assertThat(jsonTester.from(body)).isEqualToJson("{ probationAreaCode: \"ZZZ\"}")
@@ -43,7 +43,7 @@ class ProbationAreaResourceIntegrationTest(
 
     @Test
     fun `A probation area that contains FMBs`() {
-      val response = getProbationArea("ABC", MAINTAIN_REF_DATA_ROLE)
+      val response = getProbationArea("ABC", VIEW_PROBATION_TEAMS_ROLE)
       with(response) {
         assertThat(statusCode).isEqualTo(HttpStatus.OK)
         assertThat(jsonTester.from(body)).isEqualToJson("probationArea.json")
@@ -56,7 +56,7 @@ class ProbationAreaResourceIntegrationTest(
   inner class GetLduTests {
     @Test
     fun `An LDU that doesn't exist`() {
-      val response = getLdu("ABC", "ABC123", MAINTAIN_REF_DATA_ROLE)
+      val response = getLdu("ABC", "ABC123", VIEW_PROBATION_TEAMS_ROLE)
       with(response) {
         assertThat(statusCode).isEqualTo(HttpStatus.NOT_FOUND)
         assertThat(body).isNullOrEmpty()
@@ -65,7 +65,7 @@ class ProbationAreaResourceIntegrationTest(
 
     @Test
     fun `An LDU with nested Probation Teams`() {
-      val response = getLdu("ABC", "ABC125", MAINTAIN_REF_DATA_ROLE)
+      val response = getLdu("ABC", "ABC125", VIEW_PROBATION_TEAMS_ROLE)
       with(response) {
         assertThat(statusCode).isEqualTo(HttpStatus.OK)
         assertThat(jsonTester.from(body)).isEqualToJson("lduDto2WithTeams.json")
@@ -74,7 +74,7 @@ class ProbationAreaResourceIntegrationTest(
 
     @Test
     fun `An LDU that exists`() {
-      val response = getLdu("ABC", "ABC124", MAINTAIN_REF_DATA_ROLE)
+      val response = getLdu("ABC", "ABC124", VIEW_PROBATION_TEAMS_ROLE)
       with(response) {
         assertThat(statusCode).isEqualTo(HttpStatus.OK)
         assertThat(jsonTester.from(body)).isEqualToJson("lduDto2.json")
@@ -86,19 +86,19 @@ class ProbationAreaResourceIntegrationTest(
   @DisplayName("PUT $LDU_FMB_TEMPLATE")
   inner class PutFmbOnLdu {
 
-    fun authorisedRolesProvider() = listOf(MAINTAIN_REF_DATA_ROLE)
+    fun authorisedRolesProvider() = listOf(VIEW_PROBATION_TEAMS_ROLE)
 
     @ParameterizedTest
     @MethodSource("authorisedRolesProvider")
     fun `Add a functional mailbox to an LDU`(roles: List<String>) {
       val lduCode = uniqueLduCode()
 
-      assertThat(getLdu(PROBATION_AREA_CODE, lduCode, MAINTAIN_REF_DATA_ROLE).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
+      assertThat(getLdu(PROBATION_AREA_CODE, lduCode, VIEW_PROBATION_TEAMS_ROLE).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
 
       val putResponse = putLduFmb(PROBATION_AREA_CODE, lduCode, FMB1, roles)
       assertThat(putResponse.statusCode).isEqualTo(HttpStatus.CREATED)
 
-      val response = getLdu(PROBATION_AREA_CODE, lduCode, MAINTAIN_REF_DATA_ROLE)
+      val response = getLdu(PROBATION_AREA_CODE, lduCode, VIEW_PROBATION_TEAMS_ROLE)
       assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
       val content = jsonTester.from(response.body)
       assertThat(content).extractingJsonPathStringValue("$.probationAreaCode").isEqualTo(PROBATION_AREA_CODE)
@@ -110,11 +110,11 @@ class ProbationAreaResourceIntegrationTest(
     fun `Update a functional mailbox on an LDU`() {
       val lduCode = uniqueLduCode()
 
-      putLduFmb(PROBATION_AREA_CODE, lduCode, FMB1, MAINTAIN_REF_DATA_ROLE)
+      putLduFmb(PROBATION_AREA_CODE, lduCode, FMB1, VIEW_PROBATION_TEAMS_ROLE)
 
-      assertThat(putLduFmb(PROBATION_AREA_CODE, lduCode, FMB2, MAINTAIN_REF_DATA_ROLE).statusCode).isEqualTo(HttpStatus.NO_CONTENT)
+      assertThat(putLduFmb(PROBATION_AREA_CODE, lduCode, FMB2, VIEW_PROBATION_TEAMS_ROLE).statusCode).isEqualTo(HttpStatus.NO_CONTENT)
 
-      val response = getLdu(PROBATION_AREA_CODE, lduCode, MAINTAIN_REF_DATA_ROLE)
+      val response = getLdu(PROBATION_AREA_CODE, lduCode, VIEW_PROBATION_TEAMS_ROLE)
       val content = jsonTester.from(response.body)
       assertThat(content).extractingJsonPathStringValue("$.functionalMailbox").isEqualTo(FMB2)
     }
@@ -130,7 +130,7 @@ class ProbationAreaResourceIntegrationTest(
   @DisplayName("DELETE $LDU_FMB_TEMPLATE")
   inner class DeleteFmbOnLdu {
 
-    fun authorisedRolesProvider() = listOf(MAINTAIN_REF_DATA_ROLE)
+    fun authorisedRolesProvider() = listOf(VIEW_PROBATION_TEAMS_ROLE)
 
     @ParameterizedTest
     @MethodSource("authorisedRolesProvider")
@@ -139,7 +139,7 @@ class ProbationAreaResourceIntegrationTest(
 
       putLduFmb(PROBATION_AREA_CODE, lduCode, FMB1, roles)
       assertThat(deleteLduFmb(PROBATION_AREA_CODE, lduCode, roles).statusCode).isEqualTo(HttpStatus.NO_CONTENT)
-      assertThat(getLdu(PROBATION_AREA_CODE, lduCode, MAINTAIN_REF_DATA_ROLE).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
+      assertThat(getLdu(PROBATION_AREA_CODE, lduCode, VIEW_PROBATION_TEAMS_ROLE).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
       assertThat(deleteLduFmb(PROBATION_AREA_CODE, lduCode, roles).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
     }
 
@@ -152,17 +152,17 @@ class ProbationAreaResourceIntegrationTest(
   @Nested
   @DisplayName("PUT $TEAM_FMB_TEMPLATE")
   inner class PutTeamFmb {
-    fun authorisedRolesProvider() = listOf(MAINTAIN_REF_DATA_ROLE)
+    fun authorisedRolesProvider() = listOf(VIEW_PROBATION_TEAMS_ROLE)
 
     @ParameterizedTest
     @MethodSource("authorisedRolesProvider")
     fun `Create a new FMB for a team`(roles: List<String>) {
       val lduCode = uniqueLduCode()
 
-      assertThat(getLdu(PROBATION_AREA_CODE, lduCode, MAINTAIN_REF_DATA_ROLE).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
+      assertThat(getLdu(PROBATION_AREA_CODE, lduCode, VIEW_PROBATION_TEAMS_ROLE).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
       assertThat(putTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, FMB1, roles).statusCode).isEqualTo(HttpStatus.CREATED)
 
-      val content = jsonTester.from(getLdu(PROBATION_AREA_CODE, lduCode, MAINTAIN_REF_DATA_ROLE).body)
+      val content = jsonTester.from(getLdu(PROBATION_AREA_CODE, lduCode, VIEW_PROBATION_TEAMS_ROLE).body)
       assertThat(content).extractingJsonPathStringValue("$.probationTeams.$TEAM_1_CODE.functionalMailbox").isEqualTo(FMB1)
     }
 
@@ -170,11 +170,11 @@ class ProbationAreaResourceIntegrationTest(
     fun `Update an FMB for a team`() {
       val lduCode = uniqueLduCode()
 
-      assertThat(getLdu(PROBATION_AREA_CODE, lduCode, MAINTAIN_REF_DATA_ROLE).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
-      assertThat(putTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, FMB1, MAINTAIN_REF_DATA_ROLE).statusCode).isEqualTo(HttpStatus.CREATED)
-      assertThat(putTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, FMB2, MAINTAIN_REF_DATA_ROLE).statusCode).isEqualTo(HttpStatus.NO_CONTENT)
+      assertThat(getLdu(PROBATION_AREA_CODE, lduCode, VIEW_PROBATION_TEAMS_ROLE).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
+      assertThat(putTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, FMB1, VIEW_PROBATION_TEAMS_ROLE).statusCode).isEqualTo(HttpStatus.CREATED)
+      assertThat(putTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, FMB2, VIEW_PROBATION_TEAMS_ROLE).statusCode).isEqualTo(HttpStatus.NO_CONTENT)
 
-      val content = jsonTester.from(getLdu(PROBATION_AREA_CODE, lduCode, MAINTAIN_REF_DATA_ROLE).body)
+      val content = jsonTester.from(getLdu(PROBATION_AREA_CODE, lduCode, VIEW_PROBATION_TEAMS_ROLE).body)
       assertThat(content).extractingJsonPathStringValue("$.probationTeams.$TEAM_1_CODE.functionalMailbox").isEqualTo(FMB2)
     }
 
@@ -189,18 +189,18 @@ class ProbationAreaResourceIntegrationTest(
   @DisplayName("DELETE $TEAM_FMB_TEMPLATE")
   inner class DeleteTeamFmb {
 
-    fun authorisedRolesProvider() = listOf(MAINTAIN_REF_DATA_ROLE)
+    fun authorisedRolesProvider() = listOf(VIEW_PROBATION_TEAMS_ROLE)
 
     @Test
     fun `LDU not found`() {
-      assertThat(deleteTeamFmb(PROBATION_AREA_CODE, uniqueLduCode(), TEAM_1_CODE, MAINTAIN_REF_DATA_ROLE).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
+      assertThat(deleteTeamFmb(PROBATION_AREA_CODE, uniqueLduCode(), TEAM_1_CODE, VIEW_PROBATION_TEAMS_ROLE).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
     }
 
     @Test
     fun `Team not found`() {
       val lduCode = uniqueLduCode()
-      putLduFmb(PROBATION_AREA_CODE, lduCode, FMB1, MAINTAIN_REF_DATA_ROLE)
-      assertThat(deleteTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, MAINTAIN_REF_DATA_ROLE).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
+      putLduFmb(PROBATION_AREA_CODE, lduCode, FMB1, VIEW_PROBATION_TEAMS_ROLE)
+      assertThat(deleteTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, VIEW_PROBATION_TEAMS_ROLE).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
     }
 
     @ParameterizedTest
@@ -210,34 +210,34 @@ class ProbationAreaResourceIntegrationTest(
       putTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, FMB1, roles)
       assertThat(deleteTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, roles).statusCode).isEqualTo(HttpStatus.NO_CONTENT)
       assertThat(deleteTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, roles).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
-      assertThat(getLdu(PROBATION_AREA_CODE, lduCode, MAINTAIN_REF_DATA_ROLE).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
+      assertThat(getLdu(PROBATION_AREA_CODE, lduCode, VIEW_PROBATION_TEAMS_ROLE).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
     }
 
     @Test
     fun `Request is rejected when client does not have an authorised role`() {
       val lduCode = uniqueLduCode()
-      putTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, FMB1, MAINTAIN_REF_DATA_ROLE)
+      putTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, FMB1, VIEW_PROBATION_TEAMS_ROLE)
       assertThat(deleteTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, NO_ROLES).statusCode).isEqualTo(HttpStatus.FORBIDDEN)
     }
 
     @Test
     fun `Team has FMB, parent LDU has two Teams, no FMB`() {
       val lduCode = uniqueLduCode()
-      putTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, FMB1, MAINTAIN_REF_DATA_ROLE)
-      putTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_2_CODE, FMB2, MAINTAIN_REF_DATA_ROLE)
-      assertThat(deleteTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, MAINTAIN_REF_DATA_ROLE).statusCode).isEqualTo(HttpStatus.NO_CONTENT)
-      assertThat(deleteTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, MAINTAIN_REF_DATA_ROLE).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
-      assertThat(getLdu(PROBATION_AREA_CODE, lduCode, MAINTAIN_REF_DATA_ROLE).statusCode).isEqualTo(HttpStatus.OK)
+      putTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, FMB1, VIEW_PROBATION_TEAMS_ROLE)
+      putTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_2_CODE, FMB2, VIEW_PROBATION_TEAMS_ROLE)
+      assertThat(deleteTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, VIEW_PROBATION_TEAMS_ROLE).statusCode).isEqualTo(HttpStatus.NO_CONTENT)
+      assertThat(deleteTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, VIEW_PROBATION_TEAMS_ROLE).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
+      assertThat(getLdu(PROBATION_AREA_CODE, lduCode, VIEW_PROBATION_TEAMS_ROLE).statusCode).isEqualTo(HttpStatus.OK)
     }
 
     @Test
     fun `Team has FMB, parent LDU has one team and FMB`() {
       val lduCode = uniqueLduCode()
-      putTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, FMB1, MAINTAIN_REF_DATA_ROLE)
-      putLduFmb(PROBATION_AREA_CODE, lduCode, FMB2, MAINTAIN_REF_DATA_ROLE)
-      assertThat(deleteTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, MAINTAIN_REF_DATA_ROLE).statusCode).isEqualTo(HttpStatus.NO_CONTENT)
-      assertThat(deleteTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, MAINTAIN_REF_DATA_ROLE).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
-      assertThat(getLdu(PROBATION_AREA_CODE, lduCode, MAINTAIN_REF_DATA_ROLE).statusCode).isEqualTo(HttpStatus.OK)
+      putTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, FMB1, VIEW_PROBATION_TEAMS_ROLE)
+      putLduFmb(PROBATION_AREA_CODE, lduCode, FMB2, VIEW_PROBATION_TEAMS_ROLE)
+      assertThat(deleteTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, VIEW_PROBATION_TEAMS_ROLE).statusCode).isEqualTo(HttpStatus.NO_CONTENT)
+      assertThat(deleteTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, VIEW_PROBATION_TEAMS_ROLE).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
+      assertThat(getLdu(PROBATION_AREA_CODE, lduCode, VIEW_PROBATION_TEAMS_ROLE).statusCode).isEqualTo(HttpStatus.OK)
     }
   }
 
@@ -269,30 +269,30 @@ class ProbationAreaResourceIntegrationTest(
       ).map { InvocationWithTestData(it.first, it.second) }
 
     val probationAreaCodeConsumers = listOf(
-      DescribedRestApiInvocation("PUT    LDU  FMB, try Probation Area Code") { putLduFmb(it, uniqueLduCode(), FMB1, MAINTAIN_REF_DATA_ROLE) },
-      DescribedRestApiInvocation("DELETE LDU  FMB, try Probation Area Code") { deleteLduFmb(it, uniqueLduCode(), MAINTAIN_REF_DATA_ROLE) },
-      DescribedRestApiInvocation("PUT    Team FMB, try Probation Area Code") { putTeamFmb(it, uniqueLduCode(), TEAM_1_CODE, FMB1, MAINTAIN_REF_DATA_ROLE) },
-      DescribedRestApiInvocation("DELETE Team FMB, try Probation Area Code") { deleteTeamFmb(it, uniqueLduCode(), TEAM_1_CODE, MAINTAIN_REF_DATA_ROLE) },
+      DescribedRestApiInvocation("PUT    LDU  FMB, try Probation Area Code") { putLduFmb(it, uniqueLduCode(), FMB1, VIEW_PROBATION_TEAMS_ROLE) },
+      DescribedRestApiInvocation("DELETE LDU  FMB, try Probation Area Code") { deleteLduFmb(it, uniqueLduCode(), VIEW_PROBATION_TEAMS_ROLE) },
+      DescribedRestApiInvocation("PUT    Team FMB, try Probation Area Code") { putTeamFmb(it, uniqueLduCode(), TEAM_1_CODE, FMB1, VIEW_PROBATION_TEAMS_ROLE) },
+      DescribedRestApiInvocation("DELETE Team FMB, try Probation Area Code") { deleteTeamFmb(it, uniqueLduCode(), TEAM_1_CODE, VIEW_PROBATION_TEAMS_ROLE) },
     )
 
     val lduCodeConsumers1 = listOf(
-      DescribedRestApiInvocation("PUT    LDU  FMB, try LDU code") { putLduFmb(PROBATION_AREA_CODE, it, FMB1, MAINTAIN_REF_DATA_ROLE) },
-      DescribedRestApiInvocation("DELETE LDU  FMB, try LDU code") { deleteLduFmb(PROBATION_AREA_CODE, it, MAINTAIN_REF_DATA_ROLE) },
+      DescribedRestApiInvocation("PUT    LDU  FMB, try LDU code") { putLduFmb(PROBATION_AREA_CODE, it, FMB1, VIEW_PROBATION_TEAMS_ROLE) },
+      DescribedRestApiInvocation("DELETE LDU  FMB, try LDU code") { deleteLduFmb(PROBATION_AREA_CODE, it, VIEW_PROBATION_TEAMS_ROLE) },
     )
 
     val lduCodeConsumers2 = listOf(
-      DescribedRestApiInvocation("PUT    Team FMB, try LDU code") { putTeamFmb(PROBATION_AREA_CODE, it, TEAM_1_CODE, FMB1, MAINTAIN_REF_DATA_ROLE) },
-      DescribedRestApiInvocation("PUT    Team FMB, try LDU code") { deleteTeamFmb(PROBATION_AREA_CODE, it, TEAM_1_CODE, MAINTAIN_REF_DATA_ROLE) },
+      DescribedRestApiInvocation("PUT    Team FMB, try LDU code") { putTeamFmb(PROBATION_AREA_CODE, it, TEAM_1_CODE, FMB1, VIEW_PROBATION_TEAMS_ROLE) },
+      DescribedRestApiInvocation("PUT    Team FMB, try LDU code") { deleteTeamFmb(PROBATION_AREA_CODE, it, TEAM_1_CODE, VIEW_PROBATION_TEAMS_ROLE) },
     )
 
     val teamCodeConsumers = listOf(
-      DescribedRestApiInvocation("PUT    Team FMB, try Team code") { putTeamFmb(PROBATION_AREA_CODE, uniqueLduCode(), it, FMB1, MAINTAIN_REF_DATA_ROLE) },
-      DescribedRestApiInvocation("PUT    Team FMB, try Team code") { deleteTeamFmb(PROBATION_AREA_CODE, uniqueLduCode(), it, MAINTAIN_REF_DATA_ROLE) },
+      DescribedRestApiInvocation("PUT    Team FMB, try Team code") { putTeamFmb(PROBATION_AREA_CODE, uniqueLduCode(), it, FMB1, VIEW_PROBATION_TEAMS_ROLE) },
+      DescribedRestApiInvocation("PUT    Team FMB, try Team code") { deleteTeamFmb(PROBATION_AREA_CODE, uniqueLduCode(), it, VIEW_PROBATION_TEAMS_ROLE) },
     )
 
     val emailAddressConsumers = listOf(
-      DescribedRestApiInvocation("PUT    LDU  FMB, try email address") { putLduFmb(PROBATION_AREA_CODE, uniqueLduCode(), it, MAINTAIN_REF_DATA_ROLE) },
-      DescribedRestApiInvocation("PUT    Team FMB, try email address") { putTeamFmb(PROBATION_AREA_CODE, uniqueLduCode(), TEAM_1_CODE, it, MAINTAIN_REF_DATA_ROLE) },
+      DescribedRestApiInvocation("PUT    LDU  FMB, try email address") { putLduFmb(PROBATION_AREA_CODE, uniqueLduCode(), it, VIEW_PROBATION_TEAMS_ROLE) },
+      DescribedRestApiInvocation("PUT    Team FMB, try email address") { putTeamFmb(PROBATION_AREA_CODE, uniqueLduCode(), TEAM_1_CODE, it, VIEW_PROBATION_TEAMS_ROLE) },
     )
 
     val invalidProbationAreaCodes = listOf(
@@ -401,7 +401,7 @@ class ProbationAreaResourceIntegrationTest(
 
     private const val A_USER = "API_TEST_USER"
     private val NO_ROLES = listOf<String>()
-    private val MAINTAIN_REF_DATA_ROLE = listOf("ROLE_MAINTAIN_REF_DATA")
+    private val VIEW_PROBATION_TEAMS_ROLE = listOf("ROLE_VIEW_PROBATION_TEAMS")
 
     private const val INVALID_PROBATION_AREA_MESSAGE = "Must be a valid Probation Area Code"
     private const val INVALID_LDU_MESSAGE = "Must be a valid Local Delivery Unit Code"

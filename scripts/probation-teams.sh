@@ -142,7 +142,7 @@ set_auth_header() {
   local SECRETS="$(kubectl -n ${NAMESPACE} get secret licences -o json)"
   local API_SECRET=$(echo "${SECRETS}" | jq -r ".data.ADMIN_API_CLIENT_SECRET | @base64d")
   local API_ID=$(echo "${SECRETS}" | jq -r ".data.ADMIN_API_CLIENT_ID | @base64d")
-  local AUTH_BASIC=$(echo -n ${API_ID}:${API_SECRET} | base64 -b0)
+  local AUTH_BASIC=$(echo -n ${API_ID}:${API_SECRET} | base64 -b 0)
   local TOKEN=$(curl -s -X POST "${NOMIS_AUTH_URL}/oauth/token?grant_type=client_credentials" -H 'Content-Type: application/json' -H 'Content-Length: 0' -H "Authorization: Basic ${AUTH_BASIC}" | jq -r '.access_token')
   AUTH_HEADER="Authorization: Bearer $TOKEN"
 }
