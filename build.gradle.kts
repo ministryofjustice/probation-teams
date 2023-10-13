@@ -1,7 +1,7 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.4.1"
-  kotlin("plugin.spring") version "1.9.0"
-  kotlin("plugin.jpa") version "1.9.0"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.5.1"
+  kotlin("plugin.spring") version "1.9.10"
+  kotlin("plugin.jpa") version "1.9.10"
 }
 
 configurations {
@@ -19,15 +19,15 @@ dependencies {
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
 
-  runtimeOnly("com.h2database:h2:2.2.220")
+  runtimeOnly("com.h2database:h2:2.2.224")
   runtimeOnly("org.flywaydb:flyway-core")
   runtimeOnly("org.postgresql:postgresql:42.6.0")
 
   testImplementation("org.springframework.boot:spring-boot-starter-test")
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("com.ninja-squad:springmockk:4.0.2")
-  testImplementation("io.jsonwebtoken:jjwt-impl:0.11.5")
-  testImplementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
+  testImplementation("io.jsonwebtoken:jjwt-impl:0.12.2")
+  testImplementation("io.jsonwebtoken:jjwt-jackson:0.12.2")
 }
 
 allOpen {
@@ -39,13 +39,13 @@ allOpen {
 }
 
 java {
-  toolchain.languageVersion.set(JavaLanguageVersion.of(19))
+  toolchain.languageVersion.set(JavaLanguageVersion.of(20))
 }
 
 tasks {
   withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
-      jvmTarget = "19"
+      jvmTarget = "20"
       freeCompilerArgs += "-Xemit-jvm-type-annotations"
     }
   }
