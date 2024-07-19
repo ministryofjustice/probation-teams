@@ -55,3 +55,9 @@ Pipe the 'GET' output into jq for something more readable.
 You must have suitable kubernetes access to the cluster namespace for this to work. (licences-dev in this instance)
 
 The script `scripts/smoke-dev.sh` encapsulates these steps, but you must confirm the output manually.
+
+To run:
+
+```
+./smoke-dev.sh
+```
