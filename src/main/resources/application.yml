@@ -25,7 +25,7 @@ spring:
       ddl-auto: none
 
   datasource:
-    url: 'jdbc:postgresql://${database.endpoint}/${database.name}?sslmode=verify_full&currentSchema=probation_teams'
+    url: 'jdbc:postgresql://${database.endpoint}/${database.name}?sslmode=prefer&currentSchema=probation_teams'
     username: ${spring.datasource.username}
     password: ${spring.datasource.password}
     hikari:
