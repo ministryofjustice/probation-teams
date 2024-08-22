@@ -22,7 +22,6 @@ dependencies {
   implementation("org.springframework.security:spring-security-config:6.3.2")
 
   runtimeOnly("com.h2database:h2:2.2.224")
-  runtimeOnly("org.flywaydb:flyway-database-postgresql")
   runtimeOnly("org.flywaydb:flyway-core")
   runtimeOnly("org.postgresql:postgresql:42.7.3")
 
