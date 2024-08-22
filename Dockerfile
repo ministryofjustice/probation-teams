@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM eclipse-temurin:21-jre-jammy AS builder
+FROM --platform=$BUILDPLATFORM eclipse-temurin:21-jdk-jammy AS builder
 
 ARG BUILD_NUMBER
 ENV BUILD_NUMBER ${BUILD_NUMBER:-1_0_0}
@@ -7,7 +7,7 @@ WORKDIR /app
 ADD . .
 RUN ./gradlew --no-daemon assemble
 
-FROM eclipse-temurin:21-jre-jammy
+FROM eclipse-temurin:21-jdk-jammy
 LABEL maintainer="HMPPS Digital Studio <info@digital.justice.gov.uk>"
 
 RUN apt-get update && \
@@ -23,7 +23,7 @@ RUN addgroup --gid 2000 --system appgroup && \
 
 # Install AWS RDS Root cert into Java truststore
 RUN mkdir /home/appuser/.postgresql \
-  && curl https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem \
+  && curl https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem \
     > /home/appuser/.postgresql/root.crt
 
 WORKDIR /app
