@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # A very simple smoke test for probation-teams in the dev environment...
 #
 # list the FMBs in the N02 probation area
