@@ -1,6 +1,7 @@
 package uk.gov.justice.hmpps.probationteams.utils
 
 import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.SignatureAlgorithm.RS256
 import org.springframework.context.annotation.Bean
 import org.springframework.security.oauth2.jwt.JwtDecoder
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder
