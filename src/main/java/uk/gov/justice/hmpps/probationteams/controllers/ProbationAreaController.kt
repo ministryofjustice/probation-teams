@@ -48,7 +48,6 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitSer
     @Schema(description = "Probation Area code", example = "N02", required = true)
     @PathVariable("probationAreaCode")
     probationAreaCode: String,
-
   ): ProbationAreaDto =
     ProbationAreaDto(
       probationAreaCode,
@@ -75,15 +74,12 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitSer
   )
   @GetMapping(path = ["/{probationAreaCode}/local-delivery-units/{localDeliveryUnitCode}"])
   fun getLocalDeliveryUnit(
-
     @Schema(description = "Probation Area code", required = true, example = "N02")
     @PathVariable("probationAreaCode")
     probationAreaCode: String,
-
     @Schema(description = "Local Delivery Unit code", required = true, example = "N02KSUK")
     @PathVariable("localDeliveryUnitCode")
     localDeliveryUnitCode: String,
-
   ): ResponseEntity<LocalDeliveryUnitDto> = ResponseEntity.of(
     localDeliveryUnitService
       .getLocalDeliveryUnit(probationAreaCode, localDeliveryUnitCode)
@@ -101,18 +97,14 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitSer
     consumes = [APPLICATION_JSON_VALUE],
   )
   fun setFunctionalMailbox(
-
     @Schema(description = "Probation Area code", required = true, example = "N02")
     @PathVariable("probationAreaCode")
     probationAreaCode: String,
-
     @Schema(description = "Local Delivery Unit code", required = true, example = "N02KSUK")
     @PathVariable("localDeliveryUnitCode")
     localDeliveryUnitCode: String,
-
     @RequestBody
     proposedFunctionalMailbox: String,
-
   ): ResponseEntity<Void> = when (
     localDeliveryUnitService.setFunctionalMailbox(
       probationAreaCode,
@@ -139,15 +131,12 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitSer
   )
   @DeleteMapping(path = ["/{probationAreaCode}/local-delivery-units/{localDeliveryUnitCode}/functional-mailbox"])
   fun deleteFunctionalMailbox(
-
     @Schema(description = "Probation Area code", required = true, example = "N02")
     @PathVariable("probationAreaCode")
     probationAreaCode: String,
-
     @Schema(description = "Local Delivery Unit code", required = true, example = "N02KSUK")
     @PathVariable("localDeliveryUnitCode")
     localDeliveryUnitCode: String,
-
   ): ResponseEntity<Void> =
 
     when (
@@ -171,22 +160,17 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitSer
     consumes = [APPLICATION_JSON_VALUE],
   )
   fun setFunctionalMailbox(
-
     @Schema(description = "Probation Area code", required = true, example = "N02")
     @PathVariable("probationAreaCode")
     probationAreaCode: String,
-
     @Schema(description = "Local Delivery Unit code", required = true, example = "N02KSUK")
     @PathVariable("localDeliveryUnitCode")
     localDeliveryUnitCode: String,
-
     @Schema(description = "Team code", required = true, example = "N02KSUK")
     @PathVariable("teamCode")
     teamCode: String,
-
     @RequestBody
     proposedFunctionalMailbox: String,
-
   ): ResponseEntity<Void> = when (
     localDeliveryUnitService.setFunctionalMailbox(
       probationAreaCode,
@@ -214,19 +198,15 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitSer
   )
   @DeleteMapping(path = ["/{probationAreaCode}/local-delivery-units/{localDeliveryUnitCode}/teams/{teamCode}/functional-mailbox"])
   fun deleteFunctionalMailbox(
-
     @Schema(description = "Probation Area code", required = true, example = "N02")
     @PathVariable("probationAreaCode")
     probationAreaCode: String,
-
     @Schema(description = "Local Delivery Unit code", required = true, example = "N02KSUK")
     @PathVariable("localDeliveryUnitCode")
     localDeliveryUnitCode: String,
-
     @Schema(description = "Team code", required = true, example = "N02KSUK")
     @PathVariable("teamCode")
     teamCode: String,
-
   ): ResponseEntity<Void> = when (
     localDeliveryUnitService.deleteFunctionalMailbox(
       probationAreaCode,
