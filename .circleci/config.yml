@@ -1,19 +1,13 @@
 version: 2.1
-
 orbs:
   hmpps: ministryofjustice/hmpps@10
-
 parameters:
-  alerts-slack-channel:
-    type: string
-    default: cvl_alerts_security
   releases-slack-channel:
     type: string
     default: the_elephants_devs
   java-version:
     type: string
     default: "21.0"
-
 jobs:
   validate:
     executor:
@@ -35,7 +29,6 @@ jobs:
           path: build/test-results
       - store_artifacts:
           path: build/reports/tests
-
 workflows:
   version: 2
   build-test-and-deploy:
@@ -90,28 +83,3 @@ workflows:
             - probation-teams-prod
           requires:
             - request-prod-approval
-
-  security:
-    triggers:
-      - schedule:
-          cron: "15 3 * * 1-5"
-          filters:
-            branches:
-              only:
-                - main
-    jobs:
-      - hmpps/gradle_owasp_dependency_check:
-          slack_channel: << pipeline.parameters.alerts-slack-channel >>
-          jdk_tag: << pipeline.parameters.java-version >>
-          context:
-            - hmpps-common-vars
-      - hmpps/trivy_latest_scan:
-          slack_channel: << pipeline.parameters.alerts-slack-channel >>
-          context:
-            - hmpps-common-vars
-      # currently disabled as no support for jdk 18 or kotlin 1.7
-      # - hmpps/veracode_pipeline_scan:
-      #   slack_channel: << pipeline.parameters.alerts-slack-channel >>
-      #   context:
-      #     - veracode-credentials
-      #     - hmpps-common-vars
