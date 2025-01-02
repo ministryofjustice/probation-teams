@@ -1,5 +1,5 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "6.1.0"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "6.1.2"
   kotlin("plugin.spring") version "2.0.21"
   kotlin("plugin.jpa") version "2.0.21"
 }
@@ -10,7 +10,6 @@ configurations {
 }
 
 dependencies {
-  annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-security")
