@@ -37,10 +37,9 @@ class LocalDeliveryUnitController(val localDeliveryUnitService: LocalDeliveryUni
       ),
     ],
   )
-  fun getAllLocalDeliveryUnits(): List<LocalDeliveryUnitDto> =
-    localDeliveryUnitService
-      .getLocalDeliveryUnits()
-      .map(::fromLocalDeliveryUnit)
+  fun getAllLocalDeliveryUnits(): List<LocalDeliveryUnitDto> = localDeliveryUnitService
+    .getLocalDeliveryUnits()
+    .map(::fromLocalDeliveryUnit)
 
   companion object {
 

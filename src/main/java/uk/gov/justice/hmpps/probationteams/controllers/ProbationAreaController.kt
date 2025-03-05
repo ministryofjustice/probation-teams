@@ -48,14 +48,13 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitSer
     @Schema(description = "Probation Area code", example = "N02", required = true)
     @PathVariable("probationAreaCode")
     probationAreaCode: String,
-  ): ProbationAreaDto =
-    ProbationAreaDto(
-      probationAreaCode,
-      localDeliveryUnitService
-        .getProbationArea(probationAreaCode)
-        .map(::fromLocalDeliveryUnit)
-        .associateBy(LocalDeliveryUnitDto::localDeliveryUnitCode),
-    )
+  ): ProbationAreaDto = ProbationAreaDto(
+    probationAreaCode,
+    localDeliveryUnitService
+      .getProbationArea(probationAreaCode)
+      .map(::fromLocalDeliveryUnit)
+      .associateBy(LocalDeliveryUnitDto::localDeliveryUnitCode),
+  )
 
   @Operation(
     description = "Retrieve a Local Delivery Unit",
@@ -137,17 +136,15 @@ class ProbationAreaController(val localDeliveryUnitService: LocalDeliveryUnitSer
     @Schema(description = "Local Delivery Unit code", required = true, example = "N02KSUK")
     @PathVariable("localDeliveryUnitCode")
     localDeliveryUnitCode: String,
-  ): ResponseEntity<Void> =
-
-    when (
-      localDeliveryUnitService.deleteFunctionalMailbox(
-        probationAreaCode,
-        localDeliveryUnitCode,
-      )
-    ) {
-      DeleteOutcome.DELETED -> ResponseEntity.noContent().build()
-      DeleteOutcome.NOT_FOUND -> ResponseEntity.notFound().build()
-    }
+  ): ResponseEntity<Void> = when (
+    localDeliveryUnitService.deleteFunctionalMailbox(
+      probationAreaCode,
+      localDeliveryUnitCode,
+    )
+  ) {
+    DeleteOutcome.DELETED -> ResponseEntity.noContent().build()
+    DeleteOutcome.NOT_FOUND -> ResponseEntity.notFound().build()
+  }
 
   @Operation(
     description = "Set the Functional Mailbox for a Probation team",

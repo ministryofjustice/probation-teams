@@ -38,13 +38,12 @@ class ProbationAreaCodesResourceIntegrationTest(
     }
   }
 
-  fun getProbationAreaCodes(roles: List<String>): ResponseEntity<String> =
-    testRestTemplate.exchange(
-      PROBATION_AREA_CODES_TEMPLATE,
-      HttpMethod.GET,
-      entityBuilder.entityWithJwtAuthorisation(A_USER, roles),
-      String::class.java,
-    )
+  fun getProbationAreaCodes(roles: List<String>): ResponseEntity<String> = testRestTemplate.exchange(
+    PROBATION_AREA_CODES_TEMPLATE,
+    HttpMethod.GET,
+    entityBuilder.entityWithJwtAuthorisation(A_USER, roles),
+    String::class.java,
+  )
 
   companion object {
     private const val PROBATION_AREA_CODES_TEMPLATE = "/probation-area-codes"

@@ -146,47 +146,43 @@ class LocalDeliveryUnitRepositoryTest(
     assertThat(probationAreaCodes).isEqualTo(actualProbationAreaCodes)
   }
 
-  private fun probationAreaCodes() =
-    jdbcTemplate.queryForList(
-      """
+  private fun probationAreaCodes() = jdbcTemplate.queryForList(
+    """
                 select distinct PROBATION_AREA_CODE 
                 from LOCAL_DELIVERY_UNIT2
                 order by PROBATION_AREA_CODE
-      """.trimIndent(),
-      String::class.java,
-    )
+    """.trimIndent(),
+    String::class.java,
+  )
 
-  private fun probationTeamCount(lduId: UUID?) =
-    jdbcTemplate.queryForObject(
-      """
+  private fun probationTeamCount(lduId: UUID?) = jdbcTemplate.queryForObject(
+    """
                 select count(*) 
                   from PROBATION_TEAM 
                  where LOCAL_DELIVERY_UNIT_ID = ?
-      """.trimIndent(),
-      Long::class.java,
-      lduId,
-    )
+    """.trimIndent(),
+    Long::class.java,
+    lduId,
+  )
 
-  private fun lduCount(lduId: UUID?) =
-    jdbcTemplate.queryForObject(
-      """
+  private fun lduCount(lduId: UUID?) = jdbcTemplate.queryForObject(
+    """
                 select count(*) 
                   from LOCAL_DELIVERY_UNIT2 
                  where LOCAL_DELIVERY_UNIT_ID = ?
-      """.trimIndent(),
-      Long::class.java,
-      lduId,
-    )
+    """.trimIndent(),
+    Long::class.java,
+    lduId,
+  )
 
   companion object {
-    fun lduWithProbationTeams(lduCode: String, probationAreaCode: String = "ABC"): LocalDeliveryUnit =
-      LocalDeliveryUnit(
-        probationAreaCode,
-        localDeliveryUnitCode = lduCode,
-        probationTeams = mutableMapOf(
-          "T1" to ProbationTeam("t1@team.com"),
-          "T2" to ProbationTeam("t2@team.com"),
-        ),
-      )
+    fun lduWithProbationTeams(lduCode: String, probationAreaCode: String = "ABC"): LocalDeliveryUnit = LocalDeliveryUnit(
+      probationAreaCode,
+      localDeliveryUnitCode = lduCode,
+      probationTeams = mutableMapOf(
+        "T1" to ProbationTeam("t1@team.com"),
+        "T2" to ProbationTeam("t2@team.com"),
+      ),
+    )
   }
 }
