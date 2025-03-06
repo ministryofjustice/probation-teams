@@ -325,66 +325,60 @@ class ProbationAreaResourceIntegrationTest(
     )
   }
 
-  fun getProbationArea(probationAreaCode: String, roles: List<String>): ResponseEntity<String> =
-    testRestTemplate.exchange(
-      PROBATION_AREA_TEMPLATE,
-      HttpMethod.GET,
-      entityBuilder.entityWithJwtAuthorisation(A_USER, roles),
-      String::class.java,
-      probationAreaCode,
-    )
+  fun getProbationArea(probationAreaCode: String, roles: List<String>): ResponseEntity<String> = testRestTemplate.exchange(
+    PROBATION_AREA_TEMPLATE,
+    HttpMethod.GET,
+    entityBuilder.entityWithJwtAuthorisation(A_USER, roles),
+    String::class.java,
+    probationAreaCode,
+  )
 
-  fun getLdu(probationAreaCode: String, lduCode: String, roles: List<String>): ResponseEntity<String> =
-    testRestTemplate.exchange(
-      LDU_TEMPLATE,
-      HttpMethod.GET,
-      entityBuilder.entityWithJwtAuthorisation(A_USER, roles),
-      String::class.java,
-      probationAreaCode,
-      lduCode,
-    )
+  fun getLdu(probationAreaCode: String, lduCode: String, roles: List<String>): ResponseEntity<String> = testRestTemplate.exchange(
+    LDU_TEMPLATE,
+    HttpMethod.GET,
+    entityBuilder.entityWithJwtAuthorisation(A_USER, roles),
+    String::class.java,
+    probationAreaCode,
+    lduCode,
+  )
 
-  fun putLduFmb(probationAreaCode: String, lduCode: String, functionalMailbox: String, roles: List<String>): ResponseEntity<String> =
-    testRestTemplate.exchange(
-      LDU_FMB_TEMPLATE,
-      HttpMethod.PUT,
-      entityBuilder.entityWithJwtAuthorisation(A_USER, roles, "\"${functionalMailbox}\""),
-      String::class.java,
-      probationAreaCode,
-      lduCode,
-    )
+  fun putLduFmb(probationAreaCode: String, lduCode: String, functionalMailbox: String, roles: List<String>): ResponseEntity<String> = testRestTemplate.exchange(
+    LDU_FMB_TEMPLATE,
+    HttpMethod.PUT,
+    entityBuilder.entityWithJwtAuthorisation(A_USER, roles, "\"${functionalMailbox}\""),
+    String::class.java,
+    probationAreaCode,
+    lduCode,
+  )
 
-  fun putTeamFmb(probationAreaCode: String, lduCode: String, teamCode: String, functionalMailbox: String, roles: List<String>): ResponseEntity<String> =
-    testRestTemplate.exchange(
-      TEAM_FMB_TEMPLATE,
-      HttpMethod.PUT,
-      entityBuilder.entityWithJwtAuthorisation(A_USER, roles, "\"${functionalMailbox}\""),
-      String::class.java,
-      probationAreaCode,
-      lduCode,
-      teamCode,
-    )
+  fun putTeamFmb(probationAreaCode: String, lduCode: String, teamCode: String, functionalMailbox: String, roles: List<String>): ResponseEntity<String> = testRestTemplate.exchange(
+    TEAM_FMB_TEMPLATE,
+    HttpMethod.PUT,
+    entityBuilder.entityWithJwtAuthorisation(A_USER, roles, "\"${functionalMailbox}\""),
+    String::class.java,
+    probationAreaCode,
+    lduCode,
+    teamCode,
+  )
 
-  fun deleteLduFmb(probationAreaCode: String, lduCode: String, roles: List<String>): ResponseEntity<String> =
-    testRestTemplate.exchange(
-      LDU_FMB_TEMPLATE,
-      HttpMethod.DELETE,
-      entityBuilder.entityWithJwtAuthorisation(A_USER, roles),
-      String::class.java,
-      probationAreaCode,
-      lduCode,
-    )
+  fun deleteLduFmb(probationAreaCode: String, lduCode: String, roles: List<String>): ResponseEntity<String> = testRestTemplate.exchange(
+    LDU_FMB_TEMPLATE,
+    HttpMethod.DELETE,
+    entityBuilder.entityWithJwtAuthorisation(A_USER, roles),
+    String::class.java,
+    probationAreaCode,
+    lduCode,
+  )
 
-  fun deleteTeamFmb(probationAreaCode: String, lduCode: String, teamCode: String, roles: List<String>): ResponseEntity<String> =
-    testRestTemplate.exchange(
-      TEAM_FMB_TEMPLATE,
-      HttpMethod.DELETE,
-      entityBuilder.entityWithJwtAuthorisation(A_USER, roles),
-      String::class.java,
-      probationAreaCode,
-      lduCode,
-      teamCode,
-    )
+  fun deleteTeamFmb(probationAreaCode: String, lduCode: String, teamCode: String, roles: List<String>): ResponseEntity<String> = testRestTemplate.exchange(
+    TEAM_FMB_TEMPLATE,
+    HttpMethod.DELETE,
+    entityBuilder.entityWithJwtAuthorisation(A_USER, roles),
+    String::class.java,
+    probationAreaCode,
+    lduCode,
+    teamCode,
+  )
 
   companion object {
     private const val PROBATION_AREA_TEMPLATE = "/probation-areas/{probationAreaCode}"

@@ -36,13 +36,12 @@ class LocalDeliveryUnitControllerResourceIntegrationTest(
     }
   }
 
-  fun getLocalDeliveryUnits(roles: List<String>): ResponseEntity<String> =
-    testRestTemplate.exchange(
-      ALL_LDU_TEMPLATE,
-      HttpMethod.GET,
-      entityBuilder.entityWithJwtAuthorisation(A_USER, roles),
-      String::class.java,
-    )
+  fun getLocalDeliveryUnits(roles: List<String>): ResponseEntity<String> = testRestTemplate.exchange(
+    ALL_LDU_TEMPLATE,
+    HttpMethod.GET,
+    entityBuilder.entityWithJwtAuthorisation(A_USER, roles),
+    String::class.java,
+  )
 
   companion object {
     private const val ALL_LDU_TEMPLATE = "/local-delivery-units"

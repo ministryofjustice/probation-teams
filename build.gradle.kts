@@ -1,7 +1,7 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "6.1.2"
-  kotlin("plugin.spring") version "2.0.21"
-  kotlin("plugin.jpa") version "2.0.21"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "7.1.3"
+  kotlin("plugin.spring") version "2.1.10"
+  kotlin("plugin.jpa") version "2.1.10"
 }
 
 configurations {
@@ -16,13 +16,13 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
-  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.10.0")
-  implementation("org.springframework.security:spring-security-config:6.3.2")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")
+  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.13.3")
+  implementation("org.springframework.security:spring-security-config:6.4.3")
 
   runtimeOnly("com.h2database:h2:2.3.232")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
-  runtimeOnly("org.postgresql:postgresql:42.7.4")
+  runtimeOnly("org.postgresql:postgresql:42.7.5")
 
   testImplementation("org.springframework.boot:spring-boot-starter-test")
   testImplementation("org.springframework.security:spring-security-test")

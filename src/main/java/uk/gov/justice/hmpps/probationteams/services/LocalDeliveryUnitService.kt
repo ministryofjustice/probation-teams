@@ -21,80 +21,68 @@ class LocalDeliveryUnitService(@Autowired val repository: LocalDeliveryUnitRepos
 
   fun getProbationAreaCodes(): List<String> = repository.getProbationAreaCodes()
 
-  fun getLocalDeliveryUnits(): List<LocalDeliveryUnit> =
-    repository.findAll(Sort.by("probationAreaCode", "localDeliveryUnitCode"))
+  fun getLocalDeliveryUnits(): List<LocalDeliveryUnit> = repository.findAll(Sort.by("probationAreaCode", "localDeliveryUnitCode"))
 
-  fun getProbationArea(probationAreaCode: String): List<LocalDeliveryUnit> =
-    repository.findByProbationAreaCode(probationAreaCode)
+  fun getProbationArea(probationAreaCode: String): List<LocalDeliveryUnit> = repository.findByProbationAreaCode(probationAreaCode)
 
-  fun getLocalDeliveryUnit(probationAreaCode: String, localDeliveryUnitCode: String): Optional<LocalDeliveryUnit> =
-    repository.findByProbationAreaCodeAndLocalDeliveryUnitCode(probationAreaCode, localDeliveryUnitCode)
+  fun getLocalDeliveryUnit(probationAreaCode: String, localDeliveryUnitCode: String): Optional<LocalDeliveryUnit> = repository.findByProbationAreaCodeAndLocalDeliveryUnitCode(probationAreaCode, localDeliveryUnitCode)
 
   fun setFunctionalMailbox(
     @ProbationAreaCode probationAreaCode: String,
     @LduCode localDeliveryUnitCode: String,
     @Email proposedFunctionalMailbox: String,
-  ): SetOutcome =
-
-    getLocalDeliveryUnit(probationAreaCode, localDeliveryUnitCode)
-      .map { ldu -> updateLduFunctionalMailbox(ldu, proposedFunctionalMailbox) }
-      .orElseGet {
-        createLduFunctionalMailbox(
-          probationAreaCode,
-          localDeliveryUnitCode,
-          proposedFunctionalMailbox,
-        )
-      }
-
-  fun setFunctionalMailbox(
-    @ProbationAreaCode probationAreaCode: String,
-    @LduCode localDeliveryUnitCode: String,
-    @TeamCode teamCode: String,
-    @Email proposedFunctionalMailbox: String,
-  ): SetOutcome =
-
-    getLocalDeliveryUnit(probationAreaCode, localDeliveryUnitCode)
-      .map { ldu -> setTeamFunctionalMailbox(ldu, teamCode, proposedFunctionalMailbox) }
-      .orElseGet {
-        createLduWithTeamFunctionalMailbox(
-          probationAreaCode,
-          localDeliveryUnitCode,
-          teamCode,
-          proposedFunctionalMailbox,
-        )
-      }
-
-  fun deleteFunctionalMailbox(
-    @ProbationAreaCode probationAreaCode: String,
-    @LduCode localDeliveryUnitCode: String,
-  ): DeleteOutcome =
-
-    getLocalDeliveryUnit(probationAreaCode, localDeliveryUnitCode)
-      .map { ldu -> doDeleteFmb(ldu) }
-      .orElse(DeleteOutcome.NOT_FOUND)
-
-  fun deleteFunctionalMailbox(
-    @ProbationAreaCode probationAreaCode: String,
-    @LduCode localDeliveryUnitCode: String,
-    @TeamCode teamCode: String,
-  ): DeleteOutcome =
-
-    getLocalDeliveryUnit(probationAreaCode, localDeliveryUnitCode)
-      .map { ldu -> doDeleteFmb(ldu, teamCode) }
-      .orElse(DeleteOutcome.NOT_FOUND)
-
-  private fun updateLduFunctionalMailbox(ldu: LocalDeliveryUnit, proposedFunctionalMailbox: String): SetOutcome =
-    when (ldu.functionalMailbox) {
-      null -> {
-        ldu.functionalMailbox = proposedFunctionalMailbox
-        SetOutcome.CREATED
-      }
-      proposedFunctionalMailbox -> SetOutcome.NO_CHANGE
-      else -> {
-        ldu.functionalMailbox = proposedFunctionalMailbox
-        SetOutcome.UPDATED
-      }
+  ): SetOutcome = getLocalDeliveryUnit(probationAreaCode, localDeliveryUnitCode)
+    .map { ldu -> updateLduFunctionalMailbox(ldu, proposedFunctionalMailbox) }
+    .orElseGet {
+      createLduFunctionalMailbox(
+        probationAreaCode,
+        localDeliveryUnitCode,
+        proposedFunctionalMailbox,
+      )
     }
+
+  fun setFunctionalMailbox(
+    @ProbationAreaCode probationAreaCode: String,
+    @LduCode localDeliveryUnitCode: String,
+    @TeamCode teamCode: String,
+    @Email proposedFunctionalMailbox: String,
+  ): SetOutcome = getLocalDeliveryUnit(probationAreaCode, localDeliveryUnitCode)
+    .map { ldu -> setTeamFunctionalMailbox(ldu, teamCode, proposedFunctionalMailbox) }
+    .orElseGet {
+      createLduWithTeamFunctionalMailbox(
+        probationAreaCode,
+        localDeliveryUnitCode,
+        teamCode,
+        proposedFunctionalMailbox,
+      )
+    }
+
+  fun deleteFunctionalMailbox(
+    @ProbationAreaCode probationAreaCode: String,
+    @LduCode localDeliveryUnitCode: String,
+  ): DeleteOutcome = getLocalDeliveryUnit(probationAreaCode, localDeliveryUnitCode)
+    .map { ldu -> doDeleteFmb(ldu) }
+    .orElse(DeleteOutcome.NOT_FOUND)
+
+  fun deleteFunctionalMailbox(
+    @ProbationAreaCode probationAreaCode: String,
+    @LduCode localDeliveryUnitCode: String,
+    @TeamCode teamCode: String,
+  ): DeleteOutcome = getLocalDeliveryUnit(probationAreaCode, localDeliveryUnitCode)
+    .map { ldu -> doDeleteFmb(ldu, teamCode) }
+    .orElse(DeleteOutcome.NOT_FOUND)
+
+  private fun updateLduFunctionalMailbox(ldu: LocalDeliveryUnit, proposedFunctionalMailbox: String): SetOutcome = when (ldu.functionalMailbox) {
+    null -> {
+      ldu.functionalMailbox = proposedFunctionalMailbox
+      SetOutcome.CREATED
+    }
+    proposedFunctionalMailbox -> SetOutcome.NO_CHANGE
+    else -> {
+      ldu.functionalMailbox = proposedFunctionalMailbox
+      SetOutcome.UPDATED
+    }
+  }
 
   private fun createLduFunctionalMailbox(
     probationAreaCode: String,
@@ -138,30 +126,26 @@ class LocalDeliveryUnitService(@Autowired val repository: LocalDeliveryUnitRepos
     return SetOutcome.CREATED
   }
 
-  private fun doDeleteFmb(ldu: LocalDeliveryUnit): DeleteOutcome =
-
-    when (ldu.functionalMailbox) {
-      null -> DeleteOutcome.NOT_FOUND
-      else -> {
-        if (ldu.probationTeams.isEmpty()) {
-          repository.delete(ldu)
-        } else {
-          ldu.functionalMailbox = null
-        }
-        DeleteOutcome.DELETED
+  private fun doDeleteFmb(ldu: LocalDeliveryUnit): DeleteOutcome = when (ldu.functionalMailbox) {
+    null -> DeleteOutcome.NOT_FOUND
+    else -> {
+      if (ldu.probationTeams.isEmpty()) {
+        repository.delete(ldu)
+      } else {
+        ldu.functionalMailbox = null
       }
+      DeleteOutcome.DELETED
     }
+  }
 
-  private fun doDeleteFmb(ldu: LocalDeliveryUnit, teamCode: String): DeleteOutcome =
-
-    when (ldu.probationTeams[teamCode]) {
-      null -> DeleteOutcome.NOT_FOUND
-      else -> {
-        ldu.probationTeams.remove(teamCode)
-        if (ldu.probationTeams.isEmpty() && ldu.functionalMailbox == null) {
-          repository.delete(ldu)
-        }
-        DeleteOutcome.DELETED
+  private fun doDeleteFmb(ldu: LocalDeliveryUnit, teamCode: String): DeleteOutcome = when (ldu.probationTeams[teamCode]) {
+    null -> DeleteOutcome.NOT_FOUND
+    else -> {
+      ldu.probationTeams.remove(teamCode)
+      if (ldu.probationTeams.isEmpty() && ldu.functionalMailbox == null) {
+        repository.delete(ldu)
       }
+      DeleteOutcome.DELETED
     }
+  }
 }
