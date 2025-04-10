@@ -10,14 +10,12 @@ configurations {
 }
 
 dependencies {
-  annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-security")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6")
 
   runtimeOnly("com.h2database:h2:2.2.224")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
