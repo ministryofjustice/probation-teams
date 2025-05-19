@@ -29,7 +29,7 @@ class LocalDeliveryUnitRepositoryTest(
     val ldu = LocalDeliveryUnit(
       probationAreaCode = "ABC",
       localDeliveryUnitCode = lduCode,
-      functionalMailbox = "pqr@stu.ltd.uk",
+      functionalMailbox = "pqr@invalid-domain.uk",
     )
 
     repository.save(ldu)
