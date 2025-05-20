@@ -42,7 +42,7 @@
         <appender-ref ref="consoleAppender"/>
     </logger>
 
-    <logger name="org.flywaydb" additivity="false" level="INFO">
+    <logger name="org.flywaydb" additivity="false" level="WARN">
         <appender-ref ref="consoleAppender"/>
     </logger>
 
