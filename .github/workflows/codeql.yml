@@ -13,7 +13,6 @@ jobs:
     name: CodeQL Analyse (${{ matrix.language }})
     runs-on: ubuntu-latest
     permissions:
-      security-events: write
       packages: read
       actions: read
       contents: read
