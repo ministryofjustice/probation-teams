@@ -10,7 +10,6 @@ class CodeQLTest {
   fun `Should cause CodeQL to find an issue`() {
     val badPrng = SecureRandom()
 
-
     // BAD: Using a constant value as a seed for a random number generator means all numbers it generates are predictable.
     badPrng.setSeed(12345L)
     var randomData = badPrng.nextInt(32)
