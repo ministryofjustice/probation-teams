@@ -155,7 +155,7 @@ class LocalDeliveryUnitRepositoryTest(
     String::class.java,
   )
 
-  private fun probationTeamCount(lduId: UUID?) = jdbcTemplate.queryForObject(
+  private fun probationTeamCount(lduId: UUID?): Long? = jdbcTemplate.queryForObject(
     """
                 select count(*) 
                   from PROBATION_TEAM 
@@ -165,7 +165,7 @@ class LocalDeliveryUnitRepositoryTest(
     lduId,
   )
 
-  private fun lduCount(lduId: UUID?) = jdbcTemplate.queryForObject(
+  private fun lduCount(lduId: UUID?): Long? = jdbcTemplate.queryForObject(
     """
                 select count(*) 
                   from LOCAL_DELIVERY_UNIT2 
