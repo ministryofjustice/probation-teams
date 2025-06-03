@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  hmpps: ministryofjustice/hmpps@dev:6382f23
+  hmpps: ministryofjustice/hmpps@dev:4a0fd3c
 parameters:
   releases-slack-channel:
     type: string
