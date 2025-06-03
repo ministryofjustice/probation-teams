@@ -41,6 +41,7 @@ workflows:
           name: helm_lint
       - hmpps/build_multiplatform_docker:
           name: build_docker
+          image_name: 754256621582.dkr.ecr.eu-west-2.amazonaws.com/probation-teams/probation-teams
           filters:
             branches:
               only:
