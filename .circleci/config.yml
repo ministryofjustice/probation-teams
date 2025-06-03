@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  hmpps: ministryofjustice/hmpps@10
+  hmpps: ministryofjustice/hmpps@dev:6382f23
 parameters:
   releases-slack-channel:
     type: string
@@ -45,6 +45,7 @@ workflows:
             branches:
               only:
                 - main
+                - test-orb-update
       - hmpps/deploy_env:
           name: deploy_dev
           env: "dev"
