@@ -53,13 +53,23 @@ class LocalDeliveryUnitServiceTest {
 
     @Test
     fun `LDU exists`() {
-      every { repository.findByProbationAreaCodeAndLocalDeliveryUnitCode(PROBATION_AREA_CODE, LDU_CODE) } returns Optional.of(lduWithFmb())
+      every {
+        repository.findByProbationAreaCodeAndLocalDeliveryUnitCode(
+          PROBATION_AREA_CODE,
+          LDU_CODE,
+        )
+      } returns Optional.of(lduWithFmb())
       assertThat(service.getLocalDeliveryUnit(PROBATION_AREA_CODE, LDU_CODE)).isPresent
     }
 
     @Test
     fun `LDU does not exist`() {
-      every { repository.findByProbationAreaCodeAndLocalDeliveryUnitCode(PROBATION_AREA_CODE, LDU_CODE) } returns Optional.empty()
+      every {
+        repository.findByProbationAreaCodeAndLocalDeliveryUnitCode(
+          PROBATION_AREA_CODE,
+          LDU_CODE,
+        )
+      } returns Optional.empty()
       assertThat(service.getLocalDeliveryUnit(PROBATION_AREA_CODE, LDU_CODE)).isEmpty
     }
   }
@@ -84,7 +94,9 @@ class LocalDeliveryUnitServiceTest {
     fun `LDU found - update FMB`() {
       val persistentLdu = lduWithFmb()
 
-      every { repository.findByProbationAreaCodeAndLocalDeliveryUnitCode(any(), any()) } returns Optional.of(persistentLdu)
+      every { repository.findByProbationAreaCodeAndLocalDeliveryUnitCode(any(), any()) } returns Optional.of(
+        persistentLdu,
+      )
 
       assertThat(service.setFunctionalMailbox(PROBATION_AREA_CODE, LDU_CODE, FMB2)).isEqualTo(SetOutcome.UPDATED)
       assertThat(persistentLdu.functionalMailbox).isEqualTo(FMB2)
@@ -96,7 +108,9 @@ class LocalDeliveryUnitServiceTest {
     @Test
     fun `LDU found - same FMB`() {
       val persistentLdu = lduWithFmb()
-      every { repository.findByProbationAreaCodeAndLocalDeliveryUnitCode(any(), any()) } returns Optional.of(persistentLdu)
+      every { repository.findByProbationAreaCodeAndLocalDeliveryUnitCode(any(), any()) } returns Optional.of(
+        persistentLdu,
+      )
 
       assertThat(service.setFunctionalMailbox(PROBATION_AREA_CODE, LDU_CODE, FMB)).isEqualTo(SetOutcome.NO_CHANGE)
       assertThat(persistentLdu.functionalMailbox).isEqualTo(FMB)
@@ -119,7 +133,9 @@ class LocalDeliveryUnitServiceTest {
       @Test
       fun `Found LDU with no Teams`() {
         val persistentLdu = lduWithFmb()
-        every { repository.findByProbationAreaCodeAndLocalDeliveryUnitCode(any(), any()) } returns Optional.of(persistentLdu)
+        every { repository.findByProbationAreaCodeAndLocalDeliveryUnitCode(any(), any()) } returns Optional.of(
+          persistentLdu,
+        )
 
         assertThat(service.deleteFunctionalMailbox(PROBATION_AREA_CODE, LDU_CODE)).isEqualTo(DeleteOutcome.DELETED)
 
@@ -132,7 +148,9 @@ class LocalDeliveryUnitServiceTest {
         val persistentLdu = lduWithNoFmb()
         persistentLdu.probationTeams["T1"] = ProbationTeam(FMB)
 
-        every { repository.findByProbationAreaCodeAndLocalDeliveryUnitCode(any(), any()) } returns Optional.of(persistentLdu)
+        every { repository.findByProbationAreaCodeAndLocalDeliveryUnitCode(any(), any()) } returns Optional.of(
+          persistentLdu,
+        )
 
         assertThat(service.deleteFunctionalMailbox(PROBATION_AREA_CODE, LDU_CODE)).isEqualTo(DeleteOutcome.NOT_FOUND)
 
@@ -145,7 +163,9 @@ class LocalDeliveryUnitServiceTest {
         persistentLdu.probationTeams[TEAM_CODE_1] = ProbationTeam(FMB)
         assertThat(persistentLdu.functionalMailbox).isEqualTo(FMB)
 
-        every { repository.findByProbationAreaCodeAndLocalDeliveryUnitCode(any(), any()) } returns Optional.of(persistentLdu)
+        every { repository.findByProbationAreaCodeAndLocalDeliveryUnitCode(any(), any()) } returns Optional.of(
+          persistentLdu,
+        )
 
         assertThat(service.deleteFunctionalMailbox(PROBATION_AREA_CODE, LDU_CODE)).isEqualTo(DeleteOutcome.DELETED)
         assertThat(persistentLdu.functionalMailbox).isNull()
@@ -164,7 +184,14 @@ class LocalDeliveryUnitServiceTest {
       every { repository.findByProbationAreaCodeAndLocalDeliveryUnitCode(any(), any()) } returns Optional.empty()
       every { repository.save<LocalDeliveryUnit>(any()) } returns lduWithFmb() // Don't care what it returns
 
-      assertThat(service.setFunctionalMailbox(PROBATION_AREA_CODE, LDU_CODE, TEAM_CODE_1, FMB)).isEqualTo(SetOutcome.CREATED)
+      assertThat(
+        service.setFunctionalMailbox(
+          PROBATION_AREA_CODE,
+          LDU_CODE,
+          TEAM_CODE_1,
+          FMB,
+        ),
+      ).isEqualTo(SetOutcome.CREATED)
 
       val ldu = lduWithNoFmb()
       ldu.probationTeams[TEAM_CODE_1] = ProbationTeam(FMB)
@@ -177,7 +204,14 @@ class LocalDeliveryUnitServiceTest {
       val ldu = lduWithNoFmb()
       every { repository.findByProbationAreaCodeAndLocalDeliveryUnitCode(any(), any()) } returns Optional.of(ldu)
 
-      assertThat(service.setFunctionalMailbox(PROBATION_AREA_CODE, LDU_CODE, TEAM_CODE_1, FMB)).isEqualTo(SetOutcome.CREATED)
+      assertThat(
+        service.setFunctionalMailbox(
+          PROBATION_AREA_CODE,
+          LDU_CODE,
+          TEAM_CODE_1,
+          FMB,
+        ),
+      ).isEqualTo(SetOutcome.CREATED)
 
       assertThat(ldu.probationTeams[TEAM_CODE_1]).isEqualTo(ProbationTeam(FMB))
     }
@@ -190,7 +224,14 @@ class LocalDeliveryUnitServiceTest {
 
       every { repository.findByProbationAreaCodeAndLocalDeliveryUnitCode(any(), any()) } returns Optional.of(ldu)
 
-      assertThat(service.setFunctionalMailbox(PROBATION_AREA_CODE, LDU_CODE, TEAM_CODE_1, FMB2)).isEqualTo(SetOutcome.UPDATED)
+      assertThat(
+        service.setFunctionalMailbox(
+          PROBATION_AREA_CODE,
+          LDU_CODE,
+          TEAM_CODE_1,
+          FMB2,
+        ),
+      ).isEqualTo(SetOutcome.UPDATED)
 
       assertThat(ldu.probationTeams[TEAM_CODE_1]).isEqualTo(ProbationTeam(FMB2))
     }
@@ -204,7 +245,13 @@ class LocalDeliveryUnitServiceTest {
     fun `No LDU`() {
       every { repository.findByProbationAreaCodeAndLocalDeliveryUnitCode(any(), any()) } returns Optional.empty()
 
-      assertThat(service.deleteFunctionalMailbox(PROBATION_AREA_CODE, LDU_CODE, TEAM_CODE_1)).isEqualTo(DeleteOutcome.NOT_FOUND)
+      assertThat(
+        service.deleteFunctionalMailbox(
+          PROBATION_AREA_CODE,
+          LDU_CODE,
+          TEAM_CODE_1,
+        ),
+      ).isEqualTo(DeleteOutcome.NOT_FOUND)
 
       verify(inverse = true) { repository.delete(any()) }
     }
@@ -219,7 +266,13 @@ class LocalDeliveryUnitServiceTest {
 
       every { repository.findByProbationAreaCodeAndLocalDeliveryUnitCode(any(), any()) } returns Optional.of(ldu)
 
-      assertThat(service.deleteFunctionalMailbox(PROBATION_AREA_CODE, LDU_CODE, TEAM_CODE_1)).isEqualTo(DeleteOutcome.NOT_FOUND)
+      assertThat(
+        service.deleteFunctionalMailbox(
+          PROBATION_AREA_CODE,
+          LDU_CODE,
+          TEAM_CODE_1,
+        ),
+      ).isEqualTo(DeleteOutcome.NOT_FOUND)
       assertThat(ldu).isEqualTo(preLdu)
 
       verify(inverse = true) { repository.delete(any()) }
@@ -233,7 +286,13 @@ class LocalDeliveryUnitServiceTest {
 
       every { repository.findByProbationAreaCodeAndLocalDeliveryUnitCode(any(), any()) } returns Optional.of(ldu)
 
-      assertThat(service.deleteFunctionalMailbox(PROBATION_AREA_CODE, LDU_CODE, TEAM_CODE_1)).isEqualTo(DeleteOutcome.DELETED)
+      assertThat(
+        service.deleteFunctionalMailbox(
+          PROBATION_AREA_CODE,
+          LDU_CODE,
+          TEAM_CODE_1,
+        ),
+      ).isEqualTo(DeleteOutcome.DELETED)
 
       val expectedLdu = lduWithFmb()
       expectedLdu.probationTeams[TEAM_CODE_2] = ProbationTeam(FMB2)
@@ -250,7 +309,13 @@ class LocalDeliveryUnitServiceTest {
 
       every { repository.findByProbationAreaCodeAndLocalDeliveryUnitCode(any(), any()) } returns Optional.of(ldu)
 
-      assertThat(service.deleteFunctionalMailbox(PROBATION_AREA_CODE, LDU_CODE, TEAM_CODE_1)).isEqualTo(DeleteOutcome.DELETED)
+      assertThat(
+        service.deleteFunctionalMailbox(
+          PROBATION_AREA_CODE,
+          LDU_CODE,
+          TEAM_CODE_1,
+        ),
+      ).isEqualTo(DeleteOutcome.DELETED)
       assertThat(ldu).isEqualTo(lduWithFmb())
 
       verify(inverse = true) { repository.delete(any()) }
@@ -263,7 +328,13 @@ class LocalDeliveryUnitServiceTest {
 
       every { repository.findByProbationAreaCodeAndLocalDeliveryUnitCode(any(), any()) } returns Optional.of(ldu)
 
-      assertThat(service.deleteFunctionalMailbox(PROBATION_AREA_CODE, LDU_CODE, TEAM_CODE_1)).isEqualTo(DeleteOutcome.DELETED)
+      assertThat(
+        service.deleteFunctionalMailbox(
+          PROBATION_AREA_CODE,
+          LDU_CODE,
+          TEAM_CODE_1,
+        ),
+      ).isEqualTo(DeleteOutcome.DELETED)
 
       verify { repository.delete(ldu) }
     }
