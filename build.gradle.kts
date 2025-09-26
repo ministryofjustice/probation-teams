@@ -1,8 +1,8 @@
 plugins {
   id("uk.gov.justice.hmpps.gradle-spring-boot") version "9.1.1"
-  id("org.owasp.dependencycheck") version "12.1.3"
-  kotlin("plugin.spring") version "2.2.10"
-  kotlin("plugin.jpa") version "2.2.10"
+  id("org.owasp.dependencycheck") version "12.1.6"
+  kotlin("plugin.spring") version "2.2.20"
+  kotlin("plugin.jpa") version "2.2.20"
 }
 
 configurations {
@@ -21,9 +21,9 @@ dependencies {
   implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.16.0")
   implementation("org.springframework.security:spring-security-config")
 
-  runtimeOnly("com.h2database:h2:2.3.232")
+  runtimeOnly("com.h2database:h2:2.4.240")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
-  runtimeOnly("org.postgresql:postgresql:42.7.7")
+  runtimeOnly("org.postgresql:postgresql:42.7.8")
 
   testImplementation("org.springframework.boot:spring-boot-starter-test")
   testImplementation("org.springframework.security:spring-security-test")
