@@ -1,8 +1,8 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "9.1.4"
-  id("org.owasp.dependencycheck") version "12.1.6"
-  kotlin("plugin.spring") version "2.2.20"
-  kotlin("plugin.jpa") version "2.2.20"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "9.3.0"
+  id("org.owasp.dependencycheck") version "12.2.0"
+  kotlin("plugin.spring") version "2.3.0"
+  kotlin("plugin.jpa") version "2.3.0"
 }
 
 configurations {
@@ -11,6 +11,20 @@ configurations {
 }
 
 dependencies {
+
+  // CVE-2025-67735 - it does not fix all occurrences
+  implementation(enforcedPlatform("io.netty:netty-bom:4.2.8.Final"))
+  implementation("io.netty:netty-buffer")
+  implementation("io.netty:netty-codec-http")
+  implementation("io.netty:netty-handler")
+  implementation("io.netty:netty-transport")
+  // END of CVE-2025-67735
+
+  // Upgrade to fix CVE-2025-48924
+  implementation("org.apache.commons:commons-lang3:3.18.0") {
+    because("Fixes CVE-2025-48924 - Uncontrolled recursion vulnerability")
+  }
+  // END of CVE-2025-48924
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-security")
