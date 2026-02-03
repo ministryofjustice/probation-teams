@@ -5,9 +5,10 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.resttestclient.TestRestTemplate
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.json.BasicJsonTester
-import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -17,11 +18,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles(value = ["test"])
+@AutoConfigureTestRestTemplate
 @DisplayName("Integration Tests for LocalDeliveryUnitController")
 class LocalDeliveryUnitControllerResourceIntegrationTest(
-  @Autowired val testRestTemplate: TestRestTemplate,
   @Autowired val entityBuilder: EntityWithJwtAuthorisationBuilder,
 ) {
+  @Autowired lateinit var testRestTemplate: TestRestTemplate
+
   val jsonTester = BasicJsonTester(this.javaClass)
 
   @Test
@@ -30,7 +33,7 @@ class LocalDeliveryUnitControllerResourceIntegrationTest(
     with(response) {
       assertThat(statusCode).isEqualTo(HttpStatus.OK)
 
-      assertThat(jsonTester.from(response.body))
+      assertThat(jsonTester.from(response.body!!))
         .extractingJsonPathArrayValue<String>("$.[*].probationTeams.[*].functionalMailbox")
         .contains("t1@b.com", "t2@b.com", "t3@b.com")
     }

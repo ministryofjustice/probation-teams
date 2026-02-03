@@ -1,5 +1,5 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "9.3.0"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "10.0.0"
   id("org.owasp.dependencycheck") version "12.2.0"
   kotlin("plugin.spring") version "2.3.0"
   kotlin("plugin.jpa") version "2.3.0"
@@ -12,26 +12,20 @@ configurations {
 
 dependencies {
 
-  // CVE-2025-67735 - it does not fix all occurrences
-  implementation(enforcedPlatform("io.netty:netty-bom:4.2.8.Final"))
-  implementation("io.netty:netty-buffer")
-  implementation("io.netty:netty-codec-http")
-  implementation("io.netty:netty-handler")
-  implementation("io.netty:netty-transport")
-  // END of CVE-2025-67735
-
-  // Upgrade to fix CVE-2025-48924
-  implementation("org.apache.commons:commons-lang3:3.18.0") {
-    because("Fixes CVE-2025-48924 - Uncontrolled recursion vulnerability")
-  }
-  // END of CVE-2025-48924
+  // Spring boot starters
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-security")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
-  implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+  implementation("org.springframework.boot:spring-boot-starter-flyway")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13")
+
+  testImplementation("org.springframework.boot:spring-boot-starter-test")
+  testImplementation("org.springframework.boot:spring-boot-resttestclient")
+  testImplementation("org.springframework.boot:spring-boot-starter-restclient-test")
+  testImplementation("org.springframework.boot:spring-boot-starter-test")
+
   implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.16.0")
   implementation("org.springframework.security:spring-security-config")
 
@@ -39,7 +33,6 @@ dependencies {
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
   runtimeOnly("org.postgresql:postgresql:42.7.8")
 
-  testImplementation("org.springframework.boot:spring-boot-starter-test")
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("com.ninja-squad:springmockk:4.0.2")
   testImplementation("io.jsonwebtoken:jjwt-impl:0.13.0")
