@@ -8,9 +8,11 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.resttestclient.TestRestTemplate
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.json.BasicJsonTester
-import org.springframework.boot.test.web.client.TestRestTemplate
+import org.springframework.boot.test.json.JsonContent
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -22,10 +24,11 @@ import uk.gov.justice.hmpps.probationteams.utils.uniqueLduCode
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles(value = ["test"])
 @DisplayName("Integration Tests for ProbationAreaController")
+@AutoConfigureTestRestTemplate
 class ProbationAreaResourceIntegrationTest(
-  @Autowired val testRestTemplate: TestRestTemplate,
   @Autowired val entityBuilder: EntityWithJwtAuthorisationBuilder,
 ) {
+  @Autowired lateinit var testRestTemplate: TestRestTemplate
 
   val jsonTester = BasicJsonTester(this.javaClass)
 
@@ -37,7 +40,7 @@ class ProbationAreaResourceIntegrationTest(
       val response = getProbationArea("ZZZ", VIEW_PROBATION_TEAMS_ROLE)
       with(response) {
         assertThat(statusCode).isEqualTo(HttpStatus.OK)
-        assertThat(jsonTester.from(body)).isEqualToJson("{ probationAreaCode: \"ZZZ\"}")
+        assertThat(getContent(response)).isEqualToJson("{ probationAreaCode: \"ZZZ\"}")
       }
     }
 
@@ -46,7 +49,7 @@ class ProbationAreaResourceIntegrationTest(
       val response = getProbationArea("ABC", VIEW_PROBATION_TEAMS_ROLE)
       with(response) {
         assertThat(statusCode).isEqualTo(HttpStatus.OK)
-        assertThat(jsonTester.from(body)).isEqualToJson("probationArea.json")
+        assertThat(getContent(this)).isEqualToJson("probationArea.json")
       }
     }
   }
@@ -68,7 +71,7 @@ class ProbationAreaResourceIntegrationTest(
       val response = getLdu("ABC", "ABC125", VIEW_PROBATION_TEAMS_ROLE)
       with(response) {
         assertThat(statusCode).isEqualTo(HttpStatus.OK)
-        assertThat(jsonTester.from(body)).isEqualToJson("lduDto2WithTeams.json")
+        assertThat(getContent(this)).isEqualToJson("lduDto2WithTeams.json")
       }
     }
 
@@ -77,7 +80,7 @@ class ProbationAreaResourceIntegrationTest(
       val response = getLdu("ABC", "ABC124", VIEW_PROBATION_TEAMS_ROLE)
       with(response) {
         assertThat(statusCode).isEqualTo(HttpStatus.OK)
-        assertThat(jsonTester.from(body)).isEqualToJson("lduDto2.json")
+        assertThat(getContent(this)).isEqualToJson("lduDto2.json")
       }
     }
   }
@@ -100,7 +103,7 @@ class ProbationAreaResourceIntegrationTest(
 
       val response = getLdu(PROBATION_AREA_CODE, lduCode, VIEW_PROBATION_TEAMS_ROLE)
       assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
-      val content = jsonTester.from(response.body)
+      val content = getContent(response)
       assertThat(content).extractingJsonPathStringValue("$.probationAreaCode").isEqualTo(PROBATION_AREA_CODE)
       assertThat(content).extractingJsonPathStringValue("$.localDeliveryUnitCode").isEqualTo(lduCode)
       assertThat(content).extractingJsonPathStringValue("$.functionalMailbox").isEqualTo(FMB1)
@@ -115,8 +118,7 @@ class ProbationAreaResourceIntegrationTest(
       assertThat(putLduFmb(PROBATION_AREA_CODE, lduCode, FMB2, VIEW_PROBATION_TEAMS_ROLE).statusCode).isEqualTo(HttpStatus.NO_CONTENT)
 
       val response = getLdu(PROBATION_AREA_CODE, lduCode, VIEW_PROBATION_TEAMS_ROLE)
-      val content = jsonTester.from(response.body)
-      assertThat(content).extractingJsonPathStringValue("$.functionalMailbox").isEqualTo(FMB2)
+      assertThat(getContent(response)).extractingJsonPathStringValue("$.functionalMailbox").isEqualTo(FMB2)
     }
 
     @Test
@@ -162,7 +164,7 @@ class ProbationAreaResourceIntegrationTest(
       assertThat(getLdu(PROBATION_AREA_CODE, lduCode, VIEW_PROBATION_TEAMS_ROLE).statusCode).isEqualTo(HttpStatus.NOT_FOUND)
       assertThat(putTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, FMB1, roles).statusCode).isEqualTo(HttpStatus.CREATED)
 
-      val content = jsonTester.from(getLdu(PROBATION_AREA_CODE, lduCode, VIEW_PROBATION_TEAMS_ROLE).body)
+      val content = getContent(getLdu(PROBATION_AREA_CODE, lduCode, VIEW_PROBATION_TEAMS_ROLE))
       assertThat(content).extractingJsonPathStringValue("$.probationTeams.$TEAM_1_CODE.functionalMailbox").isEqualTo(FMB1)
     }
 
@@ -174,7 +176,7 @@ class ProbationAreaResourceIntegrationTest(
       assertThat(putTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, FMB1, VIEW_PROBATION_TEAMS_ROLE).statusCode).isEqualTo(HttpStatus.CREATED)
       assertThat(putTeamFmb(PROBATION_AREA_CODE, lduCode, TEAM_1_CODE, FMB2, VIEW_PROBATION_TEAMS_ROLE).statusCode).isEqualTo(HttpStatus.NO_CONTENT)
 
-      val content = jsonTester.from(getLdu(PROBATION_AREA_CODE, lduCode, VIEW_PROBATION_TEAMS_ROLE).body)
+      val content = getContent(getLdu(PROBATION_AREA_CODE, lduCode, VIEW_PROBATION_TEAMS_ROLE))
       assertThat(content).extractingJsonPathStringValue("$.probationTeams.$TEAM_1_CODE.functionalMailbox").isEqualTo(FMB2)
     }
 
@@ -251,7 +253,7 @@ class ProbationAreaResourceIntegrationTest(
       val response = describedInvocation.restApiInvocation(testData.code)
       assertThat(response.statusCode).isEqualTo(testData.expectedStatusCode)
       if (testData.expectedMessage != null) {
-        val content = jsonTester.from(response.body)
+        val content = getContent(response)
         assertThat(content).extractingJsonPathStringValue("$.developerMessage").endsWith(testData.expectedMessage)
       }
     }
@@ -379,6 +381,8 @@ class ProbationAreaResourceIntegrationTest(
     lduCode,
     teamCode,
   )
+
+  private fun getContent(response: ResponseEntity<String>): JsonContent<in Any>? = jsonTester.from(response.body!!)
 
   companion object {
     private const val PROBATION_AREA_TEMPLATE = "/probation-areas/{probationAreaCode}"
