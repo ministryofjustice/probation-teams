@@ -6,9 +6,10 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.resttestclient.TestRestTemplate
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.json.BasicJsonTester
-import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -19,10 +20,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles(value = ["test"])
 @DisplayName("Integration Tests for ProbationAreaCodesController")
+@AutoConfigureTestRestTemplate
 class ProbationAreaCodesResourceIntegrationTest(
-  @Autowired val testRestTemplate: TestRestTemplate,
   @Autowired val entityBuilder: EntityWithJwtAuthorisationBuilder,
 ) {
+  @Autowired lateinit var testRestTemplate: TestRestTemplate
+
   val jsonTester = BasicJsonTester(this.javaClass)
 
   @Nested
@@ -33,7 +36,7 @@ class ProbationAreaCodesResourceIntegrationTest(
       val response = getProbationAreaCodes(VIEW_PROBATION_TEAMS_ROLE)
       with(response) {
         assertThat(statusCode).isEqualTo(HttpStatus.OK)
-        assertThat(jsonTester.from(body)).hasJsonPathArrayValue("$")
+        assertThat(jsonTester.from(body!!)).hasJsonPathArrayValue("$")
       }
     }
   }

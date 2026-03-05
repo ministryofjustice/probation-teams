@@ -1,4 +1,3 @@
-version: '3.1'
 services:
   probation-teams:
 #    image: quay.io/hmpps/probation-teams:latest
