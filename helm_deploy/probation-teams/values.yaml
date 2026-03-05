@@ -7,7 +7,7 @@ generic-service:
   replicaCount: 4
 
   image:
-    repository: quay.io/hmpps/probation-teams
+    repository: ghcr.io/ministryofjustice/probation-teams
     tag: app_version    # override at deployment time
     port: 8080
 
@@ -34,8 +34,9 @@ generic-service:
   #     [name of environment variable as seen by app]: [key of kubernetes secret to load]
 
   namespace_secrets:
-    probation-teams:
-      APPINSIGHTS_INSTRUMENTATIONKEY: "APPINSIGHTS_INSTRUMENTATIONKEY"
+    probation-teams-application-insights:
+      APPLICATIONINSIGHTS_CONNECTION_STRING: "APPLICATIONINSIGHTS_CONNECTION_STRING"
+
     dps-rds-instance-output:
       SPRING_DATASOURCE_PASSWORD: "probation_teams_password"
       DATABASE_NAME: "database_name"
