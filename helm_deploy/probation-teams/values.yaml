@@ -7,7 +7,7 @@ generic-service:
   replicaCount: 4
 
   image:
-    repository: quay.io/hmpps/probation-teams
+    repository: ghcr.io/ministryofjustice/probation-teams
     tag: app_version    # override at deployment time
     port: 8080
 
