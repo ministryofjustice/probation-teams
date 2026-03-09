@@ -33,3 +33,6 @@ out
 
 scripts/functional-mailboxes-*.csv
 dps-gradle-spring-boot-suppressions.xml
+
+helm_deploy/probation-teams/Chart.lock
+helm_deploy/probation-teams/charts/
