@@ -17,7 +17,7 @@ import java.util.Optional
 @Service
 @Validated
 @Transactional
-class LocalDeliveryUnitService(@Autowired val repository: LocalDeliveryUnitRepository) {
+class LocalDeliveryUnitService(@param:Autowired val repository: LocalDeliveryUnitRepository) {
 
   fun getProbationAreaCodes(): List<String> = repository.getProbationAreaCodes()
 

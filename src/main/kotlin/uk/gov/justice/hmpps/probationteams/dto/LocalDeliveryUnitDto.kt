@@ -7,18 +7,18 @@ import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 
 data class LocalDeliveryUnitDto @JsonCreator constructor(
-  @Schema(description = "Probation Area code", example = "NO2", required = true)
-  @JsonProperty("probationAreaCode")
+  @field:Schema(description = "Probation Area code", example = "NO2", required = true)
+  @field:JsonProperty("probationAreaCode")
   val probationAreaCode: @NotBlank String,
 
-  @Schema(description = "Local Delivery Unit code", example = "NO2SUK", required = true)
-  @JsonProperty("localDeliveryUnitCode")
+  @field:Schema(description = "Local Delivery Unit code", example = "NO2SUK", required = true)
+  @field:JsonProperty("localDeliveryUnitCode")
   val localDeliveryUnitCode: @NotBlank String,
 
-  @Schema(description = "Functional Mailbox", example = "a@b.com", required = true)
-  @JsonProperty("functionalMailbox")
+  @field:Schema(description = "Functional Mailbox", example = "a@b.com", required = true)
+  @field:JsonProperty("functionalMailbox")
   val functionalMailbox: @Email String? = null,
 
-  @JsonProperty("probationTeams")
+  @field:JsonProperty("probationTeams")
   val probationTeams: Map<String, ProbationTeamDto>? = mapOf(),
 )
