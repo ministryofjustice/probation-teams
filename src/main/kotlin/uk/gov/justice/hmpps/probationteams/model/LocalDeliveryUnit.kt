@@ -7,11 +7,11 @@ import jakarta.persistence.Entity
 import jakarta.persistence.EntityListeners
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.MapKeyColumn
 import jakarta.persistence.Table
-import org.hibernate.annotations.GenericGenerator
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
@@ -47,8 +47,7 @@ data class LocalDeliveryUnit(
 ) {
 
   @Id
-  @GeneratedValue(generator = "UUID")
-  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+  @GeneratedValue(strategy = GenerationType.UUID)
   @Column(name = "LOCAL_DELIVERY_UNIT_ID", updatable = false, nullable = false)
   var id: UUID? = null
 

@@ -6,11 +6,11 @@ import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
 
 data class ProbationAreaDto @JsonCreator constructor(
-  @Schema(required = true, description = "Probation Area code", example = "NO2")
-  @JsonProperty("probationAreaCode")
+  @field:Schema(required = true, description = "Probation Area code", example = "NO2")
+  @field:JsonProperty("probationAreaCode")
   val probationAreaCode: @NotBlank String,
 
-  @Schema(required = true, description = "Local Delivery Units by Local Delivery Unit code")
-  @JsonProperty("localDeliveryUnits")
+  @field:Schema(required = true, description = "Local Delivery Units by Local Delivery Unit code")
+  @field:JsonProperty("localDeliveryUnits")
   val localDeliveryUnits: Map<String, LocalDeliveryUnitDto> = mapOf(),
 )

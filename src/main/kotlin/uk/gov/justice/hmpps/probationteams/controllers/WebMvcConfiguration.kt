@@ -15,6 +15,7 @@ class WebMvcConfiguration {
    */
   @Bean
   fun messageConverterReconfigurer(): WebMvcConfigurer = object : WebMvcConfigurer {
+    @Deprecated("Deprecated in superclass")
     override fun extendMessageConverters(converters: MutableList<HttpMessageConverter<*>>) {
       converters.removeIf { it is StringHttpMessageConverter }
     }

@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Email
 
 data class ProbationTeamDto @JsonCreator constructor(
-  @Schema(required = true, description = "Functional Mailbox", example = "a@b.com")
-  @JsonProperty("functionalMailbox")
+  @field:Schema(required = true, description = "Functional Mailbox", example = "a@b.com")
+  @field:JsonProperty("functionalMailbox")
   val functionalMailbox: @Email String,
 )

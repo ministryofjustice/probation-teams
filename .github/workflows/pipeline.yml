@@ -46,7 +46,7 @@ jobs:
     with:
       gradle-command: 'BUILD_NUMBER=${{ needs.app_version.outputs.version}} ./gradlew assemble check'
       upload-build-artifacts: ${{ github.ref == 'refs/heads/main' }}
-      java-version: "21"
+      java-version: "25"
     needs:
       - app_version
   build:
@@ -60,7 +60,7 @@ jobs:
       registry_org: 'ministryofjustice'
       additional_docker_tag: ${{ inputs.additional_docker_tag }}
       push: ${{ inputs.push || inputs.push == null }}
-      docker_multiplatform: true
+      docker_multiplatform: false
       download_build_artifacts: true
   deploy_dev:
     name: Deploy to the dev environment
