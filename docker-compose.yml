@@ -1,19 +1,26 @@
 services:
   probation-teams:
-#    image: quay.io/hmpps/probation-teams:latest
+    image: test:abc
     build: .
     networks:
       - hmpps
     container_name: probation-teams
     depends_on:
       - probation-teams-db
-      - hmpps-auth
     ports:
       - '8085:8080'
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:8080/health/ping']
+      test: [
+        'CMD',
+        'java',
+        '-cp',
+        '/app/app.jar',
+        'uk.gov.justice.hmpps.probationteams.Healthcheck',
+        'http://localhost:8080/health'
+      ]
     environment:
       - SERVER_PORT=8080
+      - SPRING_FLYWAY_ENABLED=false
       - DATABASE_ENDPOINT=probation-teams-db
       - DATABASE_NAME=probation-teams-db
       - SPRING_DATASOURCE_USERNAME=probation_teams
