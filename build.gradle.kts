@@ -33,7 +33,7 @@ dependencies {
   runtimeOnly("org.postgresql:postgresql:42.7.10")
 
   testImplementation("org.springframework.security:spring-security-test")
-  testImplementation("com.ninja-squad:springmockk:4.0.2")
+  testImplementation("com.ninja-squad:springmockk:5.0.1")
   testImplementation("io.jsonwebtoken:jjwt-impl:0.13.0")
   testImplementation("io.jsonwebtoken:jjwt-jackson:0.13.0")
   testImplementation(kotlin("test"))
