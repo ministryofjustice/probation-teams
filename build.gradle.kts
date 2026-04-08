@@ -20,15 +20,15 @@ dependencies {
   implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.16.0")
   implementation("org.springframework.security:spring-security-config")
 
-  runtimeOnly("com.h2database:h2:2.3.232")
+  runtimeOnly("com.h2database:h2:2.4.240")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
-  runtimeOnly("org.postgresql:postgresql:42.7.7")
+  runtimeOnly("org.postgresql:postgresql:42.7.10")
 
   testImplementation("org.springframework.boot:spring-boot-starter-test")
   testImplementation("org.springframework.security:spring-security-test")
-  testImplementation("com.ninja-squad:springmockk:4.0.2")
-  testImplementation("io.jsonwebtoken:jjwt-impl:0.12.6")
-  testImplementation("io.jsonwebtoken:jjwt-jackson:0.12.6")
+  testImplementation("com.ninja-squad:springmockk:5.0.1")
+  testImplementation("io.jsonwebtoken:jjwt-impl:0.13.0")
+  testImplementation("io.jsonwebtoken:jjwt-jackson:0.13.0")
   testImplementation(kotlin("test"))
 }
 
