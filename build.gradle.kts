@@ -18,7 +18,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
   implementation("org.springframework.boot:spring-boot-starter-flyway")
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3")
 
   testImplementation("org.springframework.boot:spring-boot-starter-test")
   testImplementation("org.springframework.boot:spring-boot-resttestclient")
