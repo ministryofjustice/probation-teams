@@ -11,7 +11,7 @@ configurations {
 
 dependencies {
 
-  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:2.2.0")
+  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:2.5.0")
 
   // Spring boot starters
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -27,7 +27,7 @@ dependencies {
   testImplementation("org.springframework.boot:spring-boot-starter-restclient-test")
   testImplementation("org.springframework.boot:spring-boot-starter-test")
 
-  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.27.0")
+  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.28.1")
   implementation("org.springframework.security:spring-security-config")
 
   runtimeOnly("com.h2database:h2:2.4.240")
