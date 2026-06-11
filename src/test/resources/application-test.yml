@@ -31,6 +31,9 @@ spring:
       hibernate:
         format_sql: true
 
+oauth:
+  endpoint.url: http://localhost:8090/auth
+
 graceful:
   shutdown.enabled: false
 
