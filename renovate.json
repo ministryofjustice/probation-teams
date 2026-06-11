@@ -11,11 +11,10 @@
     },
     {
       "matchManagers": ["github-actions"],
-      "matchFileNames": [
-        "**/.github/workflows/**/*.ya?ml",
-        "**/.github/actions/**/*.ya?ml"
-      ],
-      "pinDigests": true
+      "matchFileNames": ["**/.github/workflows/**/*.ya?ml"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "enabled": false
     }
-  ]
+  ],
+  "platformCommit": "enabled"
 }
