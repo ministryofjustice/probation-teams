@@ -1,7 +1,7 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "11.0.0-beta2"
-  kotlin("plugin.spring") version "2.4.0"
-  kotlin("plugin.jpa") version "2.4.0"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "11.0.1"
+  kotlin("plugin.spring") version "2.4.10"
+  kotlin("plugin.jpa") version "2.4.10"
 }
 
 configurations {
@@ -11,7 +11,7 @@ configurations {
 
 dependencies {
 
-  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:3.0.0-beta")
+  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:3.0.0")
 
   // Spring boot starters
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -27,7 +27,7 @@ dependencies {
   testImplementation("org.springframework.boot:spring-boot-starter-restclient-test")
   testImplementation("org.springframework.boot:spring-boot-starter-test")
 
-  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.28.1")
+  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.30.0")
   implementation("org.springframework.security:spring-security-config")
 
   runtimeOnly("com.h2database:h2:2.4.240")
