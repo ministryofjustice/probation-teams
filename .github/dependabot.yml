@@ -32,6 +32,10 @@ updates:
       default-days: 7
     schedule:
       interval: "weekly"
+    ignore:
+      - dependency-name: "postgres"
+        versions:
+          - ">=15"
 
   - package-ecosystem: "helm"
     directory: "/helm_deploy/probation-teams"
