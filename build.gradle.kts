@@ -1,7 +1,7 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "11.0.11"
-  kotlin("plugin.spring") version "2.4.20"
-  kotlin("plugin.jpa") version "2.4.20"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "11.0.14"
+  kotlin("plugin.spring") version "2.4.21"
+  kotlin("plugin.jpa") version "2.4.21"
 }
 
 configurations {
@@ -11,7 +11,7 @@ configurations {
 
 dependencies {
 
-  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:3.0.1")
+  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:3.0.3")
 
   // Spring boot starters
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -20,19 +20,19 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
   implementation("org.springframework.boot:spring-boot-starter-flyway")
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.1")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.2.0")
 
   testImplementation("org.springframework.boot:spring-boot-starter-test")
   testImplementation("org.springframework.boot:spring-boot-resttestclient")
   testImplementation("org.springframework.boot:spring-boot-starter-restclient-test")
   testImplementation("org.springframework.boot:spring-boot-starter-test")
 
-  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.30.0")
+  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.33.1")
   implementation("org.springframework.security:spring-security-config")
 
-  runtimeOnly("com.h2database:h2:2.4.240")
+  runtimeOnly("com.h2database:h2:2.5.252")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
-  runtimeOnly("org.postgresql:postgresql:42.7.13")
+  runtimeOnly("org.postgresql:postgresql:42.7.14")
 
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("com.ninja-squad:springmockk:5.0.1")

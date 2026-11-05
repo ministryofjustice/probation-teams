@@ -95,3 +95,5 @@ management:
 springdoc:
   api-docs:
     enabled: false
+  swagger-ui:
+    filter: true
