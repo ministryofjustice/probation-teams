@@ -1,29 +1,4 @@
 services:
-  probation-teams:
-#    image: quay.io/hmpps/probation-teams:latest
-    build: .
-    networks:
-      - hmpps
-    container_name: probation-teams
-    depends_on:
-      - probation-teams-db
-      - hmpps-auth
-    ports:
-      - '8085:8080'
-    healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:8080/health/ping']
-    environment:
-      - SERVER_PORT=8080
-      - DATABASE_ENDPOINT=probation-teams-db
-      - DATABASE_NAME=probation-teams-db
-      - SPRING_DATASOURCE_USERNAME=probation_teams
-      - SPRING_DATASOURCE_PASSWORD=probation_teams
-      - SUPERUSER_USERNAME=admin
-      - SUPERUSER_PASSWORD=admin_password
-      - SPRING_PROFILES_ACTIVE=dev
-      - OAUTH_ENDPOINT_URL=http://hmpps-auth:8080/auth
-
-
   probation-teams-db:
     image: postgres:15.19
     networks:
@@ -36,19 +11,6 @@ services:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=admin_password
       - POSTGRES_DB=probation-teams-db
-
-  hmpps-auth:
-    image: ghcr.io/ministryofjustice/hmpps-auth:latest
-    networks:
-      - hmpps
-    container_name: hmpps-auth
-    ports:
-      - '8080:8080'
-    healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:8080/auth/health']
-    environment:
-      - SPRING_PROFILES_ACTIVE=dev
-      - DELIUS_ENABLED=false
 
 networks:
   hmpps:
