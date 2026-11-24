@@ -46,6 +46,7 @@ jobs:
     with:
       gradle-command: 'BUILD_NUMBER=${{ needs.app_version.outputs.version}} ./gradlew assemble check'
       upload-build-artifacts: ${{ github.ref == 'refs/heads/main' }}
+      test-report-continue-on-error: true
       java-version: "25"
       postgres-tag: "15.19"
     needs:
